@@ -21,17 +21,5 @@ public class Unit : MonoBehaviour
     {
         
     }
-    class CharacterUnit
-    {
-        string name;
-        int health;
-        int attack;
-        public CharacterUnit(string name_,int health_,int attack_)
-        {
-            this.attack = attack_;
-            this.health = health_;
-            this.name = name_;
-        }
-
-    }
+   
 }
