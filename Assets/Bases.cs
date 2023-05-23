@@ -8,11 +8,11 @@ public class Bases : MonoBehaviour
     public GameObject basePrefab;
 
     //variables reserved for base position
-    public Vector3 basePositionOne;
-    public Vector3 basePositionTwo;
+    private Vector3 basePositionOne = new Vector3(-1.75f,0,1.5f);
+    private Vector3 basePositionTwo = new Vector3(5.75f, 0, 1.5f);
 
     //scale
-    public Vector3 scale;
+    private Vector3 scale = new Vector3(1.5f, 0.4f, 5f);
 
     // Start is called before the first frame update
     void Start()
