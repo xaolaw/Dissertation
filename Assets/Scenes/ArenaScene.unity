@@ -167,9 +167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   basePrefab: {fileID: 689645372464200393, guid: dfb61021cadd09343a07b3c2f6a92bbb, type: 3}
-  basePositionOne: {x: 2, y: 0, z: -2.25}
-  basePositionTwo: {x: 0, y: 0, z: 0}
-  scale: {x: 6, y: 1, z: 3}
+  basePositionOne: {x: 2, y: 0, z: -2}
+  basePositionTwo: {x: 2, y: 0, z: 5}
+  scale: {x: 6, y: 1, z: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
