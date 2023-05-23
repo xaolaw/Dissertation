@@ -21,6 +21,7 @@ public class Bases : MonoBehaviour
         transform.localScale = scale;
         Instantiate(basePrefab, basePositionOne, Quaternion.identity,transform);
         Instantiate(basePrefab, basePositionTwo, Quaternion.identity,transform);
+        //test
     }
 
     // Update is called once per frame
