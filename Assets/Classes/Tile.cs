@@ -22,9 +22,9 @@ public class Tile
         isClicked = false;
     }
     //add character to a tile
-    public void addCharacter(GameObject gameObject)
+    public void addCharacter(Character character_)
     {
-        this.character = new Character("test1", 10, 10, gameObject);
+        this.character = character_;
     }
 }
 

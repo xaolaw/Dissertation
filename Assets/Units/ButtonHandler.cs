@@ -7,16 +7,23 @@ public class ButtonHandler : MonoBehaviour
 {
     private Button button;
     private UnitSpawn unitSpawn;
+    private Arena arena;
+
     void Start()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(HandleSpawning);
         unitSpawn = FindObjectOfType<UnitSpawn>();
+        arena = FindObjectOfType<Arena>();
     }
 
     private void HandleSpawning()
     {
-        if (!unitSpawn.Spawn())
+        List<Tile> tileList = arena.getTileList();
+        Tile tile = tileList.Find(obj => obj.isClicked);
+
+        
+        if (!unitSpawn.Spawn(tile,UnitSpawn.UnitType.DEFAULT))
         {
             Debug.LogError("Button error");
         }
