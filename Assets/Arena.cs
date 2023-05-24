@@ -42,7 +42,8 @@ public class Arena : MonoBehaviour
         Vector3 groundPosition = new Vector3(startPosition.x + ((float)columns +1)/2-1, startPosition.y - groundOffset, startPosition.z+((float)rows +1)/2-1);
         groundPrefab.transform.localScale = new Vector3(columns + 1, 2 * groundOffset, rows + 1);
         Instantiate(groundPrefab, groundPosition, Quaternion.identity, transform);
-    }
+
+}
     //changes color of clicked tile to red to spawn a unit
     private void ChangeTileColor(GameObject gameObject)
     {
