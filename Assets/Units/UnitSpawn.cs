@@ -35,9 +35,15 @@ public class UnitSpawn : MonoBehaviour
         switch (unitType)
         {
             case UnitType.DEFAULT:
-                position.y += 0.5f;
+                position.y += 0.1f;
+                Vector3 rotation= new Vector3(0, 0, 0);
+                if (position.x == 4) 
+                {
+                    //rotate
+                    rotation =  new Vector3(0,180f,0);
+                }
                 transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
-                GameObject characterObject = Instantiate(unitPrefab, position, Quaternion.identity, transform);
+                GameObject characterObject = Instantiate(unitPrefab, position, Quaternion.Euler(rotation), transform);
                 Character character = new Character("test1", 10, 10, characterObject);
                 return character;
 
