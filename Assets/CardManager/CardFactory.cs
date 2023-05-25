@@ -9,19 +9,22 @@ public class CardModel : MonoBehaviour
 {
     public Vector3 position;
     public Vector3 scale;
+    public Card card;
     // Start is called before the first frame update
-    void Start()
-    {
-        transform.localScale = scale;
-        transform.position = position;
-        var card = new Card("first card", "some_description",
-                                        new Stats(10, 20, 30));
+    public void clearCard(){
+        card = new Card("first card", "some_description",
+                        new Stats(10, 20, 30));
     }
-
-    // Update is called once per frame
-    void Update()
+    public CardModel()
     {
-        
+        clearCard();
+    }
+    //void Start(){
+    //    transform.localScale = scale;
+    //    transform.position = position;
+    //}
+    public Card getCard(){
+        return card;
     }
 
     public class Stats
