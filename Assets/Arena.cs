@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+using UnityEngine.UI;
 
 public class Arena : MonoBehaviour
 {
@@ -16,6 +16,9 @@ public class Arena : MonoBehaviour
    
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
+
+    //canvas 
+    public Text unitInfoText;
 
     void Start()
     {
@@ -35,6 +38,7 @@ public class Arena : MonoBehaviour
                 {
                     ClickEvent clickEvent = tile.AddComponent<ClickEvent>();
                     clickEvent.OnClick += ChangeTileColor;
+                    clickEvent.OnClick += ShowInfoAboutGameObject;
                 }
             }
         }
@@ -43,7 +47,21 @@ public class Arena : MonoBehaviour
         groundPrefab.transform.localScale = new Vector3(columns + 1, 2 * groundOffset, rows + 1);
         Instantiate(groundPrefab, groundPosition, Quaternion.identity, transform);
 
-}
+    }
+    private void ShowInfoAboutGameObject(GameObject gameObject)
+    {
+        unitInfoText.text = "";
+        if (gameObject)
+        {
+            Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
+            if (tile!=null && tile.character!=null)
+            {
+                unitInfoText.text = "ABOUT UNIT: \n" +tile.character.toString();
+            }
+
+        } 
+    }
+
     //changes color of clicked tile to red to spawn a unit
     private void ChangeTileColor(GameObject gameObject)
     {
@@ -80,7 +98,7 @@ public class Arena : MonoBehaviour
     {
         return tileList;
     }
+
     
 
-
-}
+    }

@@ -17,4 +17,8 @@ public class Character
         this.name = name_;
         this.gameObject = gameObject_;
     }
+
+    public string toString() {
+        return "Name: " + name + "\nAttack: " + attack;
+    }
 }
