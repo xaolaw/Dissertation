@@ -29,7 +29,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
         Tile tile = tileList.Find(obj => obj.isClicked);
 
         
-        if (!unitSpawn.Spawn(tile, unitType))
+        if (!unitSpawn.Spawn(tile, unitType, arena.playerTurn))
         {
             Debug.LogError("Spawning error");
         }
