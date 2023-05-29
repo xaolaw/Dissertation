@@ -8,14 +8,30 @@ public class Arena : MonoBehaviour
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
     public GameObject groundPrefab;
     public float groundOffset = 0.1f;
-    public int rows = 4;
-    public int columns = 5;
+    public int rows = 5;
+    public int columns = 4;
+    public bool playerTurn = true;
 
     //red color to change the color of the tile
     private Color redColor = new Color(255, 0, 0);
    
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
+
+    //Direction for finding tiles
+    public enum Direction
+    {
+        UP = 0,
+        DOWN,
+        LEFT,
+        RIGHT,
+        UL,
+        UR,
+        DL,
+        DR
+    }
+
+    public int[] neighbourId = new int[8];
 
     //canvas 
     public Text unitInfoText;
@@ -24,22 +40,19 @@ public class Arena : MonoBehaviour
     {
         Vector3 startPosition = transform.position; // starting position of the grid
 
-        for (int row = 0; row < rows; row++)
+        for (int col = 0; col < columns; col++)
         {
-            for (int col = 0; col < columns; col++)
+            for (int row = 0; row < rows; row++)
             {
                 Vector3 tilePosition = new Vector3(startPosition.x + col, startPosition.y, startPosition.z + row);
                 GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, transform);
 
                 MeshRenderer renderer = tile.GetComponent<MeshRenderer>();
-                tileList.Add(new Tile(renderer.material.color, tile, renderer));
+                tileList.Add(new Tile(renderer.material.color, tile, renderer, row + col * rows));
 
-                if (startPosition.x + col ==0 || startPosition.x + col == 4)
-                {
-                    ClickEvent clickEvent = tile.AddComponent<ClickEvent>();
-                    clickEvent.OnClick += ChangeTileColor;
-                    clickEvent.OnClick += ShowInfoAboutGameObject;
-                }
+                ClickEvent clickEvent = tile.AddComponent<ClickEvent>();
+                clickEvent.OnClick += ChangeTileColor;
+                clickEvent.OnClick += ShowInfoAboutGameObject;
             }
         }
 
@@ -47,7 +60,16 @@ public class Arena : MonoBehaviour
         groundPrefab.transform.localScale = new Vector3(columns + 1, 2 * groundOffset, rows + 1);
         Instantiate(groundPrefab, groundPosition, Quaternion.identity, transform);
 
+        neighbourId[(int)Direction.UP] = -rows;
+        neighbourId[(int)Direction.DOWN] = rows;
+        neighbourId[(int)Direction.LEFT] = -1;
+        neighbourId[(int)Direction.RIGHT] = 1;
+        neighbourId[(int)Direction.UL] = neighbourId[(int)Direction.UP] + neighbourId[(int)Direction.LEFT];
+        neighbourId[(int)Direction.UR] = neighbourId[(int)Direction.UP] + neighbourId[(int)Direction.RIGHT];
+        neighbourId[(int)Direction.DL] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.LEFT];
+        neighbourId[(int)Direction.DR] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.RIGHT];
     }
+
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
         unitInfoText.text = "";
@@ -65,7 +87,6 @@ public class Arena : MonoBehaviour
     //changes color of clicked tile to red to spawn a unit
     private void ChangeTileColor(GameObject gameObject)
     {
-        
         if (gameObject)
         {
             //find a tile in list that is a clicked object
@@ -98,7 +119,45 @@ public class Arena : MonoBehaviour
     {
         return tileList;
     }
-
     
+    public void EndTurn()
+    {
+        playerTurn = !playerTurn;
 
+        int begin, end, increment;
+        if (playerTurn)
+        {
+            begin = 0;
+            end = tileList.Count;
+            increment = 1;
+        }
+        else
+        {
+            begin = tileList.Count - 1;
+            end = -1;
+            increment = -1;
+        }
+
+        for(int i = begin; i != end; i += increment)
+        {
+            Tile tile = tileList[i];
+            if(tile.character != null && tile.character.playerUnit == playerTurn)
+            {
+                tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
+            }
+        }
     }
+
+    public Tile GetTile(int id, Direction direction)
+    {
+        if (id + neighbourId[(int)direction] < tileList.Count && id + neighbourId[(int)direction] >= 0)
+        {
+            return tileList[id + neighbourId[(int)direction]];
+        }
+        if (id < columns || id >= columns * (rows - 1))
+        {
+            Debug.Log("go into base?");
+        }
+        return null;
+    }
+}

@@ -23,7 +23,7 @@ public class ButtonHandler : MonoBehaviour
         Tile tile = tileList.Find(obj => obj.isClicked);
 
         
-        if (!unitSpawn.Spawn(tile,UnitSpawn.UnitType.DEFAULT))
+        if (!unitSpawn.Spawn(tile, UnitSpawn.UnitType.DEFAULT, arena.playerTurn))
         {
             Debug.LogError("Button error");
         }
