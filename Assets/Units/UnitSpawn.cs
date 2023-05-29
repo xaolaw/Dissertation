@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class UnitSpawn : MonoBehaviour
 {
     public GameObject unitPrefab;
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
+    public Object infoPrefab;
+    public Canvas canvas;
+        
     public enum UnitType
     {
         DEFAULT = 0,
@@ -21,7 +22,13 @@ public class UnitSpawn : MonoBehaviour
         if (tile != null && tile.character == null)
         {
             //creating an object on map
-            tile.addCharacter(CreateUnit(tile, unitType, playerUnit));
+            Character new_unit = CreateUnit(tile, unitType, playerUnit);
+            tile.addCharacter(new_unit);
+
+            //adding canvas info about unit
+            Vector3 canvas_position = Camera.main.WorldToScreenPoint(tile.gameObject.gameObject.transform.position);
+            Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform);
+
         }
         else
         {
@@ -53,5 +60,4 @@ public class UnitSpawn : MonoBehaviour
 
         
     }
-    
 }

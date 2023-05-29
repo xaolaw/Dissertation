@@ -34,4 +34,8 @@ public class Character
             gameObject.transform.position = tile.unitPosition;
         }
     }
+
+    public string toString() {
+        return "Name: " + name + "\nAttack: " + attack;
+    }
 }

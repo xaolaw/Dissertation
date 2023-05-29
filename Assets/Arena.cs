@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+using UnityEngine.UI;
 
 public class Arena : MonoBehaviour
 {
@@ -33,6 +33,9 @@ public class Arena : MonoBehaviour
 
     public int[] neighbourId = new int[8];
 
+    //canvas 
+    public Text unitInfoText;
+
     void Start()
     {
         Vector3 startPosition = transform.position; // starting position of the grid
@@ -49,6 +52,7 @@ public class Arena : MonoBehaviour
 
                 ClickEvent clickEvent = tile.AddComponent<ClickEvent>();
                 clickEvent.OnClick += ChangeTileColor;
+                clickEvent.OnClick += ShowInfoAboutGameObject;
             }
         }
 
@@ -64,8 +68,22 @@ public class Arena : MonoBehaviour
         neighbourId[(int)Direction.UR] = neighbourId[(int)Direction.UP] + neighbourId[(int)Direction.RIGHT];
         neighbourId[(int)Direction.DL] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.LEFT];
         neighbourId[(int)Direction.DR] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.RIGHT];
+    }
 
-}
+    private void ShowInfoAboutGameObject(GameObject gameObject)
+    {
+        unitInfoText.text = "";
+        if (gameObject)
+        {
+            Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
+            if (tile!=null && tile.character!=null)
+            {
+                unitInfoText.text = "ABOUT UNIT: \n" +tile.character.toString();
+            }
+
+        } 
+    }
+
     //changes color of clicked tile to red to spawn a unit
     private void ChangeTileColor(GameObject gameObject)
     {
@@ -132,11 +150,11 @@ public class Arena : MonoBehaviour
 
     public Tile GetTile(int id, Direction direction)
     {
-        if (id + neighbourId[(int)direction] < tileList.Count)
+        if (id + neighbourId[(int)direction] < tileList.Count && id + neighbourId[(int)direction] >= 0)
         {
             return tileList[id + neighbourId[(int)direction]];
         }
-        if (id < columns || id > columns * (rows - 1))
+        if (id < columns || id >= columns * (rows - 1))
         {
             Debug.Log("go into base?");
         }
