@@ -30,7 +30,7 @@ public class Tile
         if (!arena)
             Debug.Log("TurnButton: Arena not found");
 
-        unitPosition = gameObject.transform.position + new Vector3(0.0f, 0.0f, 0.1f);
+        unitPosition = gameObject.transform.position + new Vector3(0.0f, 0.1f, 0.0f);
     }
     //add character to a tile
     public void addCharacter(Character character_)
