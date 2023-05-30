@@ -12,8 +12,9 @@ public class Character
     int attack;
     public bool playerUnit; // true - player unit / false - enemy unit
     GameObject gameObject;
+    GameObject canvasInfo;
     Tile tile;
-    public Character(string name_, int health_, int attack_, bool _playerUnit, GameObject gameObject_, Tile _tile)
+    public Character(string name_, int health_, int attack_, bool _playerUnit, GameObject gameObject_, Tile _tile, GameObject _canvasInfo)
     {
         this.attack = attack_;
         this.health = health_;
@@ -21,6 +22,7 @@ public class Character
         this.playerUnit = _playerUnit;
         this.gameObject = gameObject_;
         this.tile = _tile;
+        this.canvasInfo = _canvasInfo;
     }
 
     public void Move(Arena.Direction direction)
@@ -32,6 +34,9 @@ public class Character
             tile = temp;
             temp.character = this;
             gameObject.transform.position = tile.unitPosition;
+
+            Vector3 canvas_position = Camera.main.WorldToScreenPoint(tile.gameObject.gameObject.transform.position);
+            canvasInfo.transform.position = canvas_position + new Vector3(0, 20, 0);
         }
     }
 
