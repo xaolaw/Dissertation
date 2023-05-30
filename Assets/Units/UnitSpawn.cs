@@ -21,13 +21,13 @@ public class UnitSpawn : MonoBehaviour
 
         if (tile != null && tile.character == null)
         {
-            //creating an object on map
-            Character new_unit = CreateUnit(tile, unitType, playerUnit);
-            tile.addCharacter(new_unit);
-
             //adding canvas info about unit
             Vector3 canvas_position = Camera.main.WorldToScreenPoint(tile.gameObject.gameObject.transform.position);
-            Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform);
+            GameObject canvasInfo = Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform) as GameObject;
+            
+            //creating an object on map
+            Character new_unit = CreateUnit(tile, unitType, playerUnit, canvasInfo);
+            tile.addCharacter(new_unit);
 
         }
         else
@@ -36,7 +36,7 @@ public class UnitSpawn : MonoBehaviour
         }
         return true;
     }
-    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit)
+    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, GameObject info)
     {
         Vector3 position = tile.gameObject.gameObject.transform.position;
         switch (unitType)
@@ -51,7 +51,7 @@ public class UnitSpawn : MonoBehaviour
                 }
                 transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
                 GameObject characterObject = Instantiate(unitPrefab, position, Quaternion.Euler(rotation), transform);
-                Character character = new Character("test1", 10, 10, playerUnit, characterObject, tile);
+                Character character = new Character("test1", 10, 10, playerUnit, characterObject, tile, info);
                 return character;
 
             default:
