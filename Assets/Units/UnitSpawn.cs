@@ -6,10 +6,13 @@ using static UnityEngine.GraphicsBuffer;
 
 public class UnitSpawn : MonoBehaviour
 {
-    public GameObject unitPrefab;
+    public GameObject defaultUnitPrefab;
 
     public Object infoPrefab;
     public Canvas canvas;
+
+    public Color playerColor;
+    public Color opponentColor;
         
     public enum UnitType
     {
@@ -50,7 +53,20 @@ public class UnitSpawn : MonoBehaviour
                     rotation =  new Vector3(0,180f,0);
                 }
                 transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
-                GameObject characterObject = Instantiate(unitPrefab, position, Quaternion.Euler(rotation), transform);
+                GameObject characterObject = Instantiate(defaultUnitPrefab, position, Quaternion.Euler(rotation), transform);
+                MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
+                MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
+                if (playerUnit)
+                {
+
+                    cubeMesh.material.color = playerColor;
+                    cyllinderMesh.material.color = playerColor;
+                }
+                else
+                {
+                    cubeMesh.material.color = opponentColor;
+                    cyllinderMesh.material.color = opponentColor;
+                }
                 Character character = new Character("test1", 10, 10, playerUnit, characterObject, tile, info);
                 return character;
 
