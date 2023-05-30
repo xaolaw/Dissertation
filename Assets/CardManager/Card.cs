@@ -6,20 +6,20 @@ using UnityEngine.EventSystems;
 
 public class Card : MonoBehaviour, IPointerDownHandler
 {
-        public string card_name;
-        public string description;
-        public UnitSpawn.UnitType unitType;
-        public int hp;
-        private CardManager cm;
-        private Arena arena;
-        private UnitSpawn unitSpawn;
+    public string card_name;
+    public string description;
+    public UnitSpawn.UnitType unitType;
+    public int hp;
+    private CardManager cm;
+    private Arena arena;
+    private UnitSpawn unitSpawn;
 
 
-        public void Start(){
-            cm = FindObjectOfType<CardManager>();
-            arena = FindObjectOfType<Arena>();
-            unitSpawn = FindObjectOfType<UnitSpawn>();
-        }
+    public void Start(){
+        cm = FindObjectOfType<CardManager>();
+        arena = FindObjectOfType<Arena>();
+        unitSpawn = FindObjectOfType<UnitSpawn>();
+    }
 
        
 
@@ -36,7 +36,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
         
     }
 
-        public void OnPointerDown (PointerEventData eventData){
-            HandleSpawning();
-        }
+    public void OnPointerDown (PointerEventData eventData){
+        HandleSpawning();
+    }
 }

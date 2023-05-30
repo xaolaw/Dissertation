@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class Arena : MonoBehaviour
 {
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
@@ -33,8 +33,8 @@ public class Arena : MonoBehaviour
 
     public int[] neighbourId = new int[8];
 
-    //canvas 
-    public Text unitInfoText;
+    //canvas a conatiner about unit info
+    public GameObject unitInfoContainer;
 
     void Start()
     {
@@ -71,18 +71,26 @@ public class Arena : MonoBehaviour
     }
 
     private void ShowInfoAboutGameObject(GameObject gameObject)
-    {
-        unitInfoText.text = "";
+    { 
         if (gameObject)
         {
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
+            Animator animator = unitInfoContainer.GetComponent<Animator>();
             if (tile!=null && tile.character!=null)
             {
-                unitInfoText.text = "ABOUT UNIT: \n" +tile.character.toString();
+                animator.ResetTrigger("stopShowing");
+                animator.SetTrigger("isShowing");
+                unitInfoContainer.GetComponentInChildren<TMP_Text>().text = "ABOUT UNIT: \n" +tile.character.toString();
             }
+            else
+            {
+                animator.SetTrigger("stopShowing");
+          
+            }
+        }
 
-        } 
     }
+        
 
     //changes color of clicked tile to red to spawn a unit
     private void ChangeTileColor(GameObject gameObject)
