@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 public class Arena : MonoBehaviour
 {
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
@@ -14,7 +14,7 @@ public class Arena : MonoBehaviour
 
     //red color to change the color of the tile
     private Color redColor = new Color(255, 0, 0);
-   
+
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
 
@@ -33,8 +33,8 @@ public class Arena : MonoBehaviour
 
     public int[] neighbourId = new int[8];
 
-    //canvas 
-    public Text unitInfoText;
+    //canvas a conatiner about unit info
+    public GameObject unitInfoContainer;
 
     void Start()
     {
@@ -56,7 +56,7 @@ public class Arena : MonoBehaviour
             }
         }
 
-        Vector3 groundPosition = new Vector3(startPosition.x + ((float)columns +1)/2-1, startPosition.y - groundOffset, startPosition.z+((float)rows +1)/2-1);
+        Vector3 groundPosition = new Vector3(startPosition.x + ((float)columns + 1) / 2 - 1, startPosition.y - groundOffset, startPosition.z + ((float)rows + 1) / 2 - 1);
         groundPrefab.transform.localScale = new Vector3(columns + 1, 2 * groundOffset, rows + 1);
         Instantiate(groundPrefab, groundPosition, Quaternion.identity, transform);
 
@@ -72,16 +72,23 @@ public class Arena : MonoBehaviour
 
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
-        unitInfoText.text = "";
         if (gameObject)
         {
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            if (tile!=null && tile.character!=null)
+            Animator animator = unitInfoContainer.GetComponent<Animator>();
+            if (tile != null && tile.character != null)
             {
-                unitInfoText.text = "ABOUT UNIT: \n" +tile.character.toString();
+                animator.ResetTrigger("stopShowing");
+                animator.SetTrigger("isShowing");
+                unitInfoContainer.GetComponentInChildren<TMP_Text>().text = "ABOUT UNIT: \n" + tile.character.toString();
             }
+            else
+            {
+                animator.SetTrigger("stopShowing");
 
-        } 
+            }
+        }
+
     }
 
     //changes color of clicked tile to red to spawn a unit
@@ -91,7 +98,7 @@ public class Arena : MonoBehaviour
         {
             //find a tile in list that is a clicked object
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            if(tile != null)
+            if (tile != null)
             {
                 //change color of old tile
                 Tile oldTile = tileList.Find(obj => obj.mesh.material.color != obj.mainColor);
@@ -119,7 +126,7 @@ public class Arena : MonoBehaviour
     {
         return tileList;
     }
-    
+
     public void EndTurn()
     {
         playerTurn = !playerTurn;
@@ -138,10 +145,10 @@ public class Arena : MonoBehaviour
             increment = -1;
         }
 
-        for(int i = begin; i != end; i += increment)
+        for (int i = begin; i != end; i += increment)
         {
             Tile tile = tileList[i];
-            if(tile.character != null && tile.character.playerUnit == playerTurn)
+            if (tile.character != null && tile.character.playerUnit == playerTurn)
             {
                 tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
             }
