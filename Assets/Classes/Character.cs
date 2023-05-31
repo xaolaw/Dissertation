@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-
+using TMPro;
 public class Character
 {
     string name;
@@ -23,6 +23,8 @@ public class Character
         this.gameObject = gameObject_;
         this.tile = _tile;
         this.canvasInfo = _canvasInfo;
+        canvasInfo.SetActive(false);
+        canvasInfo.GetComponentInChildren<TMP_Text>().text="Attack:" + attack.ToString();
     }
 
     public void Move(Arena.Direction direction)
@@ -42,5 +44,13 @@ public class Character
 
     public string toString() {
         return "Name: " + name + "\nAttack: " + attack;
+    }
+    public void DisplayAttackInfo()
+    {
+        canvasInfo.SetActive(true);
+    }
+    public void HideAttackInfo()
+    {
+        canvasInfo.SetActive(false);
     }
 }

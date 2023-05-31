@@ -12,9 +12,6 @@ public class Arena : MonoBehaviour
     public int columns = 4;
     public bool playerTurn = true;
 
-    //red color to change the color of the tile
-    private Color redColor = new Color(255, 0, 0);
-
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
 
@@ -33,13 +30,17 @@ public class Arena : MonoBehaviour
 
     public int[] neighbourId = new int[8];
 
-    //canvas a conatiner about unit info
+    //a contianer for unit ifno with text and images
     public GameObject unitInfoContainer;
+    //a text for a playr on enemy turn
+    public TMP_Text playerIndicatorText;
+    //colors of player and enemy
+    public Color playerColor;
+    public Color opponentColor;
 
     void Start()
     {
         Vector3 startPosition = transform.position; // starting position of the grid
-
         for (int col = 0; col < columns; col++)
         {
             for (int row = 0; row < rows; row++)
@@ -72,6 +73,7 @@ public class Arena : MonoBehaviour
         neighbourId[(int)Direction.DR] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.RIGHT];
     }
 
+    //Showing informationa about unit on board in certain tile
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
         if (gameObject)
@@ -80,6 +82,7 @@ public class Arena : MonoBehaviour
             Animator animator = unitInfoContainer.GetComponent<Animator>();
             if (tile != null && tile.character != null)
             {
+                //asnimation to slide in TODO stop showing triigger elsewhere
                 animator.ResetTrigger("stopShowing");
                 animator.SetTrigger("isShowing");
                 unitInfoContainer.GetComponentInChildren<TMP_Text>().text = "ABOUT UNIT: \n" + tile.character.toString();
@@ -92,37 +95,23 @@ public class Arena : MonoBehaviour
         }
 
     }
-
-    //changes color of clicked tile to red to spawn a unit
-    private void ChangeTileColor(GameObject gameObject)
+    //Displays on ui info about units attack or hide
+    public void ShowAttackInfo(bool isShowing)
     {
-        if (gameObject)
+        foreach (Tile tile in tileList)
         {
-            //find a tile in list that is a clicked object
-            Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            if (tile != null)
+            if (tile.character != null && isShowing)
             {
-                //change color of old tile
-                Tile oldTile = tileList.Find(obj => obj.mesh.material.color != obj.mainColor);
-                if (oldTile != null)
-                {
-                    oldTile.mesh.material.color = oldTile.mainColor;
-                    oldTile.isClicked = false;
-                }
-                //change color of clicked tile
-                tile.mesh.material.color = redColor;
-                tile.isClicked = true;
+                tile.character.DisplayAttackInfo();
             }
-            else
+            else if(tile.character!=null && !isShowing)
             {
-                Debug.LogError("Could not find the tile");
+                tile.character.HideAttackInfo();
             }
-        }
-        else
-        {
-            Debug.LogError("No game object");
         }
     }
+   
+
     //return a list of all tile objects
     public List<Tile> getTileList()
     {
@@ -131,17 +120,22 @@ public class Arena : MonoBehaviour
 
     public void EndTurn()
     {
+   
         playerTurn = !playerTurn;
-
         int begin, end, increment;
         if (playerTurn)
         {
             begin = 0;
             end = tileList.Count;
             increment = 1;
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
+           
         }
         else
         {
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
+           
+   
             begin = tileList.Count - 1;
             end = -1;
             increment = -1;
