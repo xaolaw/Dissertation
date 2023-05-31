@@ -1887,6 +1887,7 @@ MonoBehaviour:
   rows: 4
   columns: 5
   playerTurn: 1
+  showUnitsPower: 0
   neighbourId: 0000000000000000000000000000000000000000000000000000000000000000
   unitInfoContainer: {fileID: 336041605}
   playerIndicatorText: {fileID: 1317755866}
@@ -2343,10 +2344,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 944234482}
-  card_name: name12
-  description: 
+  card_name: Tank
+  description: good working tank
   unitType: 0
-  hp: 0
+  power: 15
 --- !u!114 &1559800416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2786,10 +2787,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 944234482}
-  card_name: 
-  description: 
+  card_name: Damaged Tank
+  description: weaker tank, but cheaper
   unitType: 0
-  hp: 0
+  power: 8
 --- !u!114 &1904780922
 MonoBehaviour:
   m_ObjectHideFlags: 0

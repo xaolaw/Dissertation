@@ -12,6 +12,10 @@ public class Arena : MonoBehaviour
     public int columns = 4;
     public bool playerTurn = true;
 
+    public bool showUnitsPower = false;
+    public Base playerBase;
+    public Base opponentBase;
+
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
 
@@ -26,6 +30,15 @@ public class Arena : MonoBehaviour
         UR,
         DL,
         DR
+    }
+
+    //Border output info
+    public enum OutOfBoarder
+    {
+        INSIDE = 0,
+        OUTSIDE,
+        PLAYER_BASE,
+        OPPONENT_BASE
     }
 
     public int[] neighbourId = new int[8];
@@ -71,6 +84,12 @@ public class Arena : MonoBehaviour
         neighbourId[(int)Direction.UR] = neighbourId[(int)Direction.UP] + neighbourId[(int)Direction.RIGHT];
         neighbourId[(int)Direction.DL] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.LEFT];
         neighbourId[(int)Direction.DR] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.RIGHT];
+
+        Base[] bases = FindObjectsOfType<Base>();
+        playerBase = bases[0];
+        opponentBase = bases[1];
+        Debug.Log(bases[0]);
+        Debug.Log(bases[1]);
     }
 
     //Showing informationa about unit on board in certain tile
@@ -98,6 +117,7 @@ public class Arena : MonoBehaviour
     //Displays on ui info about units attack or hide
     public void ShowAttackInfo(bool isShowing)
     {
+        showUnitsPower = isShowing;
         foreach (Tile tile in tileList)
         {
             if (tile.character != null && isShowing)
@@ -151,16 +171,33 @@ public class Arena : MonoBehaviour
         }
     }
 
+    // zwraca tile, nie wykrywa wychodzenia na boki z planszy - wyjdzie z przeciwnej strony
     public Tile GetTile(int id, Direction direction)
     {
         if (id + neighbourId[(int)direction] < tileList.Count && id + neighbourId[(int)direction] >= 0)
         {
             return tileList[id + neighbourId[(int)direction]];
         }
-        if (id < columns || id >= columns * (rows - 1))
-        {
-            Debug.Log("go into base?");
-        }
         return null;
+    }
+
+    // wykrywa gdzie dok³adnie znajdzie siê jednostka po poruszeniu
+    public OutOfBoarder GetTargetInfo(int id, Direction direction)
+    {
+        // czy wychodzi lewo lub prawo
+        if ((id % columns == 0 && (direction == Direction.DL || direction == Direction.LEFT || direction == Direction.UL)) ||
+           (id % columns == columns - 1 && (direction == Direction.DR || direction == Direction.RIGHT || direction == Direction.UR)))
+            return OutOfBoarder.OUTSIDE;
+        // jaka baza
+        if (id < columns && (direction == Direction.UL || direction == Direction.UP || direction == Direction.UR))
+        {
+            return OutOfBoarder.OPPONENT_BASE;
+        }
+        if (id >= columns * (rows - 1) && (direction == Direction.DL || direction == Direction.DOWN || direction == Direction.DR))
+        {
+            return OutOfBoarder.PLAYER_BASE;
+        }
+        return OutOfBoarder.INSIDE;
+
     }
 }

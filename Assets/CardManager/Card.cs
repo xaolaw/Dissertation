@@ -10,7 +10,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     public string card_name;
     public string description;
     public UnitSpawn.UnitType unitType;
-    public int hp;
+    public int power;
     private CardManager cm;
     private Arena arena;
     private UnitSpawn unitSpawn;
@@ -35,7 +35,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         Tile tile = tileList.Find(obj => obj.isClicked);
 
         
-        if (!unitSpawn.Spawn(tile, unitType, arena.playerTurn))
+        if (!unitSpawn.Spawn(tile, unitType, power, arena.playerTurn))
         {
             Debug.LogError("Spawning error");
         }
