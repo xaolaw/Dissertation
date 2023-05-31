@@ -17,6 +17,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Vector3 position;
+    public bool played = false;
 
 
     public void Start(){
@@ -38,6 +39,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         if (!unitSpawn.Spawn(tile, unitType, power, arena.playerTurn))
         {
             Debug.LogError("Spawning error");
+        } else
+        {
+            played = true;
+            this.gameObject.SetActive(false);
+            cm.update_cards(this);
         }
         
     }
