@@ -12,9 +12,6 @@ public class Arena : MonoBehaviour
     public int columns = 4;
     public bool playerTurn = true;
 
-    //red color to change the color of the tile
-    private Color redColor = new Color(255, 0, 0);
-
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
 
@@ -35,11 +32,13 @@ public class Arena : MonoBehaviour
 
     //canvas a conatiner about unit info
     public GameObject unitInfoContainer;
+    public TMP_Text playerIndicatorText;
+    public Color playerColor;
+    public Color opponentColor;
 
     void Start()
     {
         Vector3 startPosition = transform.position; // starting position of the grid
-
         for (int col = 0; col < columns; col++)
         {
             for (int row = 0; row < rows; row++)
@@ -92,37 +91,8 @@ public class Arena : MonoBehaviour
         }
 
     }
+   
 
-    //changes color of clicked tile to red to spawn a unit
-    private void ChangeTileColor(GameObject gameObject)
-    {
-        if (gameObject)
-        {
-            //find a tile in list that is a clicked object
-            Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            if (tile != null)
-            {
-                //change color of old tile
-                Tile oldTile = tileList.Find(obj => obj.mesh.material.color != obj.mainColor);
-                if (oldTile != null)
-                {
-                    oldTile.mesh.material.color = oldTile.mainColor;
-                    oldTile.isClicked = false;
-                }
-                //change color of clicked tile
-                tile.mesh.material.color = redColor;
-                tile.isClicked = true;
-            }
-            else
-            {
-                Debug.LogError("Could not find the tile");
-            }
-        }
-        else
-        {
-            Debug.LogError("No game object");
-        }
-    }
     //return a list of all tile objects
     public List<Tile> getTileList()
     {
@@ -131,17 +101,22 @@ public class Arena : MonoBehaviour
 
     public void EndTurn()
     {
+   
         playerTurn = !playerTurn;
-
         int begin, end, increment;
         if (playerTurn)
         {
             begin = 0;
             end = tileList.Count;
             increment = 1;
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
+           
         }
         else
         {
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
+           
+   
             begin = tileList.Count - 1;
             end = -1;
             increment = -1;
