@@ -16,7 +16,6 @@ public class TurnButton : MonoBehaviour
             Debug.Log("TurnButton: Arena not found");
 
         button = GetComponent<Button>();
-        Debug.Log(button);
         button.onClick.AddListener(EndTurn);
 
     }

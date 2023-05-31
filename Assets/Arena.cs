@@ -30,9 +30,11 @@ public class Arena : MonoBehaviour
 
     public int[] neighbourId = new int[8];
 
-    //canvas a conatiner about unit info
+    //a contianer for unit ifno with text and images
     public GameObject unitInfoContainer;
+    //a text for a playr on enemy turn
     public TMP_Text playerIndicatorText;
+    //colors of player and enemy
     public Color playerColor;
     public Color opponentColor;
 
@@ -71,6 +73,7 @@ public class Arena : MonoBehaviour
         neighbourId[(int)Direction.DR] = neighbourId[(int)Direction.DOWN] + neighbourId[(int)Direction.RIGHT];
     }
 
+    //Showing informationa about unit on board in certain tile
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
         if (gameObject)
@@ -79,6 +82,7 @@ public class Arena : MonoBehaviour
             Animator animator = unitInfoContainer.GetComponent<Animator>();
             if (tile != null && tile.character != null)
             {
+                //asnimation to slide in TODO stop showing triigger elsewhere
                 animator.ResetTrigger("stopShowing");
                 animator.SetTrigger("isShowing");
                 unitInfoContainer.GetComponentInChildren<TMP_Text>().text = "ABOUT UNIT: \n" + tile.character.toString();
@@ -90,6 +94,21 @@ public class Arena : MonoBehaviour
             }
         }
 
+    }
+    //Displays on ui info about units attack or hide
+    public void ShowAttackInfo(bool isShowing)
+    {
+        foreach (Tile tile in tileList)
+        {
+            if (tile.character != null && isShowing)
+            {
+                tile.character.DisplayAttackInfo();
+            }
+            else if(tile.character!=null && !isShowing)
+            {
+                tile.character.HideAttackInfo();
+            }
+        }
     }
    
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
+using TMPro;
 
 public class UnitSpawn : MonoBehaviour
 {
@@ -14,11 +15,13 @@ public class UnitSpawn : MonoBehaviour
     public Color playerColor;
     public Color opponentColor;
         
+    //unit types to spwan
     public enum UnitType
     {
         DEFAULT = 0,
         COUNT,
     }
+    //spawning unit on map
     public bool Spawn(Tile tile, UnitType unitType, bool playerUnit)
     {
 
@@ -67,7 +70,7 @@ public class UnitSpawn : MonoBehaviour
                     cubeMesh.material.color = opponentColor;
                     cyllinderMesh.material.color = opponentColor;
                 }
-                Character character = new Character("test1", 10, 10, playerUnit, characterObject, tile, info);
+                Character character = new Character("Tank", 15, 15, playerUnit, characterObject, tile, info);
                 return character;
 
             default:
