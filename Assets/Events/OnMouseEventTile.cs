@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnDropEvent : MonoBehaviour
+public class OnMouseEventTile : MonoBehaviour
 {
     private List<Tile> tileList;
     GameObject attachedGameObject;

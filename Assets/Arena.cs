@@ -54,7 +54,7 @@ public class Arena : MonoBehaviour
                 //clickEvent.OnClick += ChangeTileColor;
                 clickEvent.OnClick += ShowInfoAboutGameObject;
 
-                OnDropEvent onDropEvent = tile.AddComponent<OnDropEvent>();
+                OnMouseEventTile onDropEvent = tile.AddComponent<OnMouseEventTile>();
             }
         }
 
