@@ -22,7 +22,7 @@ public class UnitSpawn : MonoBehaviour
         COUNT,
     }
     //spawning unit on map
-    public bool Spawn(Tile tile, UnitType unitType, bool playerUnit)
+    public bool Spawn(Tile tile, UnitType unitType, int power, bool playerUnit)
     {
 
         if (tile != null && tile.character == null)
@@ -32,7 +32,7 @@ public class UnitSpawn : MonoBehaviour
             GameObject canvasInfo = Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform) as GameObject;
             
             //creating an object on map
-            Character new_unit = CreateUnit(tile, unitType, playerUnit, canvasInfo);
+            Character new_unit = CreateUnit(tile, unitType, playerUnit, power, canvasInfo);
             tile.addCharacter(new_unit);
 
         }
@@ -42,7 +42,7 @@ public class UnitSpawn : MonoBehaviour
         }
         return true;
     }
-    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, GameObject info)
+    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, int power, GameObject info)
     {
         Vector3 position = tile.gameObject.gameObject.transform.position;
         switch (unitType)
@@ -70,7 +70,7 @@ public class UnitSpawn : MonoBehaviour
                     cubeMesh.material.color = opponentColor;
                     cyllinderMesh.material.color = opponentColor;
                 }
-                Character character = new Character("Tank", 15, 15, playerUnit, characterObject, tile, info);
+                Character character = new Character("Tank", power, playerUnit, characterObject, tile, info);
                 return character;
 
             default:

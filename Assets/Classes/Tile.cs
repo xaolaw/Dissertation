@@ -36,6 +36,10 @@ public class Tile
     public void addCharacter(Character character_)
     {
         this.character = character_;
+        if (arena.showUnitsPower)
+        {
+            character_.DisplayAttackInfo();
+        }
     }
 
     public Tile GetTile(Arena.Direction direction)
@@ -47,11 +51,18 @@ public class Tile
     {
         character = null;
     }
+
+    public void UnitDied()
+    {
+        character = null;
+    }
+
     public void Select()
     {
         isClicked = true;
         mesh.material.color = redColor;
     }
+
     public void UnSelect()
     {
         isClicked = false;
