@@ -15,7 +15,7 @@ public class Tile
     public Character character;
     public int id;
     public Vector3 unitPosition;
-
+    private Color redColor = new Color(255, 0, 0);
     private Arena arena;
 
     public Tile(Color mainColor_, GameObject gameObject_, MeshRenderer mesh_, int _id)
@@ -46,6 +46,16 @@ public class Tile
     public void UnitMoved()
     {
         character = null;
+    }
+    public void Select()
+    {
+        isClicked = true;
+        mesh.material.color = redColor;
+    }
+    public void UnSelect()
+    {
+        isClicked = false;
+        mesh.material.color = mainColor;
     }
 }
 
