@@ -4,24 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Card : MonoBehaviour, IPointerDownHandler
+public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-        public string card_name;
-        public string description;
-        public UnitSpawn.UnitType unitType;
-        public int hp;
-        private CardManager cm;
-        private Arena arena;
-        private UnitSpawn unitSpawn;
+    public string card_name;
+    public string description;
+    public UnitSpawn.UnitType unitType;
+    public int hp;
+    private CardManager cm;
+    private Arena arena;
+    private UnitSpawn unitSpawn;
+    private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
+    private Vector3 position;
 
 
-        public void Start(){
-            cm = FindObjectOfType<CardManager>();
-            arena = FindObjectOfType<Arena>();
-            unitSpawn = FindObjectOfType<UnitSpawn>();
-        }
-
-       
+    public void Start(){
+        cm = FindObjectOfType<CardManager>();
+        arena = FindObjectOfType<Arena>();
+        unitSpawn = FindObjectOfType<UnitSpawn>();
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        //TODO change smth about card apperaing
+        position = rectTransform.localPosition;
+    }
 
     private void HandleSpawning()
     {
@@ -36,7 +41,25 @@ public class Card : MonoBehaviour, IPointerDownHandler
         
     }
 
-        public void OnPointerDown (PointerEventData eventData){
-            HandleSpawning();
-        }
+    public void OnPointerDown (PointerEventData eventData){
+        //HandleSpawning();
+    }
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        canvasGroup.alpha = .6f;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        canvasGroup.alpha = 1f;
+        rectTransform.anchoredPosition = position;
+        canvasGroup.blocksRaycasts = true;
+        HandleSpawning();
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        rectTransform.anchoredPosition += eventData.delta;
+    }
 }

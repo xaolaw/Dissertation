@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class OnDropEvent : MonoBehaviour
 {
-    //red color to change the color of the tile
-    private Color redColor = new Color(255, 0, 0);
-    private Color standardColor;
-    private MeshRenderer mesh;
-
+    private List<Tile> tileList;
+    GameObject attachedGameObject;
+    Tile tile;
     private void Awake()
     {
-        mesh = GetComponent<MeshRenderer>();
-        standardColor = mesh.material.color;
+        tileList = FindObjectOfType<Arena>().getTileList();
+        attachedGameObject = gameObject;
+        tile = tileList.Find(obj => obj.gameObject == attachedGameObject);
     }
 
     private void OnMouseEnter()
     {
-        mesh.material.color=redColor;
+        tile.Select();
+       
     }
     private void OnMouseOver()
     {
@@ -25,6 +25,6 @@ public class OnDropEvent : MonoBehaviour
     }
     private void OnMouseExit()
     {
-        mesh.material.color = standardColor;
+        tile.UnSelect();
     }
 }
