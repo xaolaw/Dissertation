@@ -5,6 +5,7 @@ using UnityEngine;
 public class Base : MonoBehaviour
 {
     public GameObject basePrefab; //base object assigned in Inspector
+    public Arena arena;
 
     public bool playerBase;
 
@@ -18,7 +19,11 @@ public class Base : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        basePosition = playerBase ? new Vector3(5.75f, 0, 1.5f) : new Vector3(-1.75f, 0, 1.5f);
+
+        basePosition = arena.GetBaseSpawnPoint(playerBase); //- new Vector3(transform.localScale.x,0,0);
+        Vector3 offset = playerBase ? -new Vector3(transform.localScale.x, 0, 0) : new Vector3(transform.localScale.x, 0, 0);
+        basePosition += offset;
+
 
         healthBar.SetMaxHealth(maxHp);
         healthBar.SetHealth(hp);
