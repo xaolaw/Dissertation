@@ -201,7 +201,13 @@ public class Arena : MonoBehaviour
 
     }
 
+    public Vector3 GetSpawnPoint()
+    {
+        return transform.position;
+    }
+
     public Vector3 GetBaseSpawnPoint(bool type) {
         return transform.position - new Vector3(type ? ((float)columns - 1 + tilePrefab.transform.localScale.x) / 2 : -((float)columns - 1+ tilePrefab.transform.localScale.x) / 2, 0,0);
     }
+
 }

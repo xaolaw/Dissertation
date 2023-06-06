@@ -1733,6 +1733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59dcceb5d48c4d40ab52df6e1a6a767, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 1102960226}
   start_position: {x: 6, y: 1, z: 0}
   end_position: {x: 0, y: 7, z: 0}
   close_offset: 0.5
