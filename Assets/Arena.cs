@@ -41,6 +41,24 @@ public class Arena : MonoBehaviour
         OPPONENT_BASE
     }
 
+    public enum PlayerUnitTarget
+    {
+        ENEMY = 0,
+        OWN,
+        ANY
+    }
+
+    public enum UnitTargetGroup
+    {
+        SINGLE = 0,
+        BOARDERING,
+        SURROUNDING,
+        IN_FRONT,
+        BEHIND,
+        SIDEWAYS,
+        ALL
+    }
+
     public int[] neighbourId = new int[8];
 
     //a contianer for unit ifno with text and images
@@ -199,5 +217,94 @@ public class Arena : MonoBehaviour
         }
         return OutOfBoarder.INSIDE;
 
+    }
+
+    public List<Character> GetTargets(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide)
+    {
+        List<Character> characters = new List<Character>();
+        List<Tile> areaTiles = new List<Tile>();
+        
+        // get corresponding tiles
+
+        if ( utg == UnitTargetGroup.SINGLE)
+        {
+            areaTiles.Add(originTile);
+        }
+        else if ( utg == UnitTargetGroup.IN_FRONT || utg == UnitTargetGroup.BEHIND)
+        {
+            Direction moveDirection = (playerTurn ^ utg == UnitTargetGroup.BEHIND) ? Direction.UP : Direction.DOWN;
+            Tile temp = originTile;
+            while(GetTargetInfo(temp.id, moveDirection) == OutOfBoarder.INSIDE)
+            {
+                temp = GetTile(temp.id, moveDirection);
+                areaTiles.Add(temp);
+            }
+        }
+        else if ( utg == UnitTargetGroup.BOARDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
+        {
+            Direction[] directions = new Direction[0];
+            switch (utg)
+            {
+                case UnitTargetGroup.BOARDERING:
+                    directions = new Direction[4] { Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT };
+                    break;
+                case UnitTargetGroup.SURROUNDING:
+                    directions = new Direction[8] { Direction.UP, Direction.UR, Direction.RIGHT, Direction.DR, Direction.DOWN, Direction.DL, Direction.LEFT, Direction.UL };
+                    break;
+                case UnitTargetGroup.SIDEWAYS:
+                    directions = new Direction[2] { Direction.RIGHT, Direction.LEFT };
+                    break;
+                default:
+                    Debug.Log("unknown UnitTargetGroup" + utg);
+                    break;
+            }
+            foreach (Direction direction in directions)
+            {
+                if(GetTargetInfo(originTile.id, direction) == OutOfBoarder.INSIDE)
+                {
+                    areaTiles.Add(GetTile(originTile.id, direction));
+                }
+            }
+        }
+        else
+        {
+            areaTiles = getTileList();
+        }
+
+        // check if there are units, and if they belong to correct player
+
+        if (put == PlayerUnitTarget.ANY)
+        {
+            foreach(Tile tile in areaTiles)
+            {
+                if(tile.character != null)
+                {
+                    characters.Add(tile.character);
+                }
+            }
+        }
+        else // player target own or enemy
+        {
+            bool side = playerSide ^ put == PlayerUnitTarget.ENEMY;
+            foreach (Tile tile in areaTiles)
+            {
+                if (tile.character != null && tile.character.playerUnit == side)
+                {
+                    characters.Add(tile.character);
+                }
+            }
+        }
+
+        return characters;
+    }
+
+    public void Damage(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide, int damage)
+    {
+        List<Character> characters = GetTargets(put, utg, originTile, playerSide);
+
+        foreach(Character character in characters)
+        {
+            character.TakeDamage(damage);
+        }
     }
 }

@@ -19,6 +19,7 @@ public class UnitSpawn : MonoBehaviour
     public enum UnitType
     {
         DEFAULT = 0,
+        DEATHRATTLE,
         COUNT,
     }
     //spawning unit on map
@@ -44,33 +45,65 @@ public class UnitSpawn : MonoBehaviour
     }
     private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, int power, GameObject info)
     {
-        Vector3 position = tile.gameObject.gameObject.transform.position;
+        Vector3 position = tile.unitPosition;
+        Vector3 rotation = new Vector3(0, 0, 0);
+        if (playerUnit)
+        {
+            //rotate
+            rotation = new Vector3(0, 180f, 0);
+        }
+        GameObject characterObject = null;
+        Character character = null;
         switch (unitType)
         {
             case UnitType.DEFAULT:
-                position.y += 0.1f;
-                Vector3 rotation= new Vector3(0, 0, 0);
-                if (playerUnit) 
-                {
-                    //rotate
-                    rotation =  new Vector3(0,180f,0);
-                }
                 transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
-                GameObject characterObject = Instantiate(defaultUnitPrefab, position, Quaternion.Euler(rotation), transform);
-                MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
-                MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
-                if (playerUnit)
+                characterObject = Instantiate(defaultUnitPrefab, position, Quaternion.Euler(rotation), transform);
                 {
+                    MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
+                    MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
+                    if (playerUnit)
+                    {
 
-                    cubeMesh.material.color = playerColor;
-                    cyllinderMesh.material.color = playerColor;
+                        cubeMesh.material.color = playerColor;
+                        cyllinderMesh.material.color = playerColor;
+                    }
+                    else
+                    {
+                        cubeMesh.material.color = opponentColor;
+                        cyllinderMesh.material.color = opponentColor;
+                    }
                 }
-                else
+                character = new Character("Tank", power, playerUnit, characterObject, tile, info);
+                return character;
+
+            case UnitType.DEATHRATTLE:
+                transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
+                characterObject = Instantiate(defaultUnitPrefab, position, Quaternion.Euler(rotation), transform);
                 {
-                    cubeMesh.material.color = opponentColor;
-                    cyllinderMesh.material.color = opponentColor;
+                    MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
+                    MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
+                    if (playerUnit)
+                    {
+
+                        cubeMesh.material.color = playerColor;
+                        cyllinderMesh.material.color = playerColor;
+                    }
+                    else
+                    {
+                        cubeMesh.material.color = opponentColor;
+                        cyllinderMesh.material.color = opponentColor;
+                    }
                 }
-                Character character = new Character("Tank", power, playerUnit, characterObject, tile, info);
+                character = new Character("Tank", power, playerUnit, characterObject, tile, info);
+
+                // set deathrattle
+                System.Action<Tile, bool> newDeathrattle = delegate (Tile origintile, bool side)
+                {
+                    origintile.Damage(Arena.PlayerUnitTarget.ENEMY, Arena.UnitTargetGroup.ALL, side, 3);
+                };
+                character.AddDeathrattle(newDeathrattle);
+
                 return character;
 
             default:
