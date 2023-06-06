@@ -53,7 +53,7 @@ public class Arena : MonoBehaviour
 
     void Start()
     {
-        Vector3 startPosition = transform.position; // starting position of the grid
+        Vector3 startPosition = transform.position - new Vector3(((float)columns-1)/2,0,((float)rows-1)/2); // starting position of the grid
         for (int col = 0; col < columns; col++)
         {
             for (int row = 0; row < rows; row++)
@@ -200,4 +200,14 @@ public class Arena : MonoBehaviour
         return OutOfBoarder.INSIDE;
 
     }
+
+    public Vector3 GetSpawnPoint()
+    {
+        return transform.position;
+    }
+
+    public Vector3 GetBaseSpawnPoint(bool type) {
+        return transform.position - new Vector3(type ? ((float)columns - 1 + tilePrefab.transform.localScale.x) / 2 : -((float)columns - 1+ tilePrefab.transform.localScale.x) / 2, 0,0);
+    }
+
 }
