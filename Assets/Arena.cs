@@ -18,6 +18,7 @@ public class Arena : MonoBehaviour
 
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
+    private TurnButton turn_button;
 
     //Direction for finding tiles
     public enum Direction
@@ -90,6 +91,7 @@ public class Arena : MonoBehaviour
         opponentBase = bases[1];
         Debug.Log(bases[0]);
         Debug.Log(bases[1]);
+        turn_button = FindObjectOfType<TurnButton>();
     }
 
     //Showing informationa about unit on board in certain tile
@@ -140,7 +142,6 @@ public class Arena : MonoBehaviour
 
     public void EndTurn()
     {
-   
         playerTurn = !playerTurn;
         int begin, end, increment;
         if (playerTurn)
@@ -169,6 +170,8 @@ public class Arena : MonoBehaviour
                 tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
             }
         }
+        turn_button.timer_started = true;
+
     }
 
     // zwraca tile, nie wykrywa wychodzenia na boki z planszy - wyjdzie z przeciwnej strony
@@ -181,7 +184,7 @@ public class Arena : MonoBehaviour
         return null;
     }
 
-    // wykrywa gdzie dok³adnie znajdzie siê jednostka po poruszeniu
+    // wykrywa gdzie dokï¿½adnie znajdzie siï¿½ jednostka po poruszeniu
     public OutOfBoarder GetTargetInfo(int id, Direction direction)
     {
         // czy wychodzi lewo lub prawo
