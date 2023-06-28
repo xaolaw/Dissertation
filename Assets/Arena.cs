@@ -106,7 +106,7 @@ public class Arena : MonoBehaviour
                 //asnimation to slide in TODO stop showing triigger elsewhere
                 animator.ResetTrigger("stopShowing");
                 animator.SetTrigger("isShowing");
-                unitInfoContainer.GetComponentInChildren<TMP_Text>().text = "ABOUT UNIT: \n" + tile.character.toString();
+                
             }
             else
             {
