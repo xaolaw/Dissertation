@@ -9,8 +9,7 @@ public class CardManager : MonoBehaviour
     private List<Card> cards_in_hand = new List<Card>();
     private int cards_number = 3;
     private Arena arena;
-    private Canvas canvas;
-    public Transform[] cardSlots;
+    private GameObject cardsSlots;
     private int idx = 0;
     
     public void DrawCards(){
@@ -18,19 +17,18 @@ public class CardManager : MonoBehaviour
             idx = Random.Range(0, cards.Count);
             Card card = Instantiate(cards[idx]);
             addCard(card);
-            card.transform.position = cardSlots[i].position;
             cards_in_hand.Add(card);
         }
     }
     private void addCard(Card card){
-        card.transform.SetParent(canvas.transform);
+        card.transform.SetParent(cardsSlots.transform);
         card.gameObject.SetActive(true);
     }
 
 
     void Start(){
         arena = FindObjectOfType<Arena>();
-        canvas = FindObjectOfType<Canvas>();
+        cardsSlots = GameObject.FindGameObjectWithTag("CardsSlots");
         DrawCards();
     }
 
@@ -41,12 +39,10 @@ public class CardManager : MonoBehaviour
     public void update_cards(Card updated_card){
         cards_in_hand.Remove(updated_card);
         for(int i=0; i<cards_in_hand.Count; i++){
-            cards_in_hand[i].transform.position = cardSlots[i].position; 
         }
         idx = Random.Range(0, cards.Count);
         Card card = Instantiate(cards[idx]);
         addCard(card);
-        card.transform.position = cardSlots[cards_in_hand.Count].position;
         cards_in_hand.Add(card);
     }
 

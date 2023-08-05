@@ -100,17 +100,14 @@ public class Arena : MonoBehaviour
         if (gameObject)
         {
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            Animator animator = unitInfoContainer.GetComponent<Animator>();
             if (tile != null && tile.character != null)
             {
-                //asnimation to slide in TODO stop showing triigger elsewhere
-                animator.ResetTrigger("stopShowing");
-                animator.SetTrigger("isShowing");
-                
+                unitInfoContainer.SetActive(true);
+
             }
             else
             {
-                animator.SetTrigger("stopShowing");
+                unitInfoContainer.SetActive(false);
 
             }
         }
