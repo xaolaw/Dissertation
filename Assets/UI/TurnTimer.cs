@@ -8,7 +8,7 @@ public class TurnTimer : MonoBehaviour
 
     public Image player_bar;
     public Image opponent_bar;
-    //public bool player_turn = true;
+
 
     
     public void set_time(float time, bool player_turn){

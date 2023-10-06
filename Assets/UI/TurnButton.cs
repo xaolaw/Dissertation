@@ -18,7 +18,6 @@ public class TurnButton : MonoBehaviour
         arena = FindObjectOfType<Arena>();
         if (!arena)
             Debug.Log("TurnButton: Arena not found");
-        // turn_timer = FindObjectOfType<TurnTimer>();
         turn_timer.set_time(1.0f, arena.playerTurn);
 
         button = GetComponent<Button>();
