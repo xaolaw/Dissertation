@@ -16,6 +16,9 @@ public class Character
     Tile tile;
 
     private Arena arena;
+    private bool died;
+
+    private System.Action<Tile, bool> deathrattle;
 
     public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_)
     {
@@ -30,6 +33,10 @@ public class Character
         powerInfo.text="Power:" + power.ToString();
 
         arena = (Arena)GameObject.FindObjectOfType(typeof(Arena));
+        died = false;
+
+        // initialize functions
+        deathrattle = delegate (Tile tile, bool side) { };
     }
 
     public void Move(Arena.Direction direction)
@@ -81,7 +88,7 @@ public class Character
     public bool TakeDamage(int dmg)
     {
         this.power -= dmg;
-        if (power <= 0)
+        if (power <= 0 && !died)
         {
             this.Die();
             return true;
@@ -105,6 +112,10 @@ public class Character
     {
         // possible death rattle activation
 
+        died = true;
+
+        deathrattle(tile, playerUnit);
+
         tile.UnitDied();
         UnityEngine.GameObject.Destroy(gameObject);
         UnityEngine.GameObject.Destroy(canvasInfo);
@@ -122,5 +133,10 @@ public class Character
     public void HideAttackInfo()
     {
         canvasInfo.SetActive(false);
+    }
+
+    public void AddDeathrattle(Action<Tile, bool> deathrattle_)
+    {
+        this.deathrattle = deathrattle_;
     }
 }

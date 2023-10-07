@@ -25,6 +25,7 @@ public class Tile
         this.mesh = mesh_;
         this.id = _id;
         isClicked = false;
+        character = null;
 
         arena = (Arena)GameObject.FindObjectOfType(typeof(Arena));
         if (!arena)
@@ -67,6 +68,11 @@ public class Tile
     {
         isClicked = false;
         mesh.material.color = mainColor;
+    }
+
+    public void Damage(Arena.PlayerUnitTarget put, Arena.UnitTargetGroup utg, bool side, int damage)
+    {
+        arena.Damage(put, utg, this, side, damage);
     }
 }
 
