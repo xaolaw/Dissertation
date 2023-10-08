@@ -25,7 +25,7 @@ public class TestRelayButton : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         // Initializa Button
-        testRelayButton.onClick.AddListener(TestRelay);
+        testRelayButton.onClick.AddListener(CreateRelay);
     }
 
     // Update is called once per frame
