@@ -69,12 +69,18 @@ public class Arena : MonoBehaviour
     //colors of player and enemy
     public Color playerColor;
     public Color opponentColor;
+    //bool if menus area on
+    public bool areMenus = false;
 
     void Start()
     {
         //setting details canvas
         UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
         UnitDetailsPanel.SetActive(false);
+
+        //hide menu panel
+        //GameObject menuPanel = GameObject.Find("MenuPanel");
+       // menuPanel.SetActive(false);
       
         Vector3 startPosition = transform.position; // starting position of the grid
         for (int col = 0; col < columns; col++)
@@ -122,10 +128,11 @@ public class Arena : MonoBehaviour
         if (gameObject)
         {
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            if (tile != null && tile.character != null && UnitDetailsPanel)
+            if (tile != null && tile.character != null && UnitDetailsPanel && !areMenus)
             {
                 //change canvas status to appear
                 UnitDetailsPanel.SetActive(true);
+                EnableMenu();
             }
         }
 
@@ -305,5 +312,15 @@ public class Arena : MonoBehaviour
         {
             character.TakeDamage(damage);
         }
+    }
+
+    public void EnableMenu()
+    {
+        areMenus = true;
+    }
+
+    public void DisableMenu()
+    {
+        areMenus = false;
     }
 }
