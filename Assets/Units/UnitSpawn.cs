@@ -10,7 +10,6 @@ public class UnitSpawn : MonoBehaviour
     public GameObject defaultUnitPrefab;
 
     public Object infoPrefab;
-    public Canvas canvas;
 
     public Color playerColor;
     public Color opponentColor;
@@ -30,6 +29,7 @@ public class UnitSpawn : MonoBehaviour
         {
             //adding canvas info about unit
             Vector3 canvas_position = Camera.main.WorldToScreenPoint(tile.gameObject.gameObject.transform.position);
+            GameObject canvas = GameObject.Find("SpawnObjects");
             GameObject canvasInfo = Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform) as GameObject;
             
             //creating an object on map
@@ -64,7 +64,6 @@ public class UnitSpawn : MonoBehaviour
                     MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
                     if (playerUnit)
                     {
-
                         cubeMesh.material.color = playerColor;
                         cyllinderMesh.material.color = playerColor;
                     }
