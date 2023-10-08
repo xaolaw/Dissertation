@@ -63,7 +63,7 @@ public class Arena : MonoBehaviour
     public int[] neighbourId = new int[8];
 
     //a contianer for unit ifno with text and images
-    public GameObject unitInfoContainer;
+    public GameObject UnitDetailsPanel;
     //a text for a playr on enemy turn
     public TMP_Text playerIndicatorText;
     //colors of player and enemy
@@ -72,6 +72,10 @@ public class Arena : MonoBehaviour
 
     void Start()
     {
+        //setting details canvas
+        UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
+        UnitDetailsPanel.SetActive(false);
+      
         Vector3 startPosition = transform.position; // starting position of the grid
         for (int col = 0; col < columns; col++)
         {
@@ -118,18 +122,10 @@ public class Arena : MonoBehaviour
         if (gameObject)
         {
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            Animator animator = unitInfoContainer.GetComponent<Animator>();
-            if (tile != null && tile.character != null)
+            if (tile != null && tile.character != null && UnitDetailsPanel)
             {
-                //asnimation to slide in TODO stop showing triigger elsewhere
-                animator.ResetTrigger("stopShowing");
-                animator.SetTrigger("isShowing");
-                
-            }
-            else
-            {
-                animator.SetTrigger("stopShowing");
-
+                //change canvas status to appear
+                UnitDetailsPanel.SetActive(true);
             }
         }
 

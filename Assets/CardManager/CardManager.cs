@@ -9,7 +9,7 @@ public class CardManager : MonoBehaviour
     private List<Card> cards_in_hand = new List<Card>();
     private int cards_number = 3;
     private Arena arena;
-    private Canvas canvas;
+    private GameObject canvas;
     public Transform[] cardSlots;
     private int idx = 0;
     
@@ -30,7 +30,7 @@ public class CardManager : MonoBehaviour
 
     void Start(){
         arena = FindObjectOfType<Arena>();
-        canvas = FindObjectOfType<Canvas>();
+        canvas = GameObject.Find("SpawnObjects");
         DrawCards();
     }
 
