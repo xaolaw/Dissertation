@@ -1,0 +1,24 @@
+[
+    {
+        "cardName": "Tank",
+        "cardPower": 15,
+        "cardType": "creature",
+        "cardImage": "2DModels/tank15",
+        "cardModel": "Tank",
+        "cardDescription": "czolg co jedzie",
+        "cardDetails": null
+    },
+    {
+        "cardName": "Tank",
+        "cardPower": 8,
+        "cardType": "creature",
+        "cardImage": "2DModels/tank8",
+        "cardModel": "Tank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardDetails": {
+            "deathrattle": {
+
+            }
+        }
+    }
+]
