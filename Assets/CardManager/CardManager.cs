@@ -1,27 +1,40 @@
+using Assets.Classes;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CardManager : MonoBehaviour
 {
-    public List<Card> cards = new List<Card>();
+    
+    public Card defaultCard;
     private List<Card> cards_in_hand = new List<Card>();
     private int cards_number = 3;
     private Arena arena;
     private GameObject canvas;
     public Transform[] cardSlots;
     private int idx = 0;
-    
-    public void DrawCards(){
-        for(int i = 0; i < cards_number; i++){
-            idx = Random.Range(0, cards.Count);
-            Card card = Instantiate(cards[idx]);
+    //a list of all cards with models path
+    private List<CardJson> cardsJson;
+
+    public void DrawCards()
+    {
+        for (int i = 0; i < cards_number; i++)
+        {
+            //temporary it's a random card from json file
+            idx = Random.Range(0, cardsJson.Count);
+            
+            defaultCard.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails);
+            Card card = Instantiate(defaultCard);
             addCard(card);
             card.transform.position = cardSlots[i].position;
             cards_in_hand.Add(card);
         }
+    
     }
+   
     private void addCard(Card card){
         card.transform.SetParent(canvas.transform);
         card.gameObject.SetActive(true);
@@ -31,6 +44,12 @@ public class CardManager : MonoBehaviour
     void Start(){
         arena = FindObjectOfType<Arena>();
         canvas = GameObject.Find("SpawnObjects");
+        
+    }
+
+    public void InitalizeHand()
+    {
+        cardsJson = arena.getJsonCards();
         DrawCards();
     }
 
@@ -43,8 +62,9 @@ public class CardManager : MonoBehaviour
         for(int i=0; i<cards_in_hand.Count; i++){
             cards_in_hand[i].transform.position = cardSlots[i].position; 
         }
-        idx = Random.Range(0, cards.Count);
-        Card card = Instantiate(cards[idx]);
+        idx = Random.Range(0, cardsJson.Count);
+        defaultCard.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails);
+        Card card = Instantiate(defaultCard);
         addCard(card);
         card.transform.position = cardSlots[cards_in_hand.Count].position;
         cards_in_hand.Add(card);
