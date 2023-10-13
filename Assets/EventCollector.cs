@@ -11,26 +11,11 @@ public class EventCollector : MonoBehaviour
     public void AddEvent(GameEvent game_event){
         game_events.Add(game_event);
         new_game_events.Add(game_event);
-        print("added card"+game_event);
     }
-
-    // public void Start(){
-    //     AddEvent(new GameEvent("karta1", "gracz"));
-    //     AddEvent(new GameEvent("karta2", "gracz-2"));
-    //     ShowEvents();
-    // }
-
-    public void Update(){
-        // ShowEvents();
-    }
-
     public void ShowEvents(){
         foreach (GameEvent gameEvent in game_events){
             print(gameEvent);
         }
-    }
-    public void InitEventDisplay(){
-
     }
 }
 

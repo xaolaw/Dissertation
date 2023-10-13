@@ -74,10 +74,6 @@ public class Arena : MonoBehaviour
 
     void Start()
     {
-        //setting details canvas
-        // UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
-        // UnitDetailsPanel.SetActive(false);
-
         //hide menu panel
         //GameObject menuPanel = GameObject.Find("MenuPanel");
        // menuPanel.SetActive(false);

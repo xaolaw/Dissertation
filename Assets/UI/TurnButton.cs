@@ -5,14 +5,12 @@ using UnityEngine.UI;
 
 public class TurnButton : MonoBehaviour
 {
-    private Button button;
     private Arena arena;
     private float turn_time = 10.0f;
     private float time_left = 10.0f;
     public bool timer_started = false;
     public TurnTimer turn_timer;
 
-    // Start is called before the first frame update
     void Start()
     {
         arena = FindObjectOfType<Arena>();
@@ -20,17 +18,11 @@ public class TurnButton : MonoBehaviour
             Debug.Log("TurnButton: Arena not found");
         turn_timer.setBarActive(arena.playerTurn);    
         turn_timer.set_time(1.0f, arena.playerTurn);
-
-        // button = GetComponent<Button>();
-        // button.onClick.AddListener(EndTurn);
-
     }
 
-    // Update is called once per frame
     private void Update()
     {   
         if(timer_started){
-
             if(time_left > 0){
                 time_left -= Time.deltaTime;
                 turn_timer.set_time(time_left/turn_time, arena.playerTurn);
