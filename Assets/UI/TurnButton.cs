@@ -18,17 +18,17 @@ public class TurnButton : MonoBehaviour
         arena = FindObjectOfType<Arena>();
         if (!arena)
             Debug.Log("TurnButton: Arena not found");
+        turn_timer.setBarActive(arena.playerTurn);    
         turn_timer.set_time(1.0f, arena.playerTurn);
 
-        button = GetComponent<Button>();
-        button.onClick.AddListener(EndTurn);
-        timer_started = true;
+        // button = GetComponent<Button>();
+        // button.onClick.AddListener(EndTurn);
 
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    private void Update()
+    {   
         if(timer_started){
 
             if(time_left > 0){
@@ -47,10 +47,12 @@ public class TurnButton : MonoBehaviour
     public void EndTurn()
     {
         timer_started = false;
-        turn_timer.set_time(0f, arena.playerTurn);
+        turn_timer.set_time(0, arena.playerTurn);
+        turn_timer.setBarActive(!arena.playerTurn);
         reset_timer();
         arena.EndTurn();
     }
+    
     public void reset_timer(){
         time_left = turn_time;
     }
