@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2550751629631502698}
-  - component: {fileID: 5747953937884640675}
   - component: {fileID: 2280657073438022513}
+  - component: {fileID: 8231756071751047510}
   m_Layer: 0
   m_Name: RelayManager
   m_TagString: Untagged
@@ -33,21 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5747953937884640675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5275840679866633657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0e814071f6b0c341876bdec191550b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testRelayButton: {fileID: 0}
-  code_text: {fileID: 0}
-  variable_text: {fileID: 0}
 --- !u!114 &2280657073438022513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,3 +53,18 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &8231756071751047510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5275840679866633657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15da56a3c95525b40865a5edd2855c22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testRelayButton: {fileID: 0}
+  code_text: {fileID: 0}
+  variable_text: {fileID: 0}
