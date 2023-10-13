@@ -60,3 +60,14 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+
+# Data from multiplayer plugins and user settings
+AnotherCardGame_BurstDebugInformation_DoNotShip\
+AnotherCardGame_Data\
+UserSettings\
+
+# Executables
+*.exe
+
+# Unity .asset
+*.asset
