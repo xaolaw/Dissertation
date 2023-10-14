@@ -5,18 +5,23 @@ using UnityEngine;
 public class OnMouseEventTile : MonoBehaviour
 {
     private List<Tile> tileList;
+    private Arena arena;
     GameObject attachedGameObject;
     Tile tile;
     private void Awake()
     {
-        tileList = FindObjectOfType<Arena>().getTileList();
+        arena = FindObjectOfType<Arena>();
+        tileList = arena.getTileList();
         attachedGameObject = gameObject;
         tile = tileList.Find(obj => obj.gameObject == attachedGameObject);
     }
 
     private void OnMouseEnter()
     {
-        tile.Select();
+        if (!arena.areMenus)
+        {
+            tile.Select();
+        }
        
     }
     private void OnMouseOver()

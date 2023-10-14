@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Assets.Classes;
+using Newtonsoft.Json;
+using System.IO;
+
 public class Arena : MonoBehaviour
 {
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
     public GameObject groundPrefab;
+   
     public float groundOffset = 0.1f;
     public int rows = 5;
     public int columns = 4;
@@ -71,9 +76,19 @@ public class Arena : MonoBehaviour
     public Color opponentColor;
     //bool if menus area on
     public bool areMenus = false;
+    private List<CardJson> cardsJson;
+    public CardManager cardManager;
+    public UnitSpawn unitSpawn;
+
 
     void Start()
     {
+        //setting db Json
+        ReadJson("Assets/CardDataBase/cardDB.json");    
+
+        //setting details canvas
+        UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
+        UnitDetailsPanel.SetActive(false);
         //hide menu panel
         //GameObject menuPanel = GameObject.Find("MenuPanel");
        // menuPanel.SetActive(false);
@@ -318,5 +333,22 @@ public class Arena : MonoBehaviour
     public void DisableMenu()
     {
         areMenus = false;
+    }
+
+    //read json db
+    private void ReadJson(string path)
+    {
+        using StreamReader reader = new(path);
+        var jsonDB = reader.ReadToEnd();
+        cardsJson = JsonConvert.DeserializeObject<List<CardJson>>(jsonDB);
+
+        //initalize card
+        cardManager.InitalizeHand();
+
+    }
+
+    public List<CardJson> getJsonCards()
+    {
+        return cardsJson;
     }
 }

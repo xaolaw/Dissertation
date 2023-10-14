@@ -4,16 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 using TMPro;
+using System;
+using System.Linq;
+using Assets.Classes;
 
 public class UnitSpawn : MonoBehaviour
 {
-    public GameObject defaultUnitPrefab;
-
-    public Object infoPrefab;
+    public GameObject infoPrefab;
+    public GameObject defaultPrefab;
+    private Arena arena;
 
     public Color playerColor;
     public Color opponentColor;
-        
+
+    [Serializable]
+    public struct PrefabName{
+        public string name;
+        public GameObject prefab;
+    }
+    public List<PrefabName> prefabNames = new List<PrefabName>();
+    public Dictionary<string, GameObject> prefabDict = new Dictionary<string, GameObject>();
     //unit types to spwan
     public enum UnitType
     {
@@ -21,8 +31,16 @@ public class UnitSpawn : MonoBehaviour
         DEATHRATTLE,
         COUNT,
     }
+    private void Start()
+    {
+        arena = FindObjectOfType<Arena>();
+        foreach (PrefabName prefabName in prefabNames)
+        {
+            prefabDict.Add(prefabName.name, prefabName.prefab);
+        }
+    }
     //spawning unit on map
-    public bool Spawn(Tile tile, UnitType unitType, int power, bool playerUnit)
+    public bool Spawn(Tile tile, UnitType unitType, int power, bool playerUnit, string model)
     {
 
         if (tile != null && tile.character == null)
@@ -33,7 +51,7 @@ public class UnitSpawn : MonoBehaviour
             GameObject canvasInfo = Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform) as GameObject;
             
             //creating an object on map
-            Character new_unit = CreateUnit(tile, unitType, playerUnit, power, canvasInfo);
+            Character new_unit = CreateUnit(tile, unitType, playerUnit, power, canvasInfo, model);
             tile.addCharacter(new_unit);
 
         }
@@ -43,7 +61,7 @@ public class UnitSpawn : MonoBehaviour
         }
         return true;
     }
-    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, int power, GameObject info)
+    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, int power, GameObject info, string model)
     {
         Vector3 position = tile.unitPosition;
         Vector3 rotation = new Vector3(0, 0, 0);
@@ -58,8 +76,9 @@ public class UnitSpawn : MonoBehaviour
         {
             case UnitType.DEFAULT:
                 transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
-                characterObject = Instantiate(defaultUnitPrefab, position, Quaternion.Euler(rotation), transform);
+                characterObject = Instantiate(prefabDict[model], position, Quaternion.Euler(rotation), transform);
                 {
+                    //we need to change that like reeally fast
                     MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
                     MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
                     if (playerUnit)
@@ -73,12 +92,12 @@ public class UnitSpawn : MonoBehaviour
                         cyllinderMesh.material.color = opponentColor;
                     }
                 }
-                character = new Character("Tank", power, playerUnit, characterObject, tile, info);
+                character = new Character(model, power, playerUnit, characterObject, tile, info);
                 return character;
 
             case UnitType.DEATHRATTLE:
                 transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
-                characterObject = Instantiate(defaultUnitPrefab, position, Quaternion.Euler(rotation), transform);
+                characterObject = Instantiate(prefabDict[model], position, Quaternion.Euler(rotation), transform);
                 {
                     MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
                     MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
@@ -94,7 +113,7 @@ public class UnitSpawn : MonoBehaviour
                         cyllinderMesh.material.color = opponentColor;
                     }
                 }
-                character = new Character("Tank", power, playerUnit, characterObject, tile, info);
+                character = new Character(model, power, playerUnit, characterObject, tile, info);
 
                 // set deathrattle
                 System.Action<Tile, bool> newDeathrattle = delegate (Tile origintile, bool side)
@@ -108,7 +127,6 @@ public class UnitSpawn : MonoBehaviour
             default:
                 return null;
         }
-
-        
     }
+
 }

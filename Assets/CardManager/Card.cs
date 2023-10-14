@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Assets.Classes;
 
 public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     [SerializeField] private Canvas canvas;
-    public string card_name;
+    public string cardName;
     public string description;
-    public UnitSpawn.UnitType unitType;
+    public string model;
     public int power;
+    public CardDetails cardDetails;
+
+    public UnitSpawn.UnitType unitType;
     private CardManager cm;
     private Arena arena;
     private UnitSpawn unitSpawn;
@@ -29,14 +33,41 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         //TODO change smth about card apperaing
         position = rectTransform.localPosition;
     }
+    //initialize card all manadatory fields
+    public void Initialize(string name_, int power_, string image_, string model_, CardDetails cardDetails_)
+    {
+        cardName = name_;
+        power = power_;
+        model = model_;
+        cardDetails = cardDetails_;
+        Sprite image = Resources.Load<Sprite>(image_);
+
+        Image imageComponent = GetComponent<Image>();
+
+        if (imageComponent != null)
+        {
+            if(image == null)
+            {
+                Debug.LogError("Invalid path" + image_);
+            }
+            else
+            {
+                imageComponent.sprite = image;
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid! imageComponent is null");
+        }
+
+    }
 
     private void HandleSpawning()
     {
         List<Tile> tileList = arena.getTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
-
-        
-        if (!unitSpawn.Spawn(tile, unitType, power, arena.playerTurn))
+        //Debug.Log(unitType);
+        if (!unitSpawn.Spawn(tile, unitType, power, arena.playerTurn, model))
         {
             Debug.LogError("Spawning error");
         } else
@@ -45,9 +76,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             this.gameObject.SetActive(false);
             cm.update_cards(this);
         }
-        
     }
-
     public void OnPointerDown (PointerEventData eventData){
         //HandleSpawning();
     }
@@ -69,4 +98,5 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     {
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
+
 }
