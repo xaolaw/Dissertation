@@ -16,6 +16,7 @@ public class Character
     Tile tile;
 
     private Arena arena;
+    private EventCollector eventCollector;
     private bool died;
 
     private System.Action<Tile, bool> deathrattle;
@@ -33,6 +34,7 @@ public class Character
         powerInfo.text="Power:" + power.ToString();
 
         arena = (Arena)GameObject.FindObjectOfType(typeof(Arena));
+        eventCollector = GameObject.FindObjectOfType<EventCollector>();
         died = false;
 
         // initialize functions
@@ -119,6 +121,7 @@ public class Character
         tile.UnitDied();
         UnityEngine.GameObject.Destroy(gameObject);
         UnityEngine.GameObject.Destroy(canvasInfo);
+        eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit ? "Opponent" : "Player", "killed"));
     }
 
     public string toString() {

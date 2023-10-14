@@ -12,6 +12,7 @@ public class CardManager : MonoBehaviour
     private GameObject canvas;
     public Transform[] cardSlots;
     private int idx = 0;
+    public EventCollector eventCollector;
     
     public void DrawCards(){
         for(int i = 0; i < cards_number; i++){
@@ -48,6 +49,7 @@ public class CardManager : MonoBehaviour
         addCard(card);
         card.transform.position = cardSlots[cards_in_hand.Count].position;
         cards_in_hand.Add(card);
+        eventCollector.AddEvent(new GameEvent(updated_card.card_name, arena.playerTurn ? "Player" : "Opponent", "played"));
     }
 
     void Update(){
