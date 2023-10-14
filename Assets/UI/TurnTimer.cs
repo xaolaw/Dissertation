@@ -19,4 +19,15 @@ public class TurnTimer : MonoBehaviour
         else
             opponent_bar.fillAmount = time;
     }
+
+  public void setBarActive(bool player_turn){
+    if(player_turn){
+        player_bar.gameObject.SetActive(true);
+        opponent_bar.gameObject.SetActive(false);
+
+    } else {
+        player_bar.gameObject.SetActive(false);
+        opponent_bar.gameObject.SetActive(true);
+    }
+  }  
 }

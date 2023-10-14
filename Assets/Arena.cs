@@ -76,11 +76,10 @@ public class Arena : MonoBehaviour
     public Color opponentColor;
     //bool if menus area on
     public bool areMenus = false;
-
-    //a list of all cards with models path
     private List<CardJson> cardsJson;
     public CardManager cardManager;
     public UnitSpawn unitSpawn;
+
 
     void Start()
     {
@@ -90,7 +89,6 @@ public class Arena : MonoBehaviour
         //setting details canvas
         UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
         UnitDetailsPanel.SetActive(false);
-
         //hide menu panel
         //GameObject menuPanel = GameObject.Find("MenuPanel");
        // menuPanel.SetActive(false);
