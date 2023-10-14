@@ -18,16 +18,14 @@ public class Base : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        basePosition = playerBase ? new Vector3(5.75f, 0, 1.5f) : new Vector3(-1.75f, 0, 1.5f);
+        basePosition = playerBase ? new Vector3(3.50f, 0, 1) : new Vector3(.5f, 0, 2f);
 
         healthBar.SetMaxHealth(maxHp);
         healthBar.SetHealth(hp);
 
-        basePrefab.transform.localScale = new Vector3(1.5f, 0.4f, 5f);
-        GameObject ob = Instantiate(basePrefab, basePosition, Quaternion.identity);
-
-        MeshRenderer mesh = ob.GetComponent<MeshRenderer>();
-        mesh.material.color = baseColor;
+        
+        GameObject ob = Instantiate(basePrefab, basePosition, Quaternion.Euler(0, playerBase ? 90 : -90, 0));
+         
     }
 
     // Update is called once per frame

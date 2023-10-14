@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a2603559228a9428c5484364a76a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePrefab: {fileID: 689645372464200393, guid: dfb61021cadd09343a07b3c2f6a92bbb, type: 3}
+  basePrefab: {fileID: 919132149155446097, guid: dbeeafa3e88ee5b4bad06a323644b117, type: 3}
   playerBase: 1
   hp: 10
   maxHp: 10
@@ -2111,6 +2111,12 @@ MonoBehaviour:
   prefabNames:
   - name: Tank
     prefab: {fileID: 919132149155446097, guid: ede0370147b92974eb0a611943ddefd8, type: 3}
+  - name: Starship1
+    prefab: {fileID: 3673200808368696894, guid: a5e59f0bd5459c74b8df36f39f8f03ba, type: 3}
+  - name: Starship2
+    prefab: {fileID: 919132149155446097, guid: 69b85871874c4714cbeddc834e5ee20c, type: 3}
+  - name: Starship3
+    prefab: {fileID: 919132149155446097, guid: 6d136d4229cf50f478554320be918e42, type: 3}
 --- !u!1 &743875705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2803,11 +2809,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: -1
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 3.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2831,8 +2837,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 2.05, y: 7, z: 1.55}
+  m_LocalRotation: {x: 0.35776663, y: -0.60992056, z: 0.35776663, w: 0.60992056}
+  m_LocalPosition: {x: 3.11, y: 2.18, z: 1.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3169,7 +3175,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 6577375014891292757, guid: ac36a629b770b814c8485bb58de57a72, type: 3}
-  groundPrefab: {fileID: 343585007098415798, guid: 747cbf2d22c8be6408daa14f59b3fe27, type: 3}
   groundOffset: 0.1
   rows: 4
   columns: 5
@@ -5190,7 +5195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a2603559228a9428c5484364a76a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePrefab: {fileID: 689645372464200393, guid: dfb61021cadd09343a07b3c2f6a92bbb, type: 3}
+  basePrefab: {fileID: 919132149155446097, guid: 3de0bf91fcf8e1544b3db2b528fba1f3, type: 3}
   playerBase: 0
   hp: 10
   maxHp: 10

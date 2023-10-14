@@ -20,5 +20,18 @@
 
             }
         }
+    },
+    {
+        "cardName": "Starship",
+        "cardPower": 10,
+        "cardType": "creature",
+        "cardImage": "2DModels/tank8",
+        "cardModel": "Starship1",
+        "cardDescription": "leci teraz",
+        "cardDetails": {
+            "deathrattle": {
+
+            }
+        }
     }
 ]
