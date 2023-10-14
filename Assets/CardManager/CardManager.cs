@@ -69,7 +69,7 @@ public class CardManager : MonoBehaviour
         addCard(card);
         card.transform.position = cardSlots[cards_in_hand.Count].position;
         cards_in_hand.Add(card);
-        eventCollector.AddEvent(new GameEvent(updated_card.card_name, arena.playerTurn ? "Player" : "Opponent", "played"));
+        eventCollector.AddEvent(new GameEvent(updated_card.cardName, arena.playerTurn ? "Player" : "Opponent", "played"));
     }
 
     void Update(){
