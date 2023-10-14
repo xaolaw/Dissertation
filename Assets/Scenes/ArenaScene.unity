@@ -2112,7 +2112,7 @@ MonoBehaviour:
   - name: Tank
     prefab: {fileID: 919132149155446097, guid: ede0370147b92974eb0a611943ddefd8, type: 3}
   - name: Starship1
-    prefab: {fileID: 3673200808368696894, guid: a5e59f0bd5459c74b8df36f39f8f03ba, type: 3}
+    prefab: {fileID: 919132149155446097, guid: e039589fedd69a5448943edcf857586a, type: 3}
   - name: Starship2
     prefab: {fileID: 919132149155446097, guid: 69b85871874c4714cbeddc834e5ee20c, type: 3}
   - name: Starship3
