@@ -7,14 +7,10 @@ using UnityEditor;
 
 public class PanelHistory : MonoBehaviour
 {
-    // Start is called before the first frame update
     public GameObject buttonPrefab;
     public GameObject canvas;
     public EventCollector eventCollector;
-    void Start()
-    {
-        print("panel start");
-    }
+
     public void CreatePanel(){
         print("panel show");
         foreach (GameEvent gameEvent in eventCollector.new_game_events){
@@ -25,11 +21,5 @@ public class PanelHistory : MonoBehaviour
         tile.gameObject.SetActive(true);
         }
         eventCollector.new_game_events = new List<GameEvent>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
