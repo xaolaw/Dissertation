@@ -75,44 +75,14 @@ public class UnitSpawn : MonoBehaviour
         switch (unitType)
         {
             case UnitType.DEFAULT:
-                transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
                 characterObject = Instantiate(prefabDict[model], position, Quaternion.Euler(rotation), transform);
-                {
-                    //we need to change that like reeally fast
-                    MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
-                    MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
-                    if (playerUnit)
-                    {
-                        cubeMesh.material.color = playerColor;
-                        cyllinderMesh.material.color = playerColor;
-                    }
-                    else
-                    {
-                        cubeMesh.material.color = opponentColor;
-                        cyllinderMesh.material.color = opponentColor;
-                    }
-                }
+                
                 character = new Character(model, power, playerUnit, characterObject, tile, info);
                 return character;
 
             case UnitType.DEATHRATTLE:
-                transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
                 characterObject = Instantiate(prefabDict[model], position, Quaternion.Euler(rotation), transform);
-                {
-                    MeshRenderer cubeMesh = characterObject.transform.Find("Cube").GetComponent<MeshRenderer>();
-                    MeshRenderer cyllinderMesh = characterObject.transform.Find("Cylinder").GetComponent<MeshRenderer>();
-                    if (playerUnit)
-                    {
-
-                        cubeMesh.material.color = playerColor;
-                        cyllinderMesh.material.color = playerColor;
-                    }
-                    else
-                    {
-                        cubeMesh.material.color = opponentColor;
-                        cyllinderMesh.material.color = opponentColor;
-                    }
-                }
+                
                 character = new Character(model, power, playerUnit, characterObject, tile, info);
 
                 // set deathrattle

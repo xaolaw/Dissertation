@@ -10,7 +10,6 @@ using System.IO;
 public class Arena : MonoBehaviour
 {
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
-    public GameObject groundPrefab;
    
     public float groundOffset = 0.1f;
     public int rows = 5;
@@ -111,10 +110,6 @@ public class Arena : MonoBehaviour
                 OnMouseEventTile onDropEvent = tile.AddComponent<OnMouseEventTile>();
             }
         }
-
-        Vector3 groundPosition = new Vector3(startPosition.x + ((float)columns + 1) / 2 - 1, startPosition.y - groundOffset, startPosition.z + ((float)rows + 1) / 2 - 1);
-        groundPrefab.transform.localScale = new Vector3(columns + 1, 2 * groundOffset, rows + 1);
-        Instantiate(groundPrefab, groundPosition, Quaternion.identity, transform);
 
         neighbourId[(int)Direction.UP] = -rows;
         neighbourId[(int)Direction.DOWN] = rows;
