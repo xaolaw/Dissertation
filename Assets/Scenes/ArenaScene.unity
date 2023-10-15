@@ -1360,10 +1360,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 944234482}
   cardName: 
-  description: 
-  model: 
-  power: 0
-  unitType: 0
   played: 0
 --- !u!114 &527519819
 MonoBehaviour:
@@ -2112,11 +2108,13 @@ MonoBehaviour:
   - name: Tank
     prefab: {fileID: 919132149155446097, guid: ede0370147b92974eb0a611943ddefd8, type: 3}
   - name: Starship1
-    prefab: {fileID: 919132149155446097, guid: e039589fedd69a5448943edcf857586a, type: 3}
+    prefab: {fileID: 919132149155446097, guid: 25bc7ef7f6698444e9ab7ae35a974f5b, type: 3}
   - name: Starship2
     prefab: {fileID: 919132149155446097, guid: 69b85871874c4714cbeddc834e5ee20c, type: 3}
   - name: Starship3
     prefab: {fileID: 919132149155446097, guid: 6d136d4229cf50f478554320be918e42, type: 3}
+  - name: Merkava
+    prefab: {fileID: 919132149155446097, guid: 6a2be49c58430444f8f36e231d191b57, type: 3}
 --- !u!1 &743875705
 GameObject:
   m_ObjectHideFlags: 0
