@@ -117,7 +117,6 @@ public class UnitSpawn : MonoBehaviour
         GameObject characterObject = null;
         Character character = null;
 
-
         characterObject = Instantiate(GetPrefab(model), position, Quaternion.Euler(rotation), transform);
                 
         character = new Character(model, power, playerUnit, characterObject, tile, info);
