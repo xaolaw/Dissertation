@@ -1,10 +1,10 @@
 [
     {
-        "cardName": "Tank",
+        "cardName": "Merkava",
         "cardPower": 15,
         "cardType": "creature",
-        "cardImage": "2DModels/tank15",
-        "cardModel": "Tank",
+        "cardImage": "2DModels/tank15_2",
+        "cardModel": "Merkava",
         "cardDescription": "czolg co jedzie",
         "cardDetails": null
     },
@@ -12,14 +12,14 @@
         "cardName": "Tank",
         "cardPower": 8,
         "cardType": "creature",
-        "cardImage": "2DModels/tank8",
+        "cardImage": "2DModels/tank8_2",
         "cardModel": "Tank",
         "cardDescription": "czolg co jedzie i wybucha jak ginie",
         "cardDetails": {
             "deathrattle": {
                 "target": "enemy",
-                "area": "all",
-                "damage": 3
+                "area": "surrounding",
+                "damage": 5
             }
         }
     },
@@ -27,27 +27,14 @@
         "cardName": "Starship",
         "cardPower": 10,
         "cardType": "creature",
-        "cardImage": "2DModels/tank8",
+        "cardImage": "2DModels/starship",
         "cardModel": "Starship1",
         "cardDescription": "leci teraz",
         "cardDetails": {
             "deathrattle": {
-                "target": "enemy",
-                "area": "all",
-                "damage": 10
-            }
-        }
-    },
-    {
-        "cardName": "Starship",
-        "cardPower": 10,
-        "cardType": "creature",
-        "cardImage": "2DModels/tank8",
-        "cardModel": "Starship1",
-        "cardDescription": "leci teraz",
-        "cardDetails": {
-            "deathrattle": {
-
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
             }
         }
     }
