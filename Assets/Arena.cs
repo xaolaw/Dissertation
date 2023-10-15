@@ -24,6 +24,10 @@ public class Arena : MonoBehaviour
     private List<Tile> tileList = new List<Tile>();
     private TurnButton turn_button;
 
+    //Dying units
+    private Queue dyingUnits = new Queue();
+    private bool deathrattleWave = false;
+
     //Direction for finding tiles
     public enum Direction
     {
@@ -56,7 +60,7 @@ public class Arena : MonoBehaviour
     public enum UnitTargetGroup
     {
         SINGLE = 0,
-        BOARDERING,
+        BORDERING,
         SURROUNDING,
         IN_FRONT,
         BEHIND,
@@ -252,12 +256,12 @@ public class Arena : MonoBehaviour
                 areaTiles.Add(temp);
             }
         }
-        else if ( utg == UnitTargetGroup.BOARDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
+        else if ( utg == UnitTargetGroup.BORDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
         {
             Direction[] directions = new Direction[0];
             switch (utg)
             {
-                case UnitTargetGroup.BOARDERING:
+                case UnitTargetGroup.BORDERING:
                     directions = new Direction[4] { Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT };
                     break;
                 case UnitTargetGroup.SURROUNDING:
@@ -289,7 +293,7 @@ public class Arena : MonoBehaviour
         {
             foreach(Tile tile in areaTiles)
             {
-                if(tile.character != null)
+                if(tile.character != null && !tile.character.HasDied())
                 {
                     characters.Add(tile.character);
                 }
@@ -300,7 +304,7 @@ public class Arena : MonoBehaviour
             bool side = playerSide ^ put == PlayerUnitTarget.ENEMY;
             foreach (Tile tile in areaTiles)
             {
-                if (tile.character != null && tile.character.playerUnit == side)
+                if (tile.character != null && tile.character.playerUnit == side && !tile.character.HasDied())
                 {
                     characters.Add(tile.character);
                 }
@@ -318,6 +322,27 @@ public class Arena : MonoBehaviour
         {
             character.TakeDamage(damage);
         }
+    }
+
+    public void AddToDyingQueue(Character c)
+    {
+        if (dyingUnits.Count == 0 && !deathrattleWave)
+        {
+            deathrattleWave = true;
+            c.ActivateDeathRattle();
+            return;
+        }
+        dyingUnits.Enqueue(c);
+    }
+
+    public void NextDying()
+    {
+        if (dyingUnits.Count == 0)
+        {
+            deathrattleWave = false;
+            return;
+        }
+        ((Character)dyingUnits.Dequeue()).ActivateDeathRattle();
     }
 
     public void EnableMenu()

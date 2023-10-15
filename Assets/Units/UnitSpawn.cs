@@ -40,7 +40,7 @@ public class UnitSpawn : MonoBehaviour
         }
     }
     //spawning unit on map
-    public bool Spawn(Tile tile, UnitType unitType, int power, bool playerUnit, string model)
+    public bool Spawn(Tile tile, CardDetails cardDetails, int power, bool playerUnit, string model)
     {
 
         if (tile != null && tile.character == null)
@@ -51,7 +51,7 @@ public class UnitSpawn : MonoBehaviour
             GameObject canvasInfo = Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform) as GameObject;
             
             //creating an object on map
-            Character new_unit = CreateUnit(tile, unitType, playerUnit, power, canvasInfo, model);
+            Character new_unit = CreateUnit(tile, cardDetails, playerUnit, power, canvasInfo, model);
             tile.addCharacter(new_unit);
 
         }
@@ -61,7 +61,51 @@ public class UnitSpawn : MonoBehaviour
         }
         return true;
     }
-    private Character CreateUnit(Tile tile, UnitType unitType, bool playerUnit, int power, GameObject info, string model)
+
+    private Arena.PlayerUnitTarget PUTFromString(string s)
+    {
+        switch (s)
+        {
+            case "enemy":
+                return Arena.PlayerUnitTarget.ENEMY;
+            case "own":
+                return Arena.PlayerUnitTarget.OWN;
+            case "any":
+            default:
+                return Arena.PlayerUnitTarget.ANY;
+        }
+    }
+
+    private Arena.UnitTargetGroup UTGFromString(string s)
+    {
+        switch (s)
+        {
+            case "single":
+                return Arena.UnitTargetGroup.SINGLE;
+            case "bordering":
+                return Arena.UnitTargetGroup.BORDERING;
+            case "surrounding":
+                return Arena.UnitTargetGroup.SURROUNDING;
+            case "in_front":
+                return Arena.UnitTargetGroup.IN_FRONT;
+            case "behind":
+                return Arena.UnitTargetGroup.BEHIND;
+            case "sideways":
+                return Arena.UnitTargetGroup.SIDEWAYS;
+            case "all":
+            default:
+                return Arena.UnitTargetGroup.ALL;
+        }
+    }
+
+    private GameObject GetPrefab(string s)
+    {
+        if (prefabDict.ContainsKey(s))
+            return prefabDict[s];
+        return defaultPrefab;
+    }
+
+    private Character CreateUnit(Tile tile, CardDetails cardDetails, bool playerUnit, int power, GameObject info, string model)
     {
         Vector3 position = tile.unitPosition;
         Vector3 rotation = new Vector3(0, 0, 0);
@@ -72,31 +116,25 @@ public class UnitSpawn : MonoBehaviour
         }
         GameObject characterObject = null;
         Character character = null;
-        switch (unitType)
+
+
+        characterObject = Instantiate(GetPrefab(model), position, Quaternion.Euler(rotation), transform);
+                
+        character = new Character(model, power, playerUnit, characterObject, tile, info);
+
+        if (cardDetails != null && cardDetails.deathrattle != null)
         {
-            case UnitType.DEFAULT:
-                characterObject = Instantiate(prefabDict[model], position, Quaternion.Euler(rotation), transform);
-                
-                character = new Character(model, power, playerUnit, characterObject, tile, info);
-                return character;
+            // set deathrattle
+            System.Action<Tile, bool> newDeathrattle = delegate (Tile origintile, bool side)
+            {
+                origintile.Damage(PUTFromString(cardDetails.deathrattle.target), UTGFromString(cardDetails.deathrattle.area), side, cardDetails.deathrattle.damage);
+            };
+            character.AddDeathrattle(newDeathrattle);
 
-            case UnitType.DEATHRATTLE:
-                characterObject = Instantiate(prefabDict[model], position, Quaternion.Euler(rotation), transform);
-                
-                character = new Character(model, power, playerUnit, characterObject, tile, info);
-
-                // set deathrattle
-                System.Action<Tile, bool> newDeathrattle = delegate (Tile origintile, bool side)
-                {
-                    origintile.Damage(Arena.PlayerUnitTarget.ENEMY, Arena.UnitTargetGroup.ALL, side, 3);
-                };
-                character.AddDeathrattle(newDeathrattle);
-
-                return character;
-
-            default:
-                return null;
+            Debug.Log("Dying one");
         }
+
+        return character;
     }
 
 }

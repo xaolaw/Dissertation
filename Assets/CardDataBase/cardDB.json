@@ -17,7 +17,9 @@
         "cardDescription": "czolg co jedzie i wybucha jak ginie",
         "cardDetails": {
             "deathrattle": {
-
+                "target": "enemy",
+                "area": "all",
+                "damage": 3
             }
         }
     },
@@ -30,7 +32,9 @@
         "cardDescription": "leci teraz",
         "cardDetails": {
             "deathrattle": {
-
+                "target": "enemy",
+                "area": "all",
+                "damage": 10
             }
         }
     }

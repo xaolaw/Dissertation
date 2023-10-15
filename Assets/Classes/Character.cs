@@ -18,6 +18,7 @@ public class Character
     private Arena arena;
     private EventCollector eventCollector;
     private bool died;
+    public bool hasDeathRattle;
 
     private System.Action<Tile, bool> deathrattle;
 
@@ -35,7 +36,8 @@ public class Character
 
         arena = (Arena)GameObject.FindObjectOfType(typeof(Arena));
         eventCollector = GameObject.FindObjectOfType<EventCollector>();
-        died = false;
+        this.died = false;
+        this.hasDeathRattle = false;
 
         // initialize functions
         deathrattle = delegate (Tile tile, bool side) { };
@@ -43,6 +45,8 @@ public class Character
 
     public void Move(Arena.Direction direction)
     {
+        if (HasDied())
+            return;
         Tile temp = tile.GetTile(direction);
         // moves out of boarder - moved sideways or moves in base
         if (temp == null)
@@ -99,7 +103,7 @@ public class Character
         return false;
     }
 
-    // attacks character, returns true if killed
+    // attacks character, returns true if kills
     public bool Attack(Character otherCharacter)
     {
         // Do something before attack
@@ -112,16 +116,40 @@ public class Character
 
     public void Die()
     {
-        // possible death rattle activation
-
+        // Set dead status and go to queue of deathrattles if has one
         died = true;
+        if (hasDeathRattle)
+        {
+            arena.AddToDyingQueue(this);
+            return;
+        }
 
-        deathrattle(tile, playerUnit);
-
+        // Clean up arena board and add death to history
         tile.UnitDied();
         UnityEngine.GameObject.Destroy(gameObject);
         UnityEngine.GameObject.Destroy(canvasInfo);
         eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit ? "Opponent" : "Player", "killed"));
+    }
+
+    public bool HasDied()
+    {
+        return died;
+    }
+
+    public void ActivateDeathRattle()
+    {
+        // Do possible Deathrattle
+        deathrattle(tile, playerUnit);
+
+        // Clean up arena board and add death to history
+        tile.UnitDied();
+        UnityEngine.GameObject.Destroy(gameObject);
+        UnityEngine.GameObject.Destroy(canvasInfo);
+        eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit ? "Opponent" : "Player", "killed"));
+
+        // Activate possible next Deathrattles
+        if (hasDeathRattle)
+            arena.NextDying();
     }
 
     public string toString() {
@@ -140,6 +168,7 @@ public class Character
 
     public void AddDeathrattle(Action<Tile, bool> deathrattle_)
     {
+        this.hasDeathRattle = true;
         this.deathrattle = deathrattle_;
     }
 }
