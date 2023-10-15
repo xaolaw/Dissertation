@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace Assets.Classes
 {
     public class CardJson 
@@ -24,6 +23,8 @@ namespace Assets.Classes
 
     public class Deathrattle
     {
-
+        public string target { get; set; }
+        public string area { get; set; }
+        public int damage { get; set; }
     }
 }

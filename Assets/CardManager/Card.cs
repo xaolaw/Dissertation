@@ -9,12 +9,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 {
     [SerializeField] private Canvas canvas;
     public string cardName;
-    public string description;
-    public string model;
-    public int power;
-    public CardDetails cardDetails;
+    private string description;
+    private string model;
+    private int power;
+    private CardDetails cardDetails;
 
-    public UnitSpawn.UnitType unitType;
     private CardManager cm;
     private Arena arena;
     private UnitSpawn unitSpawn;
@@ -66,8 +65,8 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     {
         List<Tile> tileList = arena.getTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
-        //Debug.Log(unitType);
-        if (!unitSpawn.Spawn(tile, unitType, power, arena.playerTurn, model))
+
+        if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model))
         {
             Debug.LogError("Spawning error");
         } else

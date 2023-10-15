@@ -17,7 +17,24 @@
         "cardDescription": "czolg co jedzie i wybucha jak ginie",
         "cardDetails": {
             "deathrattle": {
-
+                "target": "enemy",
+                "area": "all",
+                "damage": 3
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardPower": 10,
+        "cardType": "creature",
+        "cardImage": "2DModels/tank8",
+        "cardModel": "Starship1",
+        "cardDescription": "leci teraz",
+        "cardDetails": {
+            "deathrattle": {
+                "target": "enemy",
+                "area": "all",
+                "damage": 10
             }
         }
     },
