@@ -37,5 +37,20 @@
                 "damage": 6
             }
         }
+    },
+    {
+        "cardName": "Ball Tank",
+        "cardPower": 8,
+        "cardType": "Machine",
+        "cardImage": "2DModels/ballTank",
+        "cardModel": "BallTank",
+        "cardDescription": "BOOM!",
+        "cardDetails": {
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
     }
 ]
