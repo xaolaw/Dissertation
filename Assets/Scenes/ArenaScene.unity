@@ -611,7 +611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &219958451
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3183,7 +3183,7 @@ MonoBehaviour:
   playerBase: {fileID: 0}
   opponentBase: {fileID: 0}
   neighbourId: 0000000000000000000000000000000000000000000000000000000000000000
-  UnitDetailsPanel: {fileID: 0}
+  UnitDetailsPanel: {fileID: 219958450}
   playerIndicatorText: {fileID: 1317755866}
   playerColor: {r: 0.2901961, g: 0.90588236, b: 0.25490198, a: 0}
   opponentColor: {r: 0.5019608, g: 0.101960786, b: 0.5764706, a: 0}

@@ -10,6 +10,8 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     [SerializeField] private Canvas canvas;
     public string cardName;
     private string description;
+    //index of card in json
+    private int index;
     private string model;
     private int power;
     private CardDetails cardDetails;
@@ -33,12 +35,13 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         position = rectTransform.localPosition;
     }
     //initialize card all manadatory fields
-    public void Initialize(string name_, int power_, string image_, string model_, CardDetails cardDetails_)
+    public void Initialize(string name_, int power_, string image_, string model_, CardDetails cardDetails_,int index_)
     {
         cardName = name_;
         power = power_;
         model = model_;
         cardDetails = cardDetails_;
+        index = index_;
         Sprite image = Resources.Load<Sprite>(image_);
 
         Image imageComponent = GetComponent<Image>();
@@ -66,7 +69,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         List<Tile> tileList = arena.getTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
 
-        if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model))
+        if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
         {
             Debug.LogError("Spawning error");
         } else
