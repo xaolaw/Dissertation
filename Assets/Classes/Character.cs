@@ -18,11 +18,12 @@ public class Character
     private Arena arena;
     private EventCollector eventCollector;
     private bool died;
+    private int index;
     public bool hasDeathRattle;
 
     private System.Action<Tile, bool> deathrattle;
 
-    public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_)
+    public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_, int index_)
     {
         this.power = power_;
         this.name = name_;
@@ -30,6 +31,7 @@ public class Character
         this.gameObject = gameObject_;
         this.tile = tile_;
         this.canvasInfo = canvasInfo_;
+        this.index = index_;
         canvasInfo.SetActive(false);
         powerInfo = canvasInfo.GetComponentInChildren<TMP_Text>();
         powerInfo.text="Power:" + power.ToString();
@@ -38,7 +40,6 @@ public class Character
         eventCollector = GameObject.FindObjectOfType<EventCollector>();
         this.died = false;
         this.hasDeathRattle = false;
-
         // initialize functions
         deathrattle = delegate (Tile tile, bool side) { };
     }
@@ -170,5 +171,11 @@ public class Character
     {
         this.hasDeathRattle = true;
         this.deathrattle = deathrattle_;
+    }
+
+    //return index to know what card to show in details info
+    public int getIndexOfCard()
+    {
+        return index;
     }
 }

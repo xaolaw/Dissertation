@@ -28,7 +28,7 @@ public class CardManager : MonoBehaviour
             idx = Random.Range(0, cardsJson.Count);
             
             Card card = Instantiate(defaultCard);
-            card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails);
+            card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails,idx);
             addCard(card);
             card.transform.position = cardSlots[i].position;
             cards_in_hand.Add(card);
@@ -65,7 +65,7 @@ public class CardManager : MonoBehaviour
         }
         idx = Random.Range(0, cardsJson.Count);
         Card card = Instantiate(defaultCard);
-        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails);
+        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails,idx);
         addCard(card);
         card.transform.position = cardSlots[cards_in_hand.Count].position;
         cards_in_hand.Add(card);

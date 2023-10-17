@@ -65,7 +65,7 @@ crashlytics-build.properties
 AnotherCardGame_BurstDebugInformation_DoNotShip\
 AnotherCardGame_Data\
 UserSettings\
-Assets\Resources\3DModels+\
+Assets\Resources\
 
 # Executables
 *.exe
