@@ -372,7 +372,6 @@ public class Arena : MonoBehaviour
         UnitDetailsPanel.SetActive(true);
         //changing image to appropiate
         int index = tile.character.getIndexOfCard();
-        Debug.Log(index);
         Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
         image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
     }
