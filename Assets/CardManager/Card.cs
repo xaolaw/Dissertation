@@ -101,4 +101,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
+    public int GetJsonIndex()
+    {
+        return index;
+    }
+
 }

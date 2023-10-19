@@ -20,14 +20,13 @@ public class CardManager : MonoBehaviour
     private List<CardJson> cardsJson;
 
     private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 0, 1, 1, 1, 2};
-    private int deckSize;
     private List<int> usedCards = new List<int>();
     private int card_index;
 
     //a way to get number of cards left to draw / to next deck shuffle
     public int GetCardsLeftInDeck()
     {
-        return deckSize;
+        return playerDeck.Count - card_index - usedCards.Count;
     }
 
     public static void Shuffle<T>(ref List<T> list)
@@ -42,24 +41,38 @@ public class CardManager : MonoBehaviour
         }
     }
 
+    // shuffles list and resets list of cards not to draw
+    public void ShuffleDeck(ref List<int> deck)
+    {
+        usedCards.Clear();
+        card_index = 0;
+
+        foreach (Card c in cards_in_hand)
+        {
+            usedCards.Add(c.GetJsonIndex());
+        }
+
+        Shuffle<int>(ref deck);
+    }
+
     public void DrawCard(int slot)
     {
         // if no cards left do draw
-        if (card_index >= playerDeck.Count)
+        if (card_index + usedCards.Count >= playerDeck.Count)
         {
-            usedCards.Clear();
-
-            foreach(Card c in cards_in_hand)
-            {
-
-            }
+            ShuffleDeck(ref playerDeck);
         }
 
         // get card json id
-        int idx = playerDeck[card_index];
+        int idx = playerDeck[card_index++];
+        while (usedCards.Count > 0 && usedCards.Contains(idx))
+        {
+            usedCards.Remove(idx);
+            idx = playerDeck[card_index++];
+        }
 
         Card card = Instantiate(defaultCard);
-        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails);
+        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails, idx);
         addCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);
@@ -80,6 +93,7 @@ public class CardManager : MonoBehaviour
     public void InitalizeHand()
     {
         cardsJson = arena.getJsonCards();
+        ShuffleDeck(ref playerDeck);
 
         for (int i = 0; i < cards_number; i++)
         {
