@@ -3,11 +3,7 @@ guid: 7f892f7fa583d044cb58a8ed513b3683
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - tilePrefab: {fileID: 6577375014891292757, guid: ac36a629b770b814c8485bb58de57a72, type: 3}
-  - groundPrefab: {fileID: 343585007098415798, guid: 747cbf2d22c8be6408daa14f59b3fe27, type: 3}
-  - unitInfoContainer: {fileID: 1314473227136420728, guid: f31a7caf1e3154447ab9cf1111b80021, type: 3}
-  - turnInfoContainer: {fileID: 5811798260567612948, guid: 4d8534b9eb7d87341b78e33f13f502b7, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
