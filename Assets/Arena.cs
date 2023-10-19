@@ -90,12 +90,6 @@ public class Arena : MonoBehaviour
         ReadJson("Assets/CardDataBase/cardDB.json");    
 
         //setting details canvas
-        UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
-        UnitDetailsPanel.SetActive(false);
-        //hide menu panel
-        //GameObject menuPanel = GameObject.Find("MenuPanel");
-       // menuPanel.SetActive(false);
-      
         Vector3 startPosition = transform.position; // starting position of the grid
         for (int col = 0; col < columns; col++)
         {
@@ -140,8 +134,7 @@ public class Arena : MonoBehaviour
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
             if (tile != null && tile.character != null && UnitDetailsPanel && !areMenus)
             {
-                //change canvas status to appear
-                UnitDetailsPanel.SetActive(true);
+                ShowDetails(tile);
                 EnableMenu();
             }
         }
@@ -370,5 +363,16 @@ public class Arena : MonoBehaviour
     public List<CardJson> getJsonCards()
     {
         return cardsJson;
+    }
+
+    //showing appropiate image in details container
+    public void ShowDetails(Tile tile)
+    {
+        //change canvas status to appear
+        UnitDetailsPanel.SetActive(true);
+        //changing image to appropiate
+        int index = tile.character.getIndexOfCard();
+        Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
+        image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
     }
 }
