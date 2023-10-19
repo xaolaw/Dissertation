@@ -12,8 +12,8 @@ public class Arena : MonoBehaviour
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
    
     public float groundOffset = 0.1f;
-    public int rows = 5;
-    public int columns = 4;
+    public int rows = 4;
+    public int columns = 5;
     public bool playerTurn = true;
 
     public bool showUnitsPower = false;
@@ -23,10 +23,6 @@ public class Arena : MonoBehaviour
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
     private TurnButton turn_button;
-
-    //Dying units
-    private Queue dyingUnits = new Queue();
-    private bool deathrattleWave = false;
 
     //Direction for finding tiles
     public enum Direction
@@ -60,7 +56,7 @@ public class Arena : MonoBehaviour
     public enum UnitTargetGroup
     {
         SINGLE = 0,
-        BORDERING,
+        BOARDERING,
         SURROUNDING,
         IN_FRONT,
         BEHIND,
@@ -90,6 +86,14 @@ public class Arena : MonoBehaviour
         ReadJson("Assets/CardDataBase/cardDB.json");    
 
         //setting details canvas
+        UnitDetailsPanel = GameObject.Find("UnitDetailsPanel");
+        UnitDetailsPanel.SetActive(false);
+        //hide menu panel
+        //GameObject menuPanel = GameObject.Find("MenuPanel");
+        // menuPanel.SetActive(false);
+
+        setPlanetPosition();
+      
         Vector3 startPosition = transform.position; // starting position of the grid
         for (int col = 0; col < columns; col++)
         {
@@ -126,6 +130,12 @@ public class Arena : MonoBehaviour
         turn_button = FindObjectOfType<TurnButton>();
     }
 
+    private void setPlanetPosition() {
+        float planetRadious = gameObject.transform.GetChild(0).localScale.x/2;
+        Vector3 planetPosition = new Vector3(transform.position.x + (columns-1)/2f, transform.position.y - planetRadious - .5f , transform.position.z + (rows-1)/2f);
+        gameObject.transform.GetChild(0).position = planetPosition;
+    }
+
     //Showing informationa about unit on board in certain tile
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
@@ -134,7 +144,8 @@ public class Arena : MonoBehaviour
             Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
             if (tile != null && tile.character != null && UnitDetailsPanel && !areMenus)
             {
-                ShowDetails(tile);
+                //change canvas status to appear
+                UnitDetailsPanel.SetActive(true);
                 EnableMenu();
             }
         }
@@ -249,12 +260,12 @@ public class Arena : MonoBehaviour
                 areaTiles.Add(temp);
             }
         }
-        else if ( utg == UnitTargetGroup.BORDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
+        else if ( utg == UnitTargetGroup.BOARDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
         {
             Direction[] directions = new Direction[0];
             switch (utg)
             {
-                case UnitTargetGroup.BORDERING:
+                case UnitTargetGroup.BOARDERING:
                     directions = new Direction[4] { Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT };
                     break;
                 case UnitTargetGroup.SURROUNDING:
@@ -286,7 +297,7 @@ public class Arena : MonoBehaviour
         {
             foreach(Tile tile in areaTiles)
             {
-                if(tile.character != null && !tile.character.HasDied())
+                if(tile.character != null)
                 {
                     characters.Add(tile.character);
                 }
@@ -297,7 +308,7 @@ public class Arena : MonoBehaviour
             bool side = playerSide ^ put == PlayerUnitTarget.ENEMY;
             foreach (Tile tile in areaTiles)
             {
-                if (tile.character != null && tile.character.playerUnit == side && !tile.character.HasDied())
+                if (tile.character != null && tile.character.playerUnit == side)
                 {
                     characters.Add(tile.character);
                 }
@@ -315,27 +326,6 @@ public class Arena : MonoBehaviour
         {
             character.TakeDamage(damage);
         }
-    }
-
-    public void AddToDyingQueue(Character c)
-    {
-        if (dyingUnits.Count == 0 && !deathrattleWave)
-        {
-            deathrattleWave = true;
-            c.ActivateDeathRattle();
-            return;
-        }
-        dyingUnits.Enqueue(c);
-    }
-
-    public void NextDying()
-    {
-        if (dyingUnits.Count == 0)
-        {
-            deathrattleWave = false;
-            return;
-        }
-        ((Character)dyingUnits.Dequeue()).ActivateDeathRattle();
     }
 
     public void EnableMenu()
@@ -363,16 +353,5 @@ public class Arena : MonoBehaviour
     public List<CardJson> getJsonCards()
     {
         return cardsJson;
-    }
-
-    //showing appropiate image in details container
-    public void ShowDetails(Tile tile)
-    {
-        //change canvas status to appear
-        UnitDetailsPanel.SetActive(true);
-        //changing image to appropiate
-        int index = tile.character.getIndexOfCard();
-        Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
-        image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
     }
 }
