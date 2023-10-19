@@ -129,8 +129,6 @@ public class UnitSpawn : MonoBehaviour
                 origintile.Damage(PUTFromString(cardDetails.deathrattle.target), UTGFromString(cardDetails.deathrattle.area), side, cardDetails.deathrattle.damage);
             };
             character.AddDeathrattle(newDeathrattle);
-
-            Debug.Log("Dying one");
         }
 
         return character;
