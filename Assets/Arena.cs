@@ -175,7 +175,7 @@ public class Arena : MonoBehaviour
         return tileList;
     }
 
-    // zwraca tile, nie wykrywa wychodzenia na boki z planszy - wyjdzie z przeciwnej strony
+    // returns tiles, but doesn't detect going out of boarders - it goes around the arena
     public Tile GetTile(int id, Direction direction)
     {
         if (id + neighbourId[(int)direction] < tileList.Count && id + neighbourId[(int)direction] >= 0)
@@ -255,14 +255,14 @@ public class Arena : MonoBehaviour
     /// Functions for damaging ///
     //////////////////////////////
 
-    // wykrywa gdzie dokładnie znajdzie się jednostka po poruszeniu
+    // detects exacly where unit comes out after move in given direction (even on sides)
     public OutOfBoarder GetTargetInfo(int id, Direction direction)
     {
-        // czy wychodzi lewo lub prawo
+        // goes out of bounds (left or right)
         if ((id % columns == 0 && (direction == Direction.DL || direction == Direction.LEFT || direction == Direction.UL)) ||
            (id % columns == columns - 1 && (direction == Direction.DR || direction == Direction.RIGHT || direction == Direction.UR)))
             return OutOfBoarder.OUTSIDE;
-        // jaka baza
+        // which base
         if (id < columns && (direction == Direction.UL || direction == Direction.UP || direction == Direction.UR))
         {
             return OutOfBoarder.OPPONENT_BASE;
@@ -389,7 +389,7 @@ public class Arena : MonoBehaviour
     /// Functions for UI ///
     ////////////////////////
     
-    //Showing informationa about unit on board in certain tile
+    //Shows information about unit on board in certain tile
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
         if (gameObject)

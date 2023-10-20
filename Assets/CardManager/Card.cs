@@ -70,25 +70,22 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         Tile tile = tileList.Find(obj => obj.isClicked);
 
         // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline
-        if (true)
+        // casting spells will have to change this
+        if (!arena.IsBehindFrontline(tile))
         {
+            Debug.LogError("Spawning outside frontline");
+            return;
+        }
 
-            if (!arena.IsBehindFrontline(tile))
-            {
-                Debug.LogError("Spawning outside frontline");
-                return;
-            }
-
-            if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
-            {
-                Debug.LogError("Spawning error");
-            }
-            else
-            {
-                played = true;
-                this.gameObject.SetActive(false);
-                cm.update_cards(this);
-            }
+        if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
+        {
+            Debug.LogError("Spawning error");
+        }
+        else
+        {
+            played = true;
+            this.gameObject.SetActive(false);
+            cm.update_cards(this);
         }
     }
     public void OnPointerDown (PointerEventData eventData){
