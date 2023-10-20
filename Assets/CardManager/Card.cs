@@ -69,10 +69,19 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         List<Tile> tileList = arena.getTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
 
+        // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline
+        // casting spells will have to change this
+        if (!arena.IsBehindFrontline(tile))
+        {
+            Debug.LogError("Spawning outside frontline");
+            return;
+        }
+
         if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
         {
             Debug.LogError("Spawning error");
-        } else
+        }
+        else
         {
             played = true;
             this.gameObject.SetActive(false);

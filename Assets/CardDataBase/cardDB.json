@@ -9,11 +9,11 @@
         "cardDetails": null
     },
     {
-        "cardName": "Tank",
+        "cardName": "BallTank",
         "cardPower": 8,
         "cardType": "creature",
-        "cardImage": "2DModels/tank8_2",
-        "cardModel": "Tank",
+        "cardImage": "2DModels/ballTank",
+        "cardModel": "BallTank",
         "cardDescription": "czolg co jedzie i wybucha jak ginie",
         "cardDetails": {
             "deathrattle": {
@@ -35,21 +35,6 @@
                 "target": "any",
                 "area": "surrounding",
                 "damage": 6
-            }
-        }
-    },
-    {
-        "cardName": "Ball Tank",
-        "cardPower": 8,
-        "cardType": "Machine",
-        "cardImage": "2DModels/ballTank",
-        "cardModel": "BallTank",
-        "cardDescription": "BOOM!",
-        "cardDetails": {
-            "deathrattle": {
-                "target": "enemy",
-                "area": "surrounding",
-                "damage": 5
             }
         }
     }
