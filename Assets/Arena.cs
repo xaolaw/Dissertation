@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,23 +9,33 @@ using System.IO;
 
 public class Arena : MonoBehaviour
 {
+
+    ////////////////////////////////////////////////
+    /// Variables for ground and tiles and bases ///
+    ////////////////////////////////////////////////
+    
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
-   
+    //Currently clicked tile
+    private List<Tile> tileList = new List<Tile>();
+
     public float groundOffset = 0.1f;
     public int rows = 5;
     public int columns = 4;
-    public bool playerTurn = true;
 
-    public bool showUnitsPower = false;
     public Base playerBase;
     public Base opponentBase;
 
-    //Currently clicked tile
-    private List<Tile> tileList = new List<Tile>();
+    /////////////////////////////////////////////////
+    /// Variables for turn mechanics and damaging ///
+    /////////////////////////////////////////////////
+
     private TurnButton turn_button;
+
+    public bool playerTurn = true;
 
     //Dying units
     private Queue dyingUnits = new Queue();
+    // if there are units with deathrattles being killed by other deathrattles (future event queue)
     private bool deathrattleWave = false;
 
     //Direction for finding tiles
@@ -70,6 +80,11 @@ public class Arena : MonoBehaviour
 
     public int[] neighbourId = new int[8];
 
+    ////////////////////////
+    /// Variables for UI ///
+    ////////////////////////
+
+    public bool showUnitsPower = false;
     //a contianer for unit ifno with text and images
     public GameObject UnitDetailsPanel;
     //a text for a playr on enemy turn
@@ -79,15 +94,24 @@ public class Arena : MonoBehaviour
     public Color opponentColor;
     //bool if menus area on
     public bool areMenus = false;
+
+    ////////////////////////////////////////
+    /// Variables for cards and spawning ///
+    ////////////////////////////////////////
+
     private List<CardJson> cardsJson;
     public CardManager cardManager;
+
     public UnitSpawn unitSpawn;
 
+    //////////////////////
+    /// Initialization ///
+    //////////////////////
 
     void Start()
     {
         //setting db Json
-        ReadJson("Assets/CardDataBase/cardDB.json");    
+        ReadJson("Assets/CardDataBase/cardDB.json");
 
         setPlanetPosition();
 
@@ -97,6 +121,7 @@ public class Arena : MonoBehaviour
         {
             for (int row = 0; row < rows; row++)
             {
+                // initialize tile position
                 Vector3 tilePosition = new Vector3(startPosition.x + col, startPosition.y, startPosition.z + row);
                 GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, transform);
 
@@ -128,44 +153,21 @@ public class Arena : MonoBehaviour
         turn_button = FindObjectOfType<TurnButton>();
     }
 
-    private void setPlanetPosition() {
-        float planetRadious = gameObject.transform.GetChild(0).localScale.x/2;
-        Vector3 planetPosition = new Vector3(transform.position.x + (columns-1)/2f, transform.position.y - planetRadious - .5f , transform.position.z + (rows-1)/2f);
+
+    ////////////////////////////////
+    /// Functions for Background ///
+    ////////////////////////////////
+
+    private void setPlanetPosition()
+    {
+        float planetRadious = gameObject.transform.GetChild(0).localScale.x / 2;
+        Vector3 planetPosition = new Vector3(transform.position.x + (columns - 1) / 2f, transform.position.y - planetRadious - .5f, transform.position.z + (rows - 1) / 2f);
         gameObject.transform.GetChild(0).position = planetPosition;
     }
 
-
-    //Showing informationa about unit on board in certain tile
-    private void ShowInfoAboutGameObject(GameObject gameObject)
-    {
-        if (gameObject)
-        {
-            Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
-            if (tile != null && tile.character != null && UnitDetailsPanel && !areMenus)
-            {
-                ShowDetails(tile);
-                EnableMenu();
-            }
-        }
-
-    }
-    //Displays on ui info about units attack or hide
-    public void ShowAttackInfo(bool isShowing)
-    {
-        showUnitsPower = isShowing;
-        foreach (Tile tile in tileList)
-        {
-            if (tile.character != null && isShowing)
-            {
-                tile.character.DisplayAttackInfo();
-            }
-            else if(tile.character!=null && !isShowing)
-            {
-                tile.character.HideAttackInfo();
-            }
-        }
-    }
-   
+    //////////////////////////////////////////////////////
+    /// Functions for Tile selection and Tile checking ///
+    //////////////////////////////////////////////////////
 
     //return a list of all tile objects
     public List<Tile> getTileList()
@@ -173,23 +175,65 @@ public class Arena : MonoBehaviour
         return tileList;
     }
 
+    // zwraca tile, nie wykrywa wychodzenia na boki z planszy - wyjdzie z przeciwnej strony
+    public Tile GetTile(int id, Direction direction)
+    {
+        if (id + neighbourId[(int)direction] < tileList.Count && id + neighbourId[(int)direction] >= 0)
+        {
+            return tileList[id + neighbourId[(int)direction]];
+        }
+        return null;
+    }
+
+    // returns true if is at or behind frontlines during arena.playerTurn 
+    public bool IsBehindFrontline(Tile tile)
+    {
+        int row = tileList.IndexOf(tile) / rows;
+        // is near players base
+        if (row == (playerTurn ? 4 : 0))
+        {
+            return true;
+        }
+        // is near opponents base
+        if (row == (playerTurn ? 0 : 4))
+        {
+            return false;
+        }
+
+        int start   = playerTurn ? 0 : (tileList.Count - 1),
+            end     = playerTurn ? tileList.Count : -1,
+            inc     = playerTurn ? 1 : -1;
+        // find most forward players unit
+        for (int i = start; i != end; i += inc)
+        {
+            if (tileList[i].character != null && tileList[i].character.playerUnit == playerTurn)
+            {
+                return ((i / rows > row) ^ playerTurn) || (i / rows == row);
+            }
+        }
+        // not in front of base and no other units
+        return false;
+    }
+
+    ////////////////////////////////////
+    /// Functions for Turn mechanics ///
+    ////////////////////////////////////
+    
     public void EndTurn()
     {
         playerTurn = !playerTurn;
         int begin, end, increment;
         if (playerTurn)
         {
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
             begin = 0;
             end = tileList.Count;
             increment = 1;
-            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
-           
+
         }
         else
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
-           
-   
             begin = tileList.Count - 1;
             end = -1;
             increment = -1;
@@ -207,17 +251,11 @@ public class Arena : MonoBehaviour
 
     }
 
-    // zwraca tile, nie wykrywa wychodzenia na boki z planszy - wyjdzie z przeciwnej strony
-    public Tile GetTile(int id, Direction direction)
-    {
-        if (id + neighbourId[(int)direction] < tileList.Count && id + neighbourId[(int)direction] >= 0)
-        {
-            return tileList[id + neighbourId[(int)direction]];
-        }
-        return null;
-    }
+    //////////////////////////////
+    /// Functions for damaging ///
+    //////////////////////////////
 
-    // wykrywa gdzie dok�adnie znajdzie si� jednostka po poruszeniu
+    // wykrywa gdzie dokładnie znajdzie się jednostka po poruszeniu
     public OutOfBoarder GetTargetInfo(int id, Direction direction)
     {
         // czy wychodzi lewo lub prawo
@@ -241,24 +279,24 @@ public class Arena : MonoBehaviour
     {
         List<Character> characters = new List<Character>();
         List<Tile> areaTiles = new List<Tile>();
-        
+
         // get corresponding tiles
 
-        if ( utg == UnitTargetGroup.SINGLE)
+        if (utg == UnitTargetGroup.SINGLE)
         {
             areaTiles.Add(originTile);
         }
-        else if ( utg == UnitTargetGroup.IN_FRONT || utg == UnitTargetGroup.BEHIND)
+        else if (utg == UnitTargetGroup.IN_FRONT || utg == UnitTargetGroup.BEHIND)
         {
             Direction moveDirection = (playerTurn ^ utg == UnitTargetGroup.BEHIND) ? Direction.UP : Direction.DOWN;
             Tile temp = originTile;
-            while(GetTargetInfo(temp.id, moveDirection) == OutOfBoarder.INSIDE)
+            while (GetTargetInfo(temp.id, moveDirection) == OutOfBoarder.INSIDE)
             {
                 temp = GetTile(temp.id, moveDirection);
                 areaTiles.Add(temp);
             }
         }
-        else if ( utg == UnitTargetGroup.BORDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
+        else if (utg == UnitTargetGroup.BORDERING || utg == UnitTargetGroup.SURROUNDING || utg == UnitTargetGroup.SIDEWAYS)
         {
             Direction[] directions = new Direction[0];
             switch (utg)
@@ -278,7 +316,7 @@ public class Arena : MonoBehaviour
             }
             foreach (Direction direction in directions)
             {
-                if(GetTargetInfo(originTile.id, direction) == OutOfBoarder.INSIDE)
+                if (GetTargetInfo(originTile.id, direction) == OutOfBoarder.INSIDE)
                 {
                     areaTiles.Add(GetTile(originTile.id, direction));
                 }
@@ -293,9 +331,9 @@ public class Arena : MonoBehaviour
 
         if (put == PlayerUnitTarget.ANY)
         {
-            foreach(Tile tile in areaTiles)
+            foreach (Tile tile in areaTiles)
             {
-                if(tile.character != null && !tile.character.HasDied())
+                if (tile.character != null && !tile.character.HasDied())
                 {
                     characters.Add(tile.character);
                 }
@@ -320,7 +358,7 @@ public class Arena : MonoBehaviour
     {
         List<Character> characters = GetTargets(put, utg, originTile, playerSide);
 
-        foreach(Character character in characters)
+        foreach (Character character in characters)
         {
             character.TakeDamage(damage);
         }
@@ -347,6 +385,53 @@ public class Arena : MonoBehaviour
         ((Character)dyingUnits.Dequeue()).ActivateDeathRattle();
     }
 
+    ////////////////////////
+    /// Functions for UI ///
+    ////////////////////////
+    
+    //Showing informationa about unit on board in certain tile
+    private void ShowInfoAboutGameObject(GameObject gameObject)
+    {
+        if (gameObject)
+        {
+            Tile tile = tileList.Find(obj => obj.gameObject == gameObject);
+            if (tile != null && tile.character != null && UnitDetailsPanel && !areMenus)
+            {
+                ShowDetails(tile);
+                EnableMenu();
+            }
+        }
+
+    }
+
+    //Displays on ui info about units attack or hide
+    public void ShowAttackInfo(bool isShowing)
+    {
+        showUnitsPower = isShowing;
+        foreach (Tile tile in tileList)
+        {
+            if (tile.character != null && isShowing)
+            {
+                tile.character.DisplayAttackInfo();
+            }
+            else if (tile.character != null && !isShowing)
+            {
+                tile.character.HideAttackInfo();
+            }
+        }
+    }
+
+    //showing appropiate image in details container
+    public void ShowDetails(Tile tile)
+    {
+        //change canvas status to appear
+        UnitDetailsPanel.SetActive(true);
+        //changing image to appropiate
+        int index = tile.character.getIndexOfCard();
+        Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
+        image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
+    }
+
     public void EnableMenu()
     {
         areMenus = true;
@@ -356,6 +441,10 @@ public class Arena : MonoBehaviour
     {
         areMenus = false;
     }
+
+    ///////////////////////////
+    /// Functions for cards ///
+    ///////////////////////////
 
     //read json db
     private void ReadJson(string path)
@@ -372,16 +461,5 @@ public class Arena : MonoBehaviour
     public List<CardJson> getJsonCards()
     {
         return cardsJson;
-    }
-
-    //showing appropiate image in details container
-    public void ShowDetails(Tile tile)
-    {
-        //change canvas status to appear
-        UnitDetailsPanel.SetActive(true);
-        //changing image to appropiate
-        int index = tile.character.getIndexOfCard();
-        Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
-        image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
     }
 }
