@@ -2,6 +2,7 @@
     {
         "cardName": "Merkava",
         "cardPower": 15,
+        "cardEnergy": 3,
         "cardType": "creature",
         "cardImage": "2DModels/tank15_2",
         "cardModel": "Merkava",
@@ -11,6 +12,7 @@
     {
         "cardName": "Tank",
         "cardPower": 8,
+        "cardEnergy": 3,
         "cardType": "creature",
         "cardImage": "2DModels/tank8_2",
         "cardModel": "Tank",
@@ -26,6 +28,7 @@
     {
         "cardName": "Starship",
         "cardPower": 10,
+        "cardEnergy": 2,
         "cardType": "creature",
         "cardImage": "2DModels/starship",
         "cardModel": "Starship1",
@@ -41,6 +44,7 @@
     {
         "cardName": "Ball Tank",
         "cardPower": 8,
+        "cardEnergy": 2,
         "cardType": "Machine",
         "cardImage": "2DModels/ballTank",
         "cardModel": "BallTank",

@@ -9,6 +9,7 @@ namespace Assets.Classes
     {
         public string cardName { get; set; }
         public int cardPower { get; set; }
+        public int cardEnergy {get; set;}
         public string cardType { get; set; }
         public string cardImage { get; set; }
         public string cardModel { get; set; }

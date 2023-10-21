@@ -14,6 +14,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private int index;
     private string model;
     private int power;
+    private int energy;
     private CardDetails cardDetails;
 
     private CardManager cm;
@@ -35,10 +36,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         position = rectTransform.localPosition;
     }
     //initialize card all manadatory fields
-    public void Initialize(string name_, int power_, string image_, string model_, CardDetails cardDetails_,int index_)
+    public void Initialize(string name_, int power_, int energy_, string image_, string model_, CardDetails cardDetails_,int index_)
     {
         cardName = name_;
         power = power_;
+        energy = energy_;
         model = model_;
         cardDetails = cardDetails_;
         index = index_;

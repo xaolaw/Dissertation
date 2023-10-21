@@ -11,8 +11,13 @@ public class Base : MonoBehaviour
     private Vector3 basePosition;
     public int hp = 10;
     public int maxHp = 10;
+    public int energy = 10;
+    // fixed enrgy values
+    public int startEnergy = 10;
+    public int maxEnergy = 20;
 
     public HealthBar healthBar;
+    public EnergyBar energyBar;
     public Color baseColor;
 
     // Start is called before the first frame update
@@ -22,6 +27,8 @@ public class Base : MonoBehaviour
 
         healthBar.SetMaxHealth(maxHp);
         healthBar.SetHealth(hp);
+
+        energyBar.SetStartEnergy(startEnergy, maxEnergy);
 
         
         GameObject ob = Instantiate(basePrefab, basePosition, Quaternion.Euler(0, playerBase ? 90 : -90, 0));
@@ -38,5 +45,14 @@ public class Base : MonoBehaviour
     {
         hp -= damage;
         healthBar.SetHealth(hp);
+    }
+
+    public bool TakeEnergy(int energy){
+        if (this.energy >= energy){
+                this.energy -= energy;
+                energyBar.SetEnergy(this.energy);
+                return true;
+        } else
+        return false;;
     }
 }
