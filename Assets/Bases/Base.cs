@@ -15,7 +15,7 @@ public class Base : MonoBehaviour
     public int energy = 10;
     // fixed energy values
     public int startEnergy = 10;
-    public int maxEnergy = 20;
+    public int maxEnergy = 10;
 
     public HealthBar healthBar;
     public EnergyBar energyBar;
@@ -62,5 +62,10 @@ public class Base : MonoBehaviour
     public void GiveEnergy(int energy){
         this.energy = Math.Min(this.energy + energy, maxEnergy);
         energyBar.SetEnergy(this.energy);
+    }
+    public void UpdateEnergy(int energy){
+        maxEnergy += energy;
+        this.energy = maxEnergy;
+        energyBar.SetStartEnergy(this.energy, maxEnergy);
     }
 }

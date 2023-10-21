@@ -224,10 +224,10 @@ public class Arena : MonoBehaviour
     {
 
         if (playerTurn)
-            playerBase.GiveEnergy(energyFlow);
+            playerBase.UpdateEnergy(energyFlow);
             else
-            opponentBase.GiveEnergy(energyFlow);
-            
+            opponentBase.UpdateEnergy(energyFlow);
+
         playerTurn = !playerTurn;
         int begin, end, increment;
         if (playerTurn)
