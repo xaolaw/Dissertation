@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,12 @@ public class Base : MonoBehaviour
         healthBar.SetMaxHealth(maxHp);
         healthBar.SetHealth(hp);
 
+        print("hello");
+        if (playerBase){
+            print("player");
+        } else{
+            print("opponent");
+        }
         energyBar.SetStartEnergy(startEnergy, maxEnergy);
 
         
@@ -54,5 +61,12 @@ public class Base : MonoBehaviour
                 return true;
         } else
         return false;;
+    }
+    public bool TryTakeEnergy(int energy){
+        return this.energy >= energy;
+    }
+    public void GiveEnergy(int energy){
+        this.energy = Math.Min(this.energy + energy, maxEnergy);
+        energyBar.SetEnergy(this.energy);
     }
 }

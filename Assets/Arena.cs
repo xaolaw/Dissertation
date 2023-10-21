@@ -32,6 +32,7 @@ public class Arena : MonoBehaviour
     private TurnButton turn_button;
 
     public bool playerTurn = true;
+    private int energyFlow = 2;
 
     //Dying units
     private Queue dyingUnits = new Queue();
@@ -221,6 +222,12 @@ public class Arena : MonoBehaviour
     
     public void EndTurn()
     {
+
+        if (playerTurn)
+            playerBase.GiveEnergy(energyFlow);
+            else
+            opponentBase.GiveEnergy(energyFlow);
+            
         playerTurn = !playerTurn;
         int begin, end, increment;
         if (playerTurn)

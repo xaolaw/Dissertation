@@ -854,7 +854,8 @@ MonoBehaviour:
   playerBase: 1
   hp: 10
   maxHp: 10
-  startEnergy: 5
+  energy: 10
+  startEnergy: 10
   maxEnergy: 20
   healthBar: {fileID: 1914669586}
   energyBar: {fileID: 189116259}
@@ -3573,11 +3574,11 @@ MonoBehaviour:
   groundOffset: 0.1
   rows: 4
   columns: 5
-  playerTurn: 1
-  showUnitsPower: 0
   playerBase: {fileID: 0}
   opponentBase: {fileID: 0}
+  playerTurn: 1
   neighbourId: 0000000000000000000000000000000000000000000000000000000000000000
+  showUnitsPower: 0
   UnitDetailsPanel: {fileID: 219958450}
   playerIndicatorText: {fileID: 1317755866}
   playerColor: {r: 0.2901961, g: 0.90588236, b: 0.25490198, a: 0}
@@ -5957,7 +5958,8 @@ MonoBehaviour:
   playerBase: 0
   hp: 10
   maxHp: 10
-  startEnergy: 5
+  energy: 10
+  startEnergy: 10
   maxEnergy: 20
   healthBar: {fileID: 107173601}
   energyBar: {fileID: 1688597266}

@@ -23,6 +23,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Vector3 position;
+    private Base base_;
     public bool played = false;
 
 
@@ -78,7 +79,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             Debug.LogError("Spawning outside frontline");
             return;
         }
-
+        base_ =  this.arena.playerTurn ? arena.playerBase : arena.opponentBase;
+        if (!base_.TryTakeEnergy(energy))
+            Debug.Log("Player doesn't have enough energy");
         if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
         {
             Debug.LogError("Spawning error");
@@ -87,6 +90,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         {
             played = true;
             this.gameObject.SetActive(false);
+            base_.TakeEnergy(energy);
             cm.update_cards(this);
         }
     }
@@ -115,6 +119,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     public int GetJsonIndex()
     {
         return index;
+    }
+    public int GetEnergy(){
+        return energy;
     }
 
 }
