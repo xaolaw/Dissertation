@@ -13,7 +13,7 @@ public class Base : MonoBehaviour
     public int hp = 10;
     public int maxHp = 10;
     public int energy = 10;
-    // fixed enrgy values
+    // fixed energy values
     public int startEnergy = 10;
     public int maxEnergy = 20;
 
@@ -29,12 +29,6 @@ public class Base : MonoBehaviour
         healthBar.SetMaxHealth(maxHp);
         healthBar.SetHealth(hp);
 
-        print("hello");
-        if (playerBase){
-            print("player");
-        } else{
-            print("opponent");
-        }
         energyBar.SetStartEnergy(startEnergy, maxEnergy);
 
         
