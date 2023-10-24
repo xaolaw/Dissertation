@@ -15,7 +15,8 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private string model;
     private int power;
     private int energy;
-    private CardDetails cardDetails;
+    private SpawnDetails spawnDetails;
+    private Effect spellEffect;
 
     private CardManager cm;
     private Arena arena;
@@ -37,13 +38,12 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         position = rectTransform.localPosition;
     }
     //initialize card all manadatory fields
-    public void Initialize(string name_, int power_, int energy_, string image_, string model_, CardDetails cardDetails_,int index_)
+    public void Initialize(string name_, int energy_, string image_, SpawnDetails spawnDetails_, Effect spellEffect_, int index_)
     {
         cardName = name_;
-        power = power_;
         energy = energy_;
-        model = model_;
-        cardDetails = cardDetails_;
+        spawnDetails = spawnDetails_;
+        spellEffect = spellEffect_;
         index = index_;
         Sprite image = Resources.Load<Sprite>(image_);
 
@@ -72,27 +72,63 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         List<Tile> tileList = arena.getTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
 
-        // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline
-        // casting spells will have to change this
-        if (!arena.IsBehindFrontline(tile))
+        base_ = this.arena.playerTurn ? arena.playerBase : arena.opponentBase;
+        if (!base_.TryTakeEnergy(energy))
         {
-            Debug.LogError("Spawning outside frontline");
+            Debug.Log("Player doesn't have enough energy");
             return;
         }
-        base_ =  this.arena.playerTurn ? arena.playerBase : arena.opponentBase;
-        if (!base_.TryTakeEnergy(energy))
-            Debug.Log("Player doesn't have enough energy");
-        if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
+
+        // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline
+        if (spawnDetails != null)
         {
-            Debug.LogError("Spawning error");
+            Debug.Log("spawning " + spawnDetails.cardModel);
+            if (!arena.IsBehindFrontline(tile))
+            {
+                Debug.LogError("Spawning outside frontline");
+                return;
+            }
+            if (!unitSpawn.Spawn(tile, this.spawnDetails, arena.playerTurn, index))
+            {
+                Debug.LogError("Spawning error");
+                return;
+            }
+            else
+            {
+                
+            }
         }
-        else
+        // if the card is a spell
+        else if (spellEffect != null)
         {
-            played = true;
-            this.gameObject.SetActive(false);
-            base_.TakeEnergy(energy);
-            cm.update_cards(this);
+            switch(spellEffect.castTarget)
+            {
+                case "unit":
+                    if (tile.character == null)
+                    {
+                        Debug.LogError("this spell can be only casted on units");
+                        return;
+                    }
+                    if ((tile.character.playerUnit == arena.playerTurn && spellEffect.target == "enemy") || (tile.character.playerUnit != arena.playerTurn && spellEffect.target == "own"))
+                    {
+                        Debug.LogError("this spell can be only casted on units of other player");
+                        return;
+                    }
+                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage);
+                    break;
+                case "none":
+                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage);
+                    break;
+                default:
+                    Debug.LogError("Spell has wrong cast target: " + spellEffect.castTarget);
+                    break;
+            }
         }
+
+        played = true;
+        this.gameObject.SetActive(false);
+        base_.TakeEnergy(energy);
+        cm.update_cards(this);
     }
     public void OnPointerDown (PointerEventData eventData){
         //HandleSpawning();

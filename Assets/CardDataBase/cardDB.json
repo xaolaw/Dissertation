@@ -1,23 +1,24 @@
 [
     {
         "cardName": "Merkava",
-        "cardPower": 15,
         "cardEnergy": 3,
-        "cardType": "creature",
         "cardImage": "2DModels/tank15_2",
-        "cardModel": "Merkava",
         "cardDescription": "czolg co jedzie",
-        "cardDetails": null
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Merkava",
+            "cardPower": 15
+        }
     },
     {
         "cardName": "BallTank",
-        "cardPower": 8,
         "cardEnergy": 3,
-        "cardType": "creature",
         "cardImage": "2DModels/ballTank",
-        "cardModel": "BallTank",
         "cardDescription": "czolg co jedzie i wybucha jak ginie",
-        "cardDetails": {
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
             "deathrattle": {
                 "target": "enemy",
                 "area": "surrounding",
@@ -27,18 +28,30 @@
     },
     {
         "cardName": "Starship",
-        "cardPower": 10,
         "cardEnergy": 2,
-        "cardType": "creature",
         "cardImage": "2DModels/starship",
-        "cardModel": "Starship1",
         "cardDescription": "leci teraz",
-        "cardDetails": {
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
             "deathrattle": {
                 "target": "any",
                 "area": "surrounding",
                 "damage": 6
             }
+        }
+    },
+    {
+        "cardName": "Biden Blaaast",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/blast",
+        "cardDescription": "Blaaaast!!! one unit for 10 damage",
+        "spellEffect": {
+            "castTarget": "unit",
+            "target": "enemy",
+            "area": "single",
+            "damage": 10
         }
     }
 ]
