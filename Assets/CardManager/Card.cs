@@ -14,6 +14,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private int index;
     private string model;
     private int power;
+    private int energy;
     private CardDetails cardDetails;
 
     private CardManager cm;
@@ -22,6 +23,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Vector3 position;
+    private Base base_;
     public bool played = false;
 
 
@@ -35,10 +37,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         position = rectTransform.localPosition;
     }
     //initialize card all manadatory fields
-    public void Initialize(string name_, int power_, string image_, string model_, CardDetails cardDetails_,int index_)
+    public void Initialize(string name_, int power_, int energy_, string image_, string model_, CardDetails cardDetails_,int index_)
     {
         cardName = name_;
         power = power_;
+        energy = energy_;
         model = model_;
         cardDetails = cardDetails_;
         index = index_;
@@ -76,7 +79,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             Debug.LogError("Spawning outside frontline");
             return;
         }
-
+        base_ =  this.arena.playerTurn ? arena.playerBase : arena.opponentBase;
+        if (!base_.TryTakeEnergy(energy))
+            Debug.Log("Player doesn't have enough energy");
         if (!unitSpawn.Spawn(tile, this.cardDetails, power, arena.playerTurn, model, index))
         {
             Debug.LogError("Spawning error");
@@ -85,6 +90,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         {
             played = true;
             this.gameObject.SetActive(false);
+            base_.TakeEnergy(energy);
             cm.update_cards(this);
         }
     }
@@ -113,6 +119,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     public int GetJsonIndex()
     {
         return index;
+    }
+    public int GetEnergy(){
+        return energy;
     }
 
 }

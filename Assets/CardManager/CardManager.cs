@@ -72,7 +72,8 @@ public class CardManager : MonoBehaviour
         }
 
         Card card = Instantiate(defaultCard);
-        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails, idx);
+        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardEnergy,
+                        cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails, idx);
         addCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);
