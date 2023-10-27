@@ -74,7 +74,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
         // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline
         // casting spells will have to change this
-        if (!arena.IsBehindFrontline(tile))
+        if (!arena.IsBehindFrontline(tile, arena.playerTurn))
         {
             Debug.LogError("Spawning outside frontline");
             return;
