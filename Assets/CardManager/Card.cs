@@ -83,7 +83,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         if (spawnDetails != null)
         {
             Debug.Log("spawning " + spawnDetails.cardModel);
-            if (!arena.IsBehindFrontline(tile))
+            if (!arena.IsBehindFrontline(tile, arena.playerTurn))
             {
                 Debug.LogError("Spawning outside frontline");
                 return;
