@@ -22,6 +22,9 @@ public class Arena : MonoBehaviour
     public int rows = 5;
     public int columns = 4;
 
+    private int playerFrontline = 4;
+    private int enemyFrontline = 0;
+
     public Base playerBase;
     public Base opponentBase;
 
@@ -102,6 +105,9 @@ public class Arena : MonoBehaviour
     //bool if menus area on
     public bool areMenus = false;
 
+    public LineRenderer playerFrontlineLine;
+    public LineRenderer enemyFrontlineLine;
+
     ////////////////////////////////////////
     /// Variables for cards and spawning ///
     ////////////////////////////////////////
@@ -120,7 +126,7 @@ public class Arena : MonoBehaviour
         //setting db Json
         ReadJson("Assets/CardDataBase/cardDB.json");
 
-        setPlanetPosition();
+        SetPlanetPosition();
 
         //setting details canvas
         Vector3 startPosition = transform.position; // starting position of the grid
@@ -165,11 +171,25 @@ public class Arena : MonoBehaviour
     /// Functions for Background ///
     ////////////////////////////////
 
-    private void setPlanetPosition()
+    private void SetPlanetPosition()
     {
         float planetRadious = gameObject.transform.GetChild(0).localScale.x / 2;
         Vector3 planetPosition = new Vector3(transform.position.x + (columns - 1) / 2f, transform.position.y - planetRadious - .5f, transform.position.z + (rows - 1) / 2f);
         gameObject.transform.GetChild(0).position = planetPosition;
+    }
+
+    private void UpdateFrontlineGraphics(bool player)
+    {
+        if (player)
+        {
+            playerFrontlineLine.SetPosition(0, new Vector3((float)playerFrontline - 0.48f, 0.1f, -1));
+            playerFrontlineLine.SetPosition(1, new Vector3((float)playerFrontline - 0.48f, 0.1f, 4));
+        }
+        else
+        {
+            enemyFrontlineLine.SetPosition(0, new Vector3((float)enemyFrontline + 0.48f, 0.1f, -1));
+            enemyFrontlineLine.SetPosition(1, new Vector3((float)enemyFrontline + 0.48f, 0.1f, 4));
+        }
     }
 
     //////////////////////////////////////////////////////
@@ -193,39 +213,81 @@ public class Arena : MonoBehaviour
     }
 
     // returns true if is at or behind frontlines during arena.playerTurn 
-    public bool IsBehindFrontline(Tile tile)
+    public bool IsBehindFrontline(Tile tile, bool player)
     {
         int row = tileList.IndexOf(tile) / rows;
-        // is near players base
-        if (row == (playerTurn ? 4 : 0))
-        {
-            return true;
-        }
-        // is near opponents base
-        if (row == (playerTurn ? 0 : 4))
-        {
-            return false;
-        }
 
-        int start   = playerTurn ? 0 : (tileList.Count - 1),
-            end     = playerTurn ? tileList.Count : -1,
-            inc     = playerTurn ? 1 : -1;
+        return player ? row >= playerFrontline : row <= enemyFrontline;
+    }
+
+    private void UpdateFrontline(bool player)
+    {
+        bool foundUnit = false;
+
+        int start = player ? 0 : (tileList.Count - 1),
+            end = player ? tileList.Count : -1,
+            inc = player ? 1 : -1;
         // find most forward players unit
         for (int i = start; i != end; i += inc)
         {
-            if (tileList[i].character != null && tileList[i].character.playerUnit == playerTurn)
+            if (tileList[i].character != null && tileList[i].character.playerUnit == player)
             {
-                return ((i / rows > row) ^ playerTurn) || (i / rows == row);
+                if (player)
+                    playerFrontline = i / rows;
+                else
+                    enemyFrontline = i / rows;
+                foundUnit = true;
+                break;
             }
         }
-        // not in front of base and no other units
-        return false;
+
+        if (!foundUnit)
+        {
+            if (player)
+                playerFrontline = 4;
+            else
+                enemyFrontline = 0;
+        }
+
+        if (player && playerFrontline == 0)
+            playerFrontline = 1;
+        else if (!player && enemyFrontline == 4)
+            enemyFrontline = 3;
+
+        UpdateFrontlineGraphics(player);
+    }
+
+    public void CheckFrontline(int tileID, bool player)
+    {
+        int row = tileID / rows;
+        if (player)
+        {
+            row = row == 0 ? 1 : row;
+            if (row < playerFrontline)
+            {
+                playerFrontline = row;
+                UpdateFrontline(player);
+            }
+        }
+        else
+        {
+            row = row == 4 ? 3 : row;
+            if (row > enemyFrontline)
+            {
+                enemyFrontline = row;
+                UpdateFrontline(player);
+            }
+        }
+    }
+    public int GetPlayerFrontline(bool player)
+    {
+        return player ? playerFrontline : enemyFrontline;
     }
 
     ////////////////////////////////////
     /// Functions for Turn mechanics ///
     ////////////////////////////////////
-    
+
     public void EndTurn()
     {
 
@@ -260,6 +322,9 @@ public class Arena : MonoBehaviour
                 tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
             }
         }
+
+        UpdateFrontline(!playerTurn);
+
         turn_button.timer_started = true;
 
     }
@@ -373,7 +438,9 @@ public class Arena : MonoBehaviour
 
         foreach (Character character in characters)
         {
-            character.TakeDamage(damage);
+            // if unit died - update frontline
+            if (character.TakeDamage(damage))
+                UpdateFrontline(character.playerUnit);
         }
     }
 

@@ -44,10 +44,11 @@ public class Character
         deathrattle = delegate (Tile tile, bool side) { };
     }
 
-    public void Move(Arena.Direction direction)
+    // returns false if it died while moving, returns true if it survived
+    public bool Move(Arena.Direction direction)
     {
         if (HasDied())
-            return;
+            return false;
         Tile temp = tile.GetTile(direction);
         // moves out of boarder - moved sideways or moves in base
         if (temp == null)
@@ -58,13 +59,13 @@ public class Character
                 case Arena.OutOfBoarder.PLAYER_BASE:
                     arena.playerBase.TakeDamage(this.power);
                     Die();
-                    return;
+                    return false;
                 case Arena.OutOfBoarder.OPPONENT_BASE:
                     arena.opponentBase.TakeDamage(this.power);
                     Die();
-                    return;
+                    return false;
                 default:
-                    return;
+                    return false;
             }
         }
         // if tile has enemy on it
@@ -72,9 +73,9 @@ public class Character
         {
             Attack(temp.character);
             // if died while attacking don't move
-            if (power <= 0)
+            if (HasDied())
             {
-                return;
+                return false;
             }
         }
         // if tile is empty
@@ -85,9 +86,12 @@ public class Character
             temp.character = this;
             gameObject.transform.position = tile.unitPosition;
 
+            arena.CheckFrontline(temp.id, playerUnit);
+
             Vector3 canvas_position = Camera.main.WorldToScreenPoint(tile.gameObject.gameObject.transform.position);
             canvasInfo.transform.position = canvas_position + new Vector3(0, 20, 0);
         }
+        return true;
         
     }
 
