@@ -64,6 +64,12 @@ public class Arena : MonoBehaviour
         OPPONENT_BASE
     }
 
+    public enum SpellTarget
+    {
+        NONE = 0,
+        UNIT,
+    }
+
     public enum PlayerUnitTarget
     {
         ENEMY = 0,

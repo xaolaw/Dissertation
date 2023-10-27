@@ -8,22 +8,25 @@ namespace Assets.Classes
     public class CardJson 
     {
         public string cardName { get; set; }
-        public int cardPower { get; set; }
         public int cardEnergy {get; set;}
-        public string cardType { get; set; }
         public string cardImage { get; set; }
-        public string cardModel { get; set; }
         public string cardDescription { get; set; }
-        public CardDetails cardDetails { get; set; }
+        public SpawnDetails spawnUnit { get; set; }
+        public Effect spellEffect { get; set; }
     }
 
-    public class CardDetails
+    public class SpawnDetails
     {
-        public Deathrattle deathrattle { get; set; }
+        public string cardType { get; set; }
+        public string cardModel { get; set; }
+        public int cardPower { get; set; }
+        public Effect deathrattle { get; set; }
     }
 
-    public class Deathrattle
+    public class Effect
     {
+        // only for spells, it is ignored in deathrattles
+        public string castTarget { get; set; }
         public string target { get; set; }
         public string area { get; set; }
         public int damage { get; set; }

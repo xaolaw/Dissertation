@@ -19,7 +19,7 @@ public class CardManager : MonoBehaviour
     //a list of all cards with models path
     private List<CardJson> cardsJson;
 
-    private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 0, 1, 1, 1, 2};
+    private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 3, 3};
     private List<int> usedCards = new List<int>();
     private int card_index;
 
@@ -72,8 +72,7 @@ public class CardManager : MonoBehaviour
         }
 
         Card card = Instantiate(defaultCard);
-        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardPower, cardsJson[idx].cardEnergy,
-                        cardsJson[idx].cardImage, cardsJson[idx].cardModel, cardsJson[idx].cardDetails, idx);
+        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardEnergy, cardsJson[idx].cardImage, cardsJson[idx].spawnUnit, cardsJson[idx].spellEffect, idx);
         addCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);

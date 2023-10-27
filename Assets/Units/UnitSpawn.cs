@@ -40,7 +40,7 @@ public class UnitSpawn : MonoBehaviour
         }
     }
     //spawning unit on map
-    public bool Spawn(Tile tile, CardDetails cardDetails, int power, bool playerUnit, string model,int index)
+    public bool Spawn(Tile tile, SpawnDetails spawnDetails, bool playerUnit, int index)
     {
 
         if (tile != null && tile.character == null)
@@ -51,7 +51,7 @@ public class UnitSpawn : MonoBehaviour
             GameObject canvasInfo = Instantiate(infoPrefab, canvas_position+new Vector3(0,20,0), Quaternion.identity, canvas.transform) as GameObject;
             
             //creating an object on map
-            Character new_unit = CreateUnit(tile, cardDetails, playerUnit, power, canvasInfo, model, index);
+            Character new_unit = CreateUnit(tile, spawnDetails, playerUnit, canvasInfo, index);
             tile.addCharacter(new_unit);
 
         }
@@ -62,7 +62,7 @@ public class UnitSpawn : MonoBehaviour
         return true;
     }
 
-    private Arena.PlayerUnitTarget PUTFromString(string s)
+    static public Arena.PlayerUnitTarget PUTFromString(string s)
     {
         switch (s)
         {
@@ -76,7 +76,7 @@ public class UnitSpawn : MonoBehaviour
         }
     }
 
-    private Arena.UnitTargetGroup UTGFromString(string s)
+    static public Arena.UnitTargetGroup UTGFromString(string s)
     {
         switch (s)
         {
@@ -105,7 +105,7 @@ public class UnitSpawn : MonoBehaviour
         return defaultPrefab;
     }
 
-    private Character CreateUnit(Tile tile, CardDetails cardDetails, bool playerUnit, int power, GameObject info, string model, int index)
+    private Character CreateUnit(Tile tile, SpawnDetails spawnDetails, bool playerUnit, GameObject info, int index)
     {
         Vector3 position = tile.unitPosition;
         Vector3 rotation = new Vector3(0, 0, 0);
@@ -117,16 +117,16 @@ public class UnitSpawn : MonoBehaviour
         GameObject characterObject = null;
         Character character = null;
 
-        characterObject = Instantiate(GetPrefab(model), position, Quaternion.Euler(rotation), transform);
+        characterObject = Instantiate(GetPrefab(spawnDetails.cardModel), position, Quaternion.Euler(rotation), transform);
                 
-        character = new Character(model, power, playerUnit, characterObject, tile, info, index);
+        character = new Character(spawnDetails.cardModel, spawnDetails.cardPower, playerUnit, characterObject, tile, info, index);
 
-        if (cardDetails != null && cardDetails.deathrattle != null)
+        if (spawnDetails.deathrattle != null)
         {
             // set deathrattle
             System.Action<Tile, bool> newDeathrattle = delegate (Tile origintile, bool side)
             {
-                origintile.Damage(PUTFromString(cardDetails.deathrattle.target), UTGFromString(cardDetails.deathrattle.area), side, cardDetails.deathrattle.damage);
+                origintile.Damage(PUTFromString(spawnDetails.deathrattle.target), UTGFromString(spawnDetails.deathrattle.area), side, spawnDetails.deathrattle.damage);
             };
             character.AddDeathrattle(newDeathrattle);
         }
