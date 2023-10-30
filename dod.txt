@@ -1,5 +1,0 @@
-1) Create new branch (naming convention: [task type]/[task-name]-[description])
-2) Test and create pull request 
-3) Wait for review and approval
-4) Merge to main
-5) Update Jira
