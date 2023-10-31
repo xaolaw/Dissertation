@@ -54,6 +54,7 @@ public class UnitSpawn : MonoBehaviour
             Character new_unit = CreateUnit(tile, spawnDetails, playerUnit, canvasInfo, index);
             tile.addCharacter(new_unit);
 
+            new_unit.ActivateBattlecry();
         }
         else
         {
@@ -129,6 +130,16 @@ public class UnitSpawn : MonoBehaviour
                 origintile.Damage(PUTFromString(spawnDetails.deathrattle.target), UTGFromString(spawnDetails.deathrattle.area), side, spawnDetails.deathrattle.damage);
             };
             character.AddDeathrattle(newDeathrattle);
+        }
+
+        if (spawnDetails.battlecry != null)
+        {
+            // set battlecry
+            System.Action<Tile, bool> newBattlecry = delegate (Tile origintile, bool side)
+            {
+                origintile.Damage(PUTFromString(spawnDetails.battlecry.target), UTGFromString(spawnDetails.battlecry.area), side, spawnDetails.battlecry.damage);
+            };
+            character.AddBattlecry(newBattlecry);
         }
 
         return character;

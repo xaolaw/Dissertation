@@ -22,6 +22,7 @@ public class Character
     public bool hasDeathRattle;
 
     private System.Action<Tile, bool> deathrattle;
+    private System.Action<Tile, bool> battlecry;
 
     public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_, int index_)
     {
@@ -42,6 +43,7 @@ public class Character
         this.hasDeathRattle = false;
         // initialize functions
         deathrattle = delegate (Tile tile, bool side) { };
+        battlecry = delegate (Tile tile, bool side) { };
     }
 
     // returns false if it died while moving, returns true if it survived
@@ -141,6 +143,11 @@ public class Character
         return died;
     }
 
+    public void ActivateBattlecry()
+    {
+        battlecry(tile, playerUnit);
+    }
+
     public void ActivateDeathRattle()
     {
         // Do possible Deathrattle
@@ -175,6 +182,11 @@ public class Character
     {
         this.hasDeathRattle = true;
         this.deathrattle = deathrattle_;
+    }
+
+    public void AddBattlecry(Action<Tile, bool> battlecry_)
+    {
+        this.battlecry = battlecry_;
     }
 
     //return index to know what card to show in details info

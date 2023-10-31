@@ -7,7 +7,12 @@
         "spawnUnit": {
             "cardType": "creature",
             "cardModel": "Merkava",
-            "cardPower": 15
+            "cardPower": 15,
+            "battlecry": {
+                "target": "enemy",
+                "area": "bordering",
+                "damage": 3
+            }
         }
     },
     {
