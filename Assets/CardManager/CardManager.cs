@@ -22,6 +22,7 @@ public class CardManager : MonoBehaviour
     private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 3, 3};
     private List<int> usedCards = new List<int>();
     private int card_index;
+    private int maxCardsInHand = 3;
 
     //a way to get number of cards left to draw / to next deck shuffle
     public int GetCardsLeftInDeck()
@@ -57,6 +58,15 @@ public class CardManager : MonoBehaviour
 
     public void DrawCard(int slot)
     {
+        // can`t draw more cards than max limit
+        if (cards_in_hand.Count >= maxCardsInHand){
+            return;
+        }
+        // draw Card and add to the end of the hand
+        if (slot.Equals(-1)){
+            slot = cards_in_hand.Count;
+        }
+        
         // if no cards left do draw
         if (card_index + usedCards.Count >= playerDeck.Count)
         {
@@ -111,9 +121,14 @@ public class CardManager : MonoBehaviour
             cards_in_hand[i].transform.position = cardSlots[i].position;
         }
 
-        DrawCard(cards_in_hand.Count);
+        //DrawCard(cards_in_hand.Count);
 
         eventCollector.AddEvent(new GameEvent(updated_card.cardName, arena.playerTurn ? "Player" : "Opponent", "played"));
+    }
+
+    public Vector3 GetCardPositionInHand(Card card){
+        int index = cards_in_hand.IndexOf(card);
+        return cardSlots[index].position;
     }
 
     void Update(){

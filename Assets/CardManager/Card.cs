@@ -67,7 +67,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
     }
 
-    private void HandleSpawning()
+    private bool HandleSpawning()
     {
         List<Tile> tileList = arena.getTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
@@ -76,7 +76,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         if (!base_.TryTakeEnergy(energy))
         {
             Debug.Log("Player doesn't have enough energy");
-            return;
+            return false;
         }
 
         // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline
@@ -86,16 +86,12 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             if (!arena.IsBehindFrontline(tile, arena.playerTurn))
             {
                 Debug.LogError("Spawning outside frontline");
-                return;
+                return false;
             }
             if (!unitSpawn.Spawn(tile, this.spawnDetails, arena.playerTurn, index))
             {
                 Debug.LogError("Spawning error");
-                return;
-            }
-            else
-            {
-                
+                return false;
             }
         }
         // if the card is a spell
@@ -107,12 +103,12 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     if (tile.character == null)
                     {
                         Debug.LogError("this spell can be only casted on units");
-                        return;
+                        return false;
                     }
                     if ((tile.character.playerUnit == arena.playerTurn && spellEffect.target == "enemy") || (tile.character.playerUnit != arena.playerTurn && spellEffect.target == "own"))
                     {
                         Debug.LogError("this spell can be only casted on units of other player");
-                        return;
+                        return false;
                     }
                     arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage);
                     break;
@@ -121,7 +117,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     break;
                 default:
                     Debug.LogError("Spell has wrong cast target: " + spellEffect.castTarget);
-                    break;
+                    return false;
             }
         }
 
@@ -129,6 +125,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         this.gameObject.SetActive(false);
         base_.TakeEnergy(energy);
         cm.update_cards(this);
+        return true;
     }
     public void OnPointerDown (PointerEventData eventData){
         //HandleSpawning();
@@ -144,7 +141,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         canvasGroup.alpha = 1f;
         rectTransform.anchoredPosition = position;
         canvasGroup.blocksRaycasts = true;
-        HandleSpawning();
+        if(!HandleSpawning()){
+            RestorePreviousPosition();
+        };
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -158,6 +157,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     }
     public int GetEnergy(){
         return energy;
+    }
+    private void RestorePreviousPosition(){
+        Vector3 previousPosition = cm.GetCardPositionInHand(this);
+        rectTransform.position = previousPosition;
     }
 
 }
