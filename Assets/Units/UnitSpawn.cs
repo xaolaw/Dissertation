@@ -20,10 +20,12 @@ public class UnitSpawn : MonoBehaviour
     [Serializable]
     public struct PrefabName{
         public string name;
-        public GameObject prefab;
+        public GameObject playerPrefab;
+        public GameObject enemyPrefab;
     }
     public List<PrefabName> prefabNames = new List<PrefabName>();
-    public Dictionary<string, GameObject> prefabDict = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> playerPrefabDict = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> enemyPrefabDict = new Dictionary<string, GameObject>();
     //unit types to spwan
     public enum UnitType
     {
@@ -36,7 +38,8 @@ public class UnitSpawn : MonoBehaviour
         arena = FindObjectOfType<Arena>();
         foreach (PrefabName prefabName in prefabNames)
         {
-            prefabDict.Add(prefabName.name, prefabName.prefab);
+            playerPrefabDict.Add(prefabName.name, prefabName.playerPrefab);
+            enemyPrefabDict.Add(prefabName.name, prefabName.enemyPrefab);
         }
     }
     //spawning unit on map
@@ -99,10 +102,12 @@ public class UnitSpawn : MonoBehaviour
         }
     }
 
-    private GameObject GetPrefab(string s)
+    private GameObject GetPrefab(string s, bool playerUnit)
     {
-        if (prefabDict.ContainsKey(s))
-            return prefabDict[s];
+        if (playerUnit && playerPrefabDict.ContainsKey(s))
+            return playerPrefabDict[s];
+        if (!playerUnit && enemyPrefabDict.ContainsKey(s))
+            return enemyPrefabDict[s];
         return defaultPrefab;
     }
 
@@ -118,7 +123,7 @@ public class UnitSpawn : MonoBehaviour
         GameObject characterObject = null;
         Character character = null;
 
-        characterObject = Instantiate(GetPrefab(spawnDetails.cardModel), position, Quaternion.Euler(rotation), transform);
+        characterObject = Instantiate(GetPrefab(spawnDetails.cardModel, playerUnit), position, Quaternion.Euler(rotation), transform);
                 
         character = new Character(spawnDetails.cardModel, spawnDetails.cardPower, playerUnit, characterObject, tile, info, index);
 

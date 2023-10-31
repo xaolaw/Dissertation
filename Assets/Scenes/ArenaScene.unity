@@ -2395,17 +2395,23 @@ MonoBehaviour:
   opponentColor: {r: 0.5012596, g: 0.1004361, b: 0.5754717, a: 0}
   prefabNames:
   - name: Tank
-    prefab: {fileID: 919132149155446097, guid: ede0370147b92974eb0a611943ddefd8, type: 3}
+    playerPrefab: {fileID: 919132149155446097, guid: ede0370147b92974eb0a611943ddefd8, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: ede0370147b92974eb0a611943ddefd8, type: 3}
   - name: Starship1
-    prefab: {fileID: 919132149155446097, guid: 25bc7ef7f6698444e9ab7ae35a974f5b, type: 3}
+    playerPrefab: {fileID: 919132149155446097, guid: 25bc7ef7f6698444e9ab7ae35a974f5b, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: d4b133b721ed94b418f0607c46b4aab5, type: 3}
   - name: Starship2
-    prefab: {fileID: 919132149155446097, guid: 69b85871874c4714cbeddc834e5ee20c, type: 3}
+    playerPrefab: {fileID: 919132149155446097, guid: 69b85871874c4714cbeddc834e5ee20c, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: ee42dc37b3649024ea263168632f1093, type: 3}
   - name: Starship3
-    prefab: {fileID: 919132149155446097, guid: 6d136d4229cf50f478554320be918e42, type: 3}
+    playerPrefab: {fileID: 919132149155446097, guid: 6d136d4229cf50f478554320be918e42, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: 35a8e8de472646a4bb990bb841ce1d20, type: 3}
   - name: Merkava
-    prefab: {fileID: 919132149155446097, guid: 6a2be49c58430444f8f36e231d191b57, type: 3}
+    playerPrefab: {fileID: 919132149155446097, guid: 6a2be49c58430444f8f36e231d191b57, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: 6a2be49c58430444f8f36e231d191b57, type: 3}
   - name: BallTank
-    prefab: {fileID: 919132149155446097, guid: 011c1fda4845bc74987121e50dae9ef8, type: 3}
+    playerPrefab: {fileID: 919132149155446097, guid: 011c1fda4845bc74987121e50dae9ef8, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: 011c1fda4845bc74987121e50dae9ef8, type: 3}
 --- !u!1 &743875705
 GameObject:
   m_ObjectHideFlags: 0
