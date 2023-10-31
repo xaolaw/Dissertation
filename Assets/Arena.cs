@@ -290,6 +290,8 @@ public class Arena : MonoBehaviour
 
     public void EndTurn()
     {
+        // temporarily draw cards here, after multiplayer changes this will change
+        cardManager.DrawCard(-1);
 
         if (playerTurn)
             playerBase.UpdateEnergy(energyFlow);
