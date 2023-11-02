@@ -15,7 +15,6 @@ public class RelayCode : NetworkBehaviour
 
     public Button testRelayButton;
 
-    private int v = 0;
     public TMP_Text code_text;
     public TMP_Text variable_text;
 
@@ -46,19 +45,13 @@ public class RelayCode : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            TestServerRpc();
-        }
+
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void TestServerRpc()
+    private void StartArenaScene(ulong clientID)
     {
-        v += 1;
-        variable_text.text = "Connection test: " + v.ToString();
+        NetworkManager.SceneManager.LoadScene("ArenaScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
-
     // On button press
     async void CreateRelay()
     {
@@ -81,6 +74,8 @@ public class RelayCode : NetworkBehaviour
             );
 
             NetworkManager.Singleton.StartHost();
+
+            NetworkManager.Singleton.OnClientConnectedCallback += StartArenaScene;
 
         } catch (RelayServiceException e)
         {
@@ -105,6 +100,8 @@ public class RelayCode : NetworkBehaviour
             );
 
             NetworkManager.Singleton.StartClient();
+
+
         } catch (RelayServiceException e)
         {
             Debug.Log(e);

@@ -6,6 +6,7 @@ using TMPro;
 using Assets.Classes;
 using Newtonsoft.Json;
 using System.IO;
+using Unity.Netcode;
 
 public class Arena : MonoBehaviour
 {
@@ -33,6 +34,11 @@ public class Arena : MonoBehaviour
     /////////////////////////////////////////////////
 
     private TurnButton turn_button;
+    private float TURN_TIME = 10.0f;
+    private float time_left = 10.0f;
+    public bool timer_started = false;
+    public TurnTimer turn_timer;
+
 
     public bool playerTurn = true;
     private int energyFlow = 2;
@@ -117,6 +123,12 @@ public class Arena : MonoBehaviour
 
     public UnitSpawn unitSpawn;
 
+    ////////////////////////////////////////
+    /// Variables for cards and spawning ///
+    ////////////////////////////////////////
+
+    public ArenaNetworkManager manager;
+
     //////////////////////
     /// Initialization ///
     //////////////////////
@@ -164,6 +176,25 @@ public class Arena : MonoBehaviour
         Debug.Log(bases[0]);
         Debug.Log(bases[1]);
         turn_button = FindObjectOfType<TurnButton>();
+
+        turn_timer.setBarActive(playerTurn);
+        turn_timer.set_time(1.0f, playerTurn);
+
+        // host losuje kto zaczyna
+        if (manager.IsServer)
+        {
+            playerTurn = manager.SetStart(Random.Range(0, 2));
+            turn_timer.setBarActive(playerTurn);
+            turn_timer.set_time(TURN_TIME, playerTurn);
+            UpdateTurnIndicator();
+        }
+    }
+
+    // update arena and its components
+
+    private void Update()
+    {
+        UpdateTimer();
     }
 
 
@@ -197,9 +228,14 @@ public class Arena : MonoBehaviour
     //////////////////////////////////////////////////////
 
     //return a list of all tile objects
-    public List<Tile> getTileList()
+    public List<Tile> GetTileList()
     {
         return tileList;
+    }
+
+    public Tile GetSingleTile(int tileID, bool reversed = false)
+    {
+        return tileList[reversed?(tileList.Count - tileID - 1):tileID];
     }
 
     // returns tiles, but doesn't detect going out of boarders - it goes around the arena
@@ -288,14 +324,50 @@ public class Arena : MonoBehaviour
     /// Functions for Turn mechanics ///
     ////////////////////////////////////
 
+    private void UpdateTimer()
+    {
+        if (timer_started)
+        {
+            if (time_left > 0)
+            {
+                time_left = (time_left > Time.deltaTime) ? time_left - Time.deltaTime : 0;
+                turn_timer.set_time(time_left / TURN_TIME, playerTurn);
+            }
+            else
+            {
+                timer_started = false;
+                // we trust other player's timer
+                if (playerTurn)
+                    EndTurn();
+            }
+        }
+    }
+
     public void EndTurn()
     {
+        // signal other player
+        manager.SendSignal(ArenaNetworkManager.GameSignal.EndTurn);
+
+        // call end turn for only your arena
+        _EndTurn();
+    }
+
+    // Can only be called to end turn for one player
+    public void _EndTurn()
+    {
+        Debug.Log("End Turn");
+
+        timer_started = false;
+        turn_timer.set_time(0, playerTurn);
+        turn_timer.setBarActive(!playerTurn);
+        time_left = TURN_TIME;
+
         // temporarily draw cards here, after multiplayer changes this will change
         cardManager.DrawCard(-1);
 
         if (playerTurn)
             playerBase.UpdateEnergy(energyFlow);
-            else
+        else
             opponentBase.UpdateEnergy(energyFlow);
 
         playerTurn = !playerTurn;
@@ -327,7 +399,7 @@ public class Arena : MonoBehaviour
 
         UpdateFrontline(!playerTurn);
 
-        turn_button.timer_started = true;
+        timer_started = true;
 
     }
 
@@ -404,7 +476,7 @@ public class Arena : MonoBehaviour
         }
         else
         {
-            areaTiles = getTileList();
+            areaTiles = GetTileList();
         }
 
         // check if there are units, and if they belong to correct player
@@ -471,6 +543,16 @@ public class Arena : MonoBehaviour
     /// Functions for UI ///
     ////////////////////////
     
+    // Update turn indicator
+
+    public void UpdateTurnIndicator()
+    {
+        playerIndicatorText.text = playerTurn?
+            "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>":
+            "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
+    }
+
+
     //Shows information about unit on board in certain tile
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {
@@ -543,5 +625,10 @@ public class Arena : MonoBehaviour
     public List<CardJson> getJsonCards()
     {
         return cardsJson;
+    }
+
+    public void PlayCard(int cardID, int tileID)
+    {
+        manager.SendSignal(ArenaNetworkManager.GameSignal.PlayCard, cardID, tileID);
     }
 }

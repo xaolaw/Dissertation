@@ -13,6 +13,7 @@ public class CardManager : MonoBehaviour
     private List<Card> cards_in_hand = new List<Card>();
     private int cards_number = 3;
     private Arena arena;
+    private UnitSpawn unitSpawn;
     private GameObject canvas;
     public Transform[] cardSlots;
     public EventCollector eventCollector;
@@ -56,6 +57,17 @@ public class CardManager : MonoBehaviour
         Shuffle<int>(ref deck);
     }
 
+    private Card CreateCard(int cardID, bool only_for_online_call = false)
+    {
+        Card card = Instantiate(defaultCard);
+        card.Initialize(cardsJson[cardID].cardName, cardsJson[cardID].cardEnergy, cardsJson[cardID].cardImage, cardsJson[cardID].spawnUnit, cardsJson[cardID].spellEffect, cardID);
+        if (only_for_online_call)
+        {
+            card.SetStartFields(arena, unitSpawn);
+        }
+        return card;
+    }
+
     public void DrawCard(int slot)
     {
         // can`t draw more cards than max limit
@@ -81,14 +93,13 @@ public class CardManager : MonoBehaviour
             idx = playerDeck[card_index++];
         }
 
-        Card card = Instantiate(defaultCard);
-        card.Initialize(cardsJson[idx].cardName, cardsJson[idx].cardEnergy, cardsJson[idx].cardImage, cardsJson[idx].spawnUnit, cardsJson[idx].spellEffect, idx);
-        addCard(card);
+        Card card = CreateCard(idx);
+        AddCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);
     }
    
-    private void addCard(Card card){
+    private void AddCard(Card card){
         card.transform.SetParent(canvas.transform);
         card.gameObject.SetActive(true);
     }
@@ -96,6 +107,7 @@ public class CardManager : MonoBehaviour
 
     void Start(){
         arena = FindObjectOfType<Arena>();
+        unitSpawn = FindObjectOfType<UnitSpawn>();
         canvas = GameObject.Find("SpawnObjects");
         
     }
@@ -131,8 +143,13 @@ public class CardManager : MonoBehaviour
         return cardSlots[index].position;
     }
 
+    public Card GetCardByID(int cardID, bool only_for_online_call = false)
+    {
+        return CreateCard(cardID, only_for_online_call);
+    }
+
     void Update(){
-  //      if (Input.GetMouseButtonDown(0)){
+   //      if (Input.GetMouseButtonDown(0)){
    //         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
    //         print(mousePos);
    //     }

@@ -11,7 +11,7 @@ public class OnMouseEventTile : MonoBehaviour
     private void Awake()
     {
         arena = FindObjectOfType<Arena>();
-        tileList = arena.getTileList();
+        tileList = arena.GetTileList();
         attachedGameObject = gameObject;
         tile = tileList.Find(obj => obj.gameObject == attachedGameObject);
     }
