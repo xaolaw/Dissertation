@@ -32,14 +32,15 @@ public class ArenaNetworkManager : NetworkBehaviour
                 break;
 
             case GameSignal.PlayCard:
-                Debug.Log("Opponent played card: " + arg1 + " at " + arg2);
-
                 Card card = cardManager.GetCardByID(arg1, true);
                 card.OnPlay(arg2, true);
                 break;
 
             case GameSignal.SetStart:
                 arena.playerTurn = (arg1 == 1);
+                arena.turn_timer.setBarActive(arena.playerTurn);
+                arena.turn_timer.set_time(0, arena.playerTurn);
+                arena.UpdateTurnIndicator();
                 break;
 
             default:

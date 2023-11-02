@@ -15,7 +15,6 @@ public class RelayCode : NetworkBehaviour
 
     public Button testRelayButton;
 
-    //private int v = 0;
     public TMP_Text code_text;
     public TMP_Text variable_text;
 
@@ -46,21 +45,8 @@ public class RelayCode : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            TestServerRpc();
-        }
-        */
+
     }
-    /*
-    [ServerRpc(RequireOwnership = false)]
-    private void TestServerRpc()
-    {
-        v += 1;
-        variable_text.text = "Connection test: " + v.ToString();
-    }
-    */
 
     private void StartArenaScene(ulong clientID)
     {

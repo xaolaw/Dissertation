@@ -182,7 +182,12 @@ public class Arena : MonoBehaviour
 
         // host losuje kto zaczyna
         if (manager.IsServer)
+        {
             playerTurn = manager.SetStart(Random.Range(0, 2));
+            turn_timer.setBarActive(playerTurn);
+            turn_timer.set_time(TURN_TIME, playerTurn);
+            UpdateTurnIndicator();
+        }
     }
 
     // update arena and its components
@@ -538,6 +543,16 @@ public class Arena : MonoBehaviour
     /// Functions for UI ///
     ////////////////////////
     
+    // Update turn indicator
+
+    public void UpdateTurnIndicator()
+    {
+        playerIndicatorText.text = playerTurn?
+            "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>":
+            "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
+    }
+
+
     //Shows information about unit on board in certain tile
     private void ShowInfoAboutGameObject(GameObject gameObject)
     {

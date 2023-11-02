@@ -149,7 +149,7 @@ public class CardManager : MonoBehaviour
     }
 
     void Update(){
-  //      if (Input.GetMouseButtonDown(0)){
+   //      if (Input.GetMouseButtonDown(0)){
    //         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
    //         print(mousePos);
    //     }
