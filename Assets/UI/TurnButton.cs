@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,7 @@ public class TurnButton : MonoBehaviour
     public void EndTurn()
     {
         // you can only end your own turn
-        if (arena.playerTurn)
+        if (arena.playerTurn || !NetworkManager.Singleton.IsClient)
             arena.EndTurn();
     }
 }
