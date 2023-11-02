@@ -6,6 +6,7 @@ using TMPro;
 using Assets.Classes;
 using Newtonsoft.Json;
 using System.IO;
+using Unity.Netcode;
 
 public class Arena : MonoBehaviour
 {
@@ -33,6 +34,11 @@ public class Arena : MonoBehaviour
     /////////////////////////////////////////////////
 
     private TurnButton turn_button;
+    private float TURN_TIME = 10.0f;
+    private float time_left = 10.0f;
+    public bool timer_started = false;
+    public TurnTimer turn_timer;
+
 
     public bool playerTurn = true;
     private int energyFlow = 2;
@@ -117,6 +123,12 @@ public class Arena : MonoBehaviour
 
     public UnitSpawn unitSpawn;
 
+    ////////////////////////////////////////
+    /// Variables for cards and spawning ///
+    ////////////////////////////////////////
+
+    public ArenaNetworkManager manager;
+
     //////////////////////
     /// Initialization ///
     //////////////////////
@@ -164,6 +176,16 @@ public class Arena : MonoBehaviour
         Debug.Log(bases[0]);
         Debug.Log(bases[1]);
         turn_button = FindObjectOfType<TurnButton>();
+
+        turn_timer.setBarActive(playerTurn);
+        turn_timer.set_time(1.0f, playerTurn);
+    }
+
+    // update arena and its components
+
+    private void Update()
+    {
+        UpdateTimer();
     }
 
 
@@ -288,8 +310,40 @@ public class Arena : MonoBehaviour
     /// Functions for Turn mechanics ///
     ////////////////////////////////////
 
+    private void UpdateTimer()
+    {
+        if (timer_started)
+        {
+            if (time_left > 0)
+            {
+                time_left -= Time.deltaTime;
+                turn_timer.set_time(time_left / TURN_TIME, playerTurn);
+            }
+            else
+            {
+                timer_started = false;
+                EndTurn();
+            }
+        }
+    }
+
     public void EndTurn()
     {
+        // signal other player
+        manager.SendSignal(ArenaNetworkManager.GameSignal.EndTurn);
+
+        // call end turn for only your arena
+        _EndTurn();
+    }
+
+    // Can only be called to end turn for one player
+    public void _EndTurn()
+    {
+        timer_started = false;
+        turn_timer.set_time(0, playerTurn);
+        turn_timer.setBarActive(!playerTurn);
+        time_left = TURN_TIME;
+
         // temporarily draw cards here, after multiplayer changes this will change
         cardManager.DrawCard(-1);
 
@@ -327,7 +381,7 @@ public class Arena : MonoBehaviour
 
         UpdateFrontline(!playerTurn);
 
-        turn_button.timer_started = true;
+        timer_started = true;
 
     }
 
