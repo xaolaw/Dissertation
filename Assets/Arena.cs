@@ -180,7 +180,7 @@ public class Arena : MonoBehaviour
         turn_timer.setBarActive(playerTurn);
         turn_timer.set_time(1.0f, playerTurn);
 
-        // host losuje kto zaczyna
+        // host sets random starting player and if there is no host, then (offline test) it is as before
         if (manager.IsServer)
         {
             playerTurn = manager.SetStart(Random.Range(0, 2));
@@ -337,7 +337,7 @@ public class Arena : MonoBehaviour
             {
                 timer_started = false;
                 // we trust other player's timer
-                if (playerTurn)
+                if (playerTurn || !NetworkManager.Singleton.IsClient)
                     EndTurn();
             }
         }
