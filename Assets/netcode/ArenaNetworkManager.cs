@@ -6,6 +6,7 @@ using UnityEngine;
 public class ArenaNetworkManager : NetworkBehaviour
 {
     public Arena arena;
+    public CardManager cardManager;
 
     /////////////////////////////////
     /// Variables for multiplayer ///
@@ -14,7 +15,8 @@ public class ArenaNetworkManager : NetworkBehaviour
     public enum GameSignal
     {
         EndTurn = 0,
-        PlayCard
+        PlayCard,
+        SetStart
     }
 
     /////////////////////////////////
@@ -31,6 +33,13 @@ public class ArenaNetworkManager : NetworkBehaviour
 
             case GameSignal.PlayCard:
                 Debug.Log("Opponent played card: " + arg1 + " at " + arg2);
+
+                Card card = cardManager.GetCardByID(arg1, true);
+                card.OnPlay(arg2, true);
+                break;
+
+            case GameSignal.SetStart:
+                arena.playerTurn = (arg1 == 1);
                 break;
 
             default:
@@ -40,7 +49,7 @@ public class ArenaNetworkManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SendsignalServerRpc(GameSignal signal, int arg1, int arg2)
+    private void SendSignalServerRpc(GameSignal signal, int arg1, int arg2)
     {
         OrderRelay(signal, arg1, arg2);
     }
@@ -60,7 +69,14 @@ public class ArenaNetworkManager : NetworkBehaviour
         }
         else
         {
-            SendsignalServerRpc(signal, arg1, arg2);
+            SendSignalServerRpc(signal, arg1, arg2);
         }
+    }
+
+    public bool SetStart(int side)
+    {
+        SendSignalClientRpc(GameSignal.SetStart, side, 0);
+
+        return side == 0;
     }
 }

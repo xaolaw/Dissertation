@@ -7573,6 +7573,10 @@ PrefabInstance:
       propertyPath: arena
       value: 
       objectReference: {fileID: 1102960226}
+    - target: {fileID: 7279468773624895780, guid: 6ed12022af513b74d9f339ef3816c251, type: 3}
+      propertyPath: cardManager
+      value: 
+      objectReference: {fileID: 864326750}
     - target: {fileID: 7829844902117612165, guid: 6ed12022af513b74d9f339ef3816c251, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.0539265

@@ -17,6 +17,8 @@ public class TurnButton : MonoBehaviour
 
     public void EndTurn()
     {
-        arena.EndTurn();
+        // you can only end your own turn
+        if (arena.playerTurn)
+            arena.EndTurn();
     }
 }
