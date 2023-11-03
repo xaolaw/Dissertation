@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+
 public class CreateDeck : MonoBehaviour
 {
     public List<GameObject> cardsPlaceInUiList;
@@ -17,28 +19,33 @@ public class CreateDeck : MonoBehaviour
     private List<CardJson> cardsJson;
     private List<int> cardDeck = new();
     private int page = 0;
-    private readonly int cardsPerPage = 10;
+    private readonly int cardsPerPage = 8;
     private readonly int deckSize = 10;
     private string deckName;
+
+    //variables for page flip animation
+    public List<GameObject> pages;
+
 
     // Start is called before the first frame update
     void Start()
     {
         ReadJson("Assets/CardDataBase/cardDB.json");
         DisplayCards();
+        pages[0].transform.SetAsLastSibling();
     }
     //Display cards
     private void DisplayCards()
     {
-        for(int i=(0 + page*cardsPerPage); i<(10 + page * cardsPerPage); i++)
+        for(int i=(0 + page*cardsPerPage); i<(cardsPerPage + page * cardsPerPage); i++)
         {
             if (i < cardsJson.Count)
             {
-                InitalizeCardOnDisplay(cardsPlaceInUiList[i % 10], cardsJson[i].cardImage);
+                InitalizeCardOnDisplay(cardsPlaceInUiList[i % (cardsPerPage * 2)], cardsJson[i].cardImage);
             }
             else
             {
-                cardsPlaceInUiList[i % 10].SetActive(false);
+                cardsPlaceInUiList[i % (cardsPerPage * 2)].SetActive(false);
             }
         }
     }
@@ -96,12 +103,22 @@ public class CreateDeck : MonoBehaviour
     {
         page++;
         DisplayCards();
-        if ( page >= Mathf.Floor(cardsJson.Count/10))
+        if ( page >= Mathf.Floor(cardsJson.Count/cardsPerPage))
         {
             ArrowRight.SetActive(false);
         }
         ArrowLeft.SetActive(true);
         UpdateAllCounters();
+        
+        //check if we loop
+        if (page > 1)
+        {
+            pages[(page - 1) % 2].transform.SetAsLastSibling();
+            pages[page % 2].transform.rotation = Quaternion.identity;
+        }
+        //show next page
+        StartCoroutine(Rotate(90, (page - 1) % 2, 0.25f));
+        //pages[(page - 1) % 2].SetActive(false);
     }
     //Change collection page going left
     public void PageLeft()
@@ -114,7 +131,31 @@ public class CreateDeck : MonoBehaviour
         }
         ArrowRight.SetActive(true);
         UpdateAllCounters();
+
+        pages[page % 2].transform.SetAsLastSibling();
+        //show next page
+        StartCoroutine(Rotate(0, page % 2, 0.25f));
     }
+    //Rotate pages;
+    IEnumerator Rotate(float angle, int index, float time)
+    {
+        float value = 0f;
+        while (true)
+        {
+            Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+            value += Time.deltaTime * time;
+            pages[index].transform.rotation = Quaternion.Slerp(pages[index].transform.rotation, targetRotation, value); //smoothly turn the page
+            float angle1 = Quaternion.Angle(pages[index].transform.rotation, targetRotation); //calculate the angle between the given angle of rotation and the current angle of rotation
+            if (angle1 < 0.1f)
+            {            
+                if (page != 0)
+                    pages[(page + 1) % 2].transform.rotation = Quaternion.Euler(0, -270, 0);
+                break;
+            }
+            yield return null;
+
+        }
+    } 
     //////////////////////////////////////
     ///Deck building changing functions/// 
     //////////////////////////////////////
@@ -122,18 +163,19 @@ public class CreateDeck : MonoBehaviour
     //Add a card to deck
     public void AddToDeck(int index)
     {
-        index += (page * 10);
+        index += (page * cardsPerPage);
         if (CheckIfAbleToAdd(index))
         {
             cardDeck.Add(index);
             UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
         }
+        Debug.Log(cardDeck.Count);
     }
 
     //Remove card from deck
     public void DeleteFromDeck(int index)
     {
-        index += (page * 10);
+        index += (page * cardsPerPage);
         if (CheckIfAbleToRemove(index))
         {
             cardDeck.Remove(index);
@@ -166,14 +208,14 @@ public class CreateDeck : MonoBehaviour
     private void UpdateCounter(int value,int index)
     {
         //Getting counter from list of objects
-        GameObject counter = cardsPlaceInUiList[index % 10].transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
+        GameObject counter = cardsPlaceInUiList[index % (cardsPerPage * 2)].transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
         TMP_Text counterNumber = counter.transform.GetChild(0).GetComponent<TMP_Text>();
         counterNumber.text = value.ToString();
     }
     //Update all numbers when changing page in collection
     private void UpdateAllCounters()
     {
-        for (int j=0 + page * 10; j< 10 + page * 10; j++)
+        for (int j=0 + page * cardsPerPage; j< cardsPerPage + page * cardsPerPage; j++)
         {
             UpdateCounter(cardDeck.FindAll(x => x == j).Count, j);
         }
@@ -216,10 +258,11 @@ public class CreateDeck : MonoBehaviour
                 decks.Decks.Add(newDeck);
                 string updatedJson = JsonConvert.SerializeObject(decks);
                 File.WriteAllText("Assets/CreateDeck/Decks.json", updatedJson);
+                DisplayErrorAlert("You have successfuly saved deck");
             }
             else
             {
-                DisplayErrorAlert("Deck with this name already exists");
+                DisplayErrorAlert("Deck with this name already exists [To add i want to replace]");
                 Debug.LogError("Deck with this name already exists");
             }
         }
