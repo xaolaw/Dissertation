@@ -62,5 +62,260 @@
             "area": "single",
             "damage": 10
         }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "Starship",
+        "cardEnergy": 2,
+        "cardImage": "2DModels/starship",
+        "cardDescription": "leci teraz",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "Starship1",
+            "cardPower": 10,
+            "deathrattle": {
+                "target": "any",
+                "area": "surrounding",
+                "damage": 6
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
+    },
+    {
+        "cardName": "BallTank",
+        "cardEnergy": 3,
+        "cardImage": "2DModels/ballTank",
+        "cardDescription": "czolg co jedzie i wybucha jak ginie",
+        "cardInDeckLimitNumber": 3,
+        "spawnUnit": {
+            "cardType": "creature",
+            "cardModel": "BallTank",
+            "cardPower": 8,
+            "deathrattle": {
+                "target": "enemy",
+                "area": "surrounding",
+                "damage": 5
+            }
+        }
     }
 ]
