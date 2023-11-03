@@ -617,6 +617,7 @@ public class Arena : MonoBehaviour
         var jsonDB = reader.ReadToEnd();
         cardsJson = JsonConvert.DeserializeObject<List<CardJson>>(jsonDB);
 
+        reader.Close();
         //initalize card
         cardManager.InitalizeHand();
 

@@ -11,4 +11,9 @@ namespace Assets.Classes
         public string Name { get; set; }
         public int[] CardList { get; set; }
     }
+
+    public class DeckCollection
+    {
+        public List<Deck> Decks;
+    }
 }
