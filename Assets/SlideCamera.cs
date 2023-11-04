@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class SlideCamera : MonoBehaviour
 {
+    public bool DoBeginningAnimation = true;
+
     public Arena arena;
     public Camera main_camera;
     public Image black_out_image;
@@ -31,6 +33,8 @@ public class SlideCamera : MonoBehaviour
 
     private void Start()
     {
+        if (!DoBeginningAnimation) { Destroy(this.gameObject); return; }
+
         start_position = arena.ArenaCenterPoint() + new Vector3(-10, 0, 0);
         end_position = arena.ArenaCenterPoint() + new Vector3(0, 5, 0);
         look_at = arena.ArenaCenterPoint();
@@ -44,13 +48,14 @@ public class SlideCamera : MonoBehaviour
         main_canvas.enabled = false;
 
         transform.position = start_position;
+
     }
 
     void Update()
     {
         delta_time += Time.deltaTime;
 
-        if (ShowTimeLeft() < 0)
+        if (ShowTimeLeft() <= 0)
         {
             main_camera.enabled = true;
 
@@ -90,5 +95,6 @@ public class SlideCamera : MonoBehaviour
     private float ShowTimeLeft() { 
     return show_time-delta_time;
     }
+
 
 }

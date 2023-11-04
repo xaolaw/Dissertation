@@ -25,6 +25,11 @@ public class CardManager : MonoBehaviour
     private int card_index;
     private int maxCardsInHand = 3;
 
+    //deck graphics handler
+    public Image backOfDeck;
+    public Sprite[] backOfDeckSprites = new Sprite[5];//1,2,3,6,9
+    public Text backOfDeckText;
+
     //a way to get number of cards left to draw / to next deck shuffle
     public int GetCardsLeftInDeck()
     {
@@ -97,6 +102,8 @@ public class CardManager : MonoBehaviour
         AddCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);
+
+        UpdateBackOfDeck();
     }
    
     private void AddCard(Card card){
@@ -138,6 +145,32 @@ public class CardManager : MonoBehaviour
         eventCollector.AddEvent(new GameEvent(updated_card.cardName, arena.playerTurn ? "Player" : "Opponent", "played"));
     }
 
+    private void UpdateBackOfDeck()
+    {
+        if (playerDeck.Count >= 9)
+        {
+            backOfDeck.sprite = backOfDeckSprites[4];
+        }
+        else if (playerDeck.Count>=6) {
+            backOfDeck.sprite = backOfDeckSprites[3];
+        }
+        else if (playerDeck.Count >= 3)
+        {
+            backOfDeck.sprite = backOfDeckSprites[2];
+        }
+        else if (playerDeck.Count >= 2)
+        {
+            backOfDeck.sprite = backOfDeckSprites[1];
+        }
+        else if(playerDeck.Count>=1){
+            backOfDeck.sprite = backOfDeckSprites[0];
+        } else {
+            Destroy(backOfDeck.gameObject);
+        }
+
+        backOfDeckText.text = "Deck cards: " + playerDeck.Count;
+    }
+
     public Vector3 GetCardPositionInHand(Card card){
         int index = cards_in_hand.IndexOf(card);
         return cardSlots[index].position;
@@ -147,6 +180,7 @@ public class CardManager : MonoBehaviour
     {
         return CreateCard(cardID, only_for_online_call);
     }
+
 
     void Update(){
    //      if (Input.GetMouseButtonDown(0)){
