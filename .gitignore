@@ -62,10 +62,10 @@ crashlytics-build.properties
 
 
 # Data from multiplayer plugins and user settings
-AnotherCardGame_BurstDebugInformation_DoNotShip\
-AnotherCardGame_Data\
-UserSettings\
-Assets\Resources\
+AnotherCardGame_BurstDebugInformation_DoNotShip/
+AnotherCardGame_Data/
+UserSettings/
+Assets/Resources/*
 
 # Executables
 *.exe

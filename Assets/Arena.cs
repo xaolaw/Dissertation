@@ -22,6 +22,10 @@ public class Arena : MonoBehaviour
     public float groundOffset = 0.1f;
     public int rows = 5;
     public int columns = 4;
+    public Vector3 ArenaCenterPoint()
+    {
+        return new Vector3(transform.position.x + (columns - 1) / 2f, transform.position.y, transform.position.z + (rows - 1) / 2f);
+    }
 
     private int playerFrontline = 4;
     private int enemyFrontline = 0;
