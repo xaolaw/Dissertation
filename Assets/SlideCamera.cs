@@ -48,7 +48,6 @@ public class SlideCamera : MonoBehaviour
         main_canvas.enabled = false;
 
         transform.position = start_position;
-
     }
 
     void Update()
@@ -95,6 +94,5 @@ public class SlideCamera : MonoBehaviour
     private float ShowTimeLeft() { 
     return show_time-delta_time;
     }
-
 
 }

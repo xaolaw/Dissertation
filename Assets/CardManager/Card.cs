@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Assets.Classes;
+using Unity.Netcode;
 
 public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
@@ -77,7 +78,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     public bool OnPlay(int tileID, bool from_opponent = false)
     {
         // if it's not your turn and you try to play a card
-        if (!from_opponent && arena.playerTurn == false)
+        if (NetworkManager.Singleton.IsClient && !from_opponent && arena.playerTurn == false)
             return false;
 
         Tile tile = arena.GetSingleTile(tileID, from_opponent);

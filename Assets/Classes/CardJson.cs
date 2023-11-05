@@ -13,6 +13,7 @@ namespace Assets.Classes
         public string cardDescription { get; set; }
         public SpawnDetails spawnUnit { get; set; }
         public Effect spellEffect { get; set; }
+        public int cardInDeckLimitNumber { get; set; }
     }
 
     public class SpawnDetails
