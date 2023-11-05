@@ -14,6 +14,7 @@ public class CreateDeck : MonoBehaviour
     public GameObject ArrowRight;
     public GameObject ArrowLeft;
     public GameObject ErrorAlert;
+    public GameObject DynamicDeckCreator;
 
     //List of all cards from a game
     private List<CardJson> cardsJson;
@@ -169,7 +170,6 @@ public class CreateDeck : MonoBehaviour
             cardDeck.Add(index);
             UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
         }
-        Debug.Log(cardDeck.Count);
     }
 
     //Remove card from deck
