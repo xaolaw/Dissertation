@@ -10,25 +10,26 @@ using System.Collections;
 
 public class CreateDeck : MonoBehaviour
 {
+    //variables for page flip animation
+    public List<GameObject> pages;
     public List<GameObject> cardsPlaceInUiList;
     public GameObject ArrowRight;
     public GameObject ArrowLeft;
     public GameObject ErrorAlert;
+    public Transform DynamicDeckCreatorListObjectTransform;
     public GameObject DynamicDeckCreator;
 
+    
     //List of all cards from a game
     private List<CardJson> cardsJson;
     private List<int> cardDeck = new();
     private int page = 0;
     private readonly int cardsPerPage = 8;
-    private readonly int deckSize = 10;
+    private readonly int deckSize = 20;
     private string deckName;
-
-    //variables for page flip animation
-    public List<GameObject> pages;
-
-
-    private string JSON_PATH = "Assets/CardDataBase/Decks.json";
+    private readonly string JSON_PATH = "Assets/CardDataBase/Decks.json";
+    //Dict to remember new create objects in dynamic deck view
+    private Dictionary<int, GameObject> dynamicDeckCreatorDictObject = new();
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +45,9 @@ public class CreateDeck : MonoBehaviour
         {
             if (i < cardsJson.Count)
             {
-                InitalizeCardOnDisplay(cardsPlaceInUiList[i % (cardsPerPage * 2)], cardsJson[i].cardImage);
+                GameObject cardPlaceInUi = cardsPlaceInUiList[i % (cardsPerPage * 2)];
+                cardPlaceInUi.SetActive(true);
+                InitalizeCardOnDisplay(cardPlaceInUi.transform.GetChild(0).GetComponent<Image>(), cardsJson[i].cardImage);
             }
             else
             {
@@ -53,12 +56,10 @@ public class CreateDeck : MonoBehaviour
         }
     }
     //Display proper card
-    private void InitalizeCardOnDisplay(GameObject cardPlaceInUi, string imagePath)
+    private void InitalizeCardOnDisplay(Image imageComponent, string imagePath)
     {
-        cardPlaceInUi.SetActive(true);
+        
         Sprite image = Resources.Load<Sprite>(imagePath);
-
-        Image imageComponent = cardPlaceInUi.transform.GetChild(0).GetComponent<Image>();
 
         if (imageComponent != null)
         {
@@ -169,8 +170,12 @@ public class CreateDeck : MonoBehaviour
         index += (page * cardsPerPage);
         if (CheckIfAbleToAdd(index))
         {
+            if (cardDeck.FindAll(x => x == index).Count == 0)
+            {
+                IntalizeNewCardInDynamicView(index);
+            }
             cardDeck.Add(index);
-            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
+            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index, true);
         }
     }
 
@@ -180,8 +185,12 @@ public class CreateDeck : MonoBehaviour
         index += (page * cardsPerPage);
         if (CheckIfAbleToRemove(index))
         {
+            if (cardDeck.FindAll(x => x == index).Count == 1)
+            {
+                DestroyCardInDynamicView(index);
+            }
             cardDeck.Remove(index);
-            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
+            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index, true);
         }
     }
     //Check if we can add a card to deck
@@ -201,25 +210,79 @@ public class CreateDeck : MonoBehaviour
             return false;
         return true;
     }
+    ////////////////////////////
+    ///GameObject Instantiate/// 
+    ////////////////////////////
+
+    //Crate new card in DeckCardList view
+    public void IntalizeNewCardInDynamicView(int index)
+    {
+        //we create a new object in DeckCardList
+        GameObject newField = Instantiate(DynamicDeckCreator, DynamicDeckCreatorListObjectTransform);
+
+        cardDeck.Sort();
+        int position = 0;
+        for (int i = 0; i < cardDeck.Count; i++)
+        {
+            if (cardDeck[i] > index)
+            {
+                break;
+            }
+            if (i == 0 || cardDeck[i] != cardDeck[i - 1])
+            {
+                position++;
+            }
+        }
+        newField.transform.SetSiblingIndex(position);
+
+        newField.name = index.ToString();
+
+        Button minusButton = newField.transform.GetChild(0).transform.gameObject.transform.Find("Minus").GetComponent<Button>();
+        minusButton.onClick.AddListener(() => DeleteFromDeck(index));
+
+        Button plusbutton = newField.transform.GetChild(0).transform.gameObject.transform.Find("Plus").GetComponent<Button>();
+        plusbutton.onClick.AddListener(() => AddToDeck(index));
+
+        newField.SetActive(true);
+        InitalizeCardOnDisplay(newField.transform.Find("CardField").gameObject.GetComponent<Image>(), cardsJson[index].cardImage);
+
+        dynamicDeckCreatorDictObject.Add(index, newField);
+    }
+
+    //Destroy card in DeckCardList view
+    public void DestroyCardInDynamicView(int index)
+    {
+        Destroy(dynamicDeckCreatorDictObject[index]);
+        dynamicDeckCreatorDictObject.Remove(index);
+    }
+
     ///////////////////////////
     ///UI changing functions/// 
     ///////////////////////////
-    
 
     //Change number of cards in deck that are displayed
-    private void UpdateCounter(int value,int index)
+    private void UpdateCounter(int value, int index, bool isDyamicUpdate)
     {
         //Getting counter from list of objects
-        GameObject counter = cardsPlaceInUiList[index % (cardsPerPage * 2)].transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
-        TMP_Text counterNumber = counter.transform.GetChild(0).GetComponent<TMP_Text>();
-        counterNumber.text = value.ToString();
+        List<GameObject> tempList = new();
+        tempList.Add(cardsPlaceInUiList[index % (cardsPerPage * 2)].transform.GetChild(1).gameObject.transform.GetChild(1).gameObject);
+
+        if (isDyamicUpdate && dynamicDeckCreatorDictObject.ContainsKey(index))
+        {
+            tempList.Add(dynamicDeckCreatorDictObject[index].transform.GetChild(0).transform.Find("Counter").gameObject);
+        }
+        foreach (GameObject counter in tempList)
+        {
+            TMP_Text counterNumber = counter.transform.GetChild(0).GetComponent<TMP_Text>();
+            counterNumber.text = value.ToString();
+        }
     }
     //Update all numbers when changing page in collection
     private void UpdateAllCounters()
     {
         for (int j=0 + page * cardsPerPage; j< cardsPerPage + page * cardsPerPage; j++)
         {
-            UpdateCounter(cardDeck.FindAll(x => x == j).Count, j);
+            UpdateCounter(cardDeck.FindAll(x => x == j).Count, j, false);
         }
     }
     //Display Error when creating deck
