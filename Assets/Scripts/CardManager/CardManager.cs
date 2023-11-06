@@ -147,28 +147,36 @@ public class CardManager : MonoBehaviour
 
     private void UpdateBackOfDeck()
     {
-        if (playerDeck.Count >= 9)
+        int cards_left = GetCardsLeftInDeck();
+        if (!backOfDeck.gameObject.activeSelf && cards_left > 0)
+        {
+            backOfDeck.gameObject.SetActive(true);
+        }
+
+        if (cards_left >= 9)
         {
             backOfDeck.sprite = backOfDeckSprites[4];
         }
-        else if (playerDeck.Count>=6) {
+        else if (cards_left >= 6) {
             backOfDeck.sprite = backOfDeckSprites[3];
         }
-        else if (playerDeck.Count >= 3)
+        else if (cards_left >= 3)
         {
             backOfDeck.sprite = backOfDeckSprites[2];
         }
-        else if (playerDeck.Count >= 2)
+        else if (cards_left >= 2)
         {
             backOfDeck.sprite = backOfDeckSprites[1];
         }
-        else if(playerDeck.Count>=1){
+        else if(cards_left >= 1){
             backOfDeck.sprite = backOfDeckSprites[0];
-        } else {
-            Destroy(backOfDeck.gameObject);
+        }
+        else {
+            backOfDeck.gameObject.SetActive(false);
+            return;
         }
 
-        backOfDeckText.text = "Deck cards: " + playerDeck.Count;
+        backOfDeckText.text = "Deck cards: " + cards_left;
     }
 
     public Vector3 GetCardPositionInHand(Card card){
