@@ -58,6 +58,11 @@ public class UnitSpawn : MonoBehaviour
             tile.addCharacter(new_unit);
 
             new_unit.ActivateBattlecry();
+
+            for(int i = 0; i < spawnDetails.speed && !new_unit.HasDied(); ++i)
+            {
+                new_unit.Move(playerUnit ? Arena.Direction.UP : Arena.Direction.DOWN);
+            }
         }
         else
         {

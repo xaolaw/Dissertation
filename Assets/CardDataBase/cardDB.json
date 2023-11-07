@@ -9,6 +9,7 @@
             "cardType": "creature",
             "cardModel": "Merkava",
             "cardPower": 15,
+            "speed": 1,
             "battlecry": {
                 "target": "enemy",
                 "area": "bordering",
@@ -26,6 +27,7 @@
             "cardType": "creature",
             "cardModel": "BallTank",
             "cardPower": 8,
+            "speed": 1,
             "deathrattle": {
                 "target": "enemy",
                 "area": "surrounding",
@@ -43,6 +45,7 @@
             "cardType": "creature",
             "cardModel": "Starship1",
             "cardPower": 10,
+            "speed": 2,
             "deathrattle": {
                 "target": "any",
                 "area": "surrounding",
