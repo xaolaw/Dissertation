@@ -126,10 +126,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                             return false;
                         }
                     }
-                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage);
+                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage.Value);
                     break;
                 case "none":
-                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage);
+                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage.Value);
                     break;
                 default:
                     Debug.LogError("Spell has wrong cast target: " + spellEffect.castTarget);
@@ -171,9 +171,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         canvasGroup.alpha = 1f;
         rectTransform.anchoredPosition = position;
         canvasGroup.blocksRaycasts = true;
+        cm.StartPlayingCard();
         if(!HandleSpawning()){
             RestorePreviousPosition();
-        };
+        }
+        cm.FinishPlayingCard();
     }
 
     public void OnDrag(PointerEventData eventData)

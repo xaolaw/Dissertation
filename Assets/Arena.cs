@@ -87,15 +87,17 @@ public class Arena : MonoBehaviour
         ANY
     }
 
-    public enum UnitTargetGroup
+    public enum UnitTargetGroup     //  Legend for JSON                                             [meaning]
     {
-        SINGLE = 0,
-        BORDERING,
-        SURROUNDING,
-        IN_FRONT,
-        BEHIND,
-        SIDEWAYS,
-        ALL
+        SINGLE = 0,                 // single                                                       [on place of unit]
+        BORDERING,                  // bordering                                                    [units orthogonally connected (no corners)]
+        SURROUNDING,                // surrounding                                                  [units orthogonally and diagonally connected (bordering with corners)]
+        IN_FRONT,                   // in_front                                                     [all units in front]
+        BEHIND,                     // behind                                                       [all units behind]
+        SIDEWAYS,                   // sideways                                                     [units directly to left or right (that are bordering)]
+        ALL,                        // all (or anything that doesn't match the rest - it is default)[all units]
+        SINGLE_BEHIND,              // single_behind                                                [one unit directly behind]
+        SINGLE_IN_FRONT             // single_in_front                                              [one unit directly in front]
     }
 
     public int[] neighbourId = new int[8];
@@ -366,8 +368,10 @@ public class Arena : MonoBehaviour
         turn_timer.setBarActive(!playerTurn);
         time_left = TURN_TIME;
 
-        // temporarily draw cards here, after multiplayer changes this will change
-        cardManager.DrawCard(-1);
+        if (!NetworkManager.Singleton.IsClient || playerTurn)
+        {
+            cardManager.DrawCard();
+        }
         cardManager.RestoreCardsColor(playerBase.GetEnergy());
         cardManager.RestoreCardsColor(opponentBase.GetEnergy());
         
@@ -436,9 +440,8 @@ public class Arena : MonoBehaviour
 
     }
 
-    public List<Character> GetTargets(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide)
+    public List<Tile> GetTargetTiles(UnitTargetGroup utg, Tile originTile, bool playerSide)
     {
-        List<Character> characters = new List<Character>();
         List<Tile> areaTiles = new List<Tile>();
 
         // get corresponding tiles
@@ -446,6 +449,14 @@ public class Arena : MonoBehaviour
         if (utg == UnitTargetGroup.SINGLE)
         {
             areaTiles.Add(originTile);
+        }
+        else if (utg == UnitTargetGroup.SINGLE_BEHIND || utg == UnitTargetGroup.SINGLE_IN_FRONT)
+        {
+            Direction moveDirection = (utg == UnitTargetGroup.SINGLE_BEHIND ^ playerTurn) ? Direction.UP : Direction.DOWN;
+            if (GetTargetInfo(originTile.id, moveDirection) == OutOfBoarder.INSIDE)
+            {
+                areaTiles.Add(GetTile(originTile.id, moveDirection));
+            }
         }
         else if (utg == UnitTargetGroup.IN_FRONT || utg == UnitTargetGroup.BEHIND)
         {
@@ -487,6 +498,28 @@ public class Arena : MonoBehaviour
         {
             areaTiles = GetTileList();
         }
+
+        return areaTiles;
+    }
+
+    public List<Tile> GetEmptyTargetTiles(UnitTargetGroup utg, Tile originTile, bool playerSide)
+    {
+        List<Tile> wyn = new List<Tile>();
+        foreach (Tile tile in GetTargetTiles(utg, originTile, playerSide))
+        {
+            if (tile.character == null)
+            {
+                wyn.Add(tile);
+            }
+        }
+
+        return wyn;
+    }
+
+    public List<Character> GetTargets(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide)
+    {
+        List<Character> characters = new List<Character>();
+        List<Tile> areaTiles = GetTargetTiles(utg, originTile, playerSide);
 
         // check if there are units, and if they belong to correct player
 
