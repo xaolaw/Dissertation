@@ -12,10 +12,10 @@ public class Base : MonoBehaviour
     private Vector3 basePosition;
     public int hp = 10;
     public int maxHp = 10;
-    public int energy = 10;
+    private int energy = 20;
     // fixed energy values
-    public int startEnergy = 10;
-    public int maxEnergy = 10;
+    private int startEnergy = 20;
+    private int maxEnergy = 20;
 
     public HealthBar healthBar;
     public EnergyBar energyBar;
@@ -67,5 +67,9 @@ public class Base : MonoBehaviour
         maxEnergy += energy;
         this.energy = maxEnergy;
         energyBar.SetStartEnergy(this.energy, maxEnergy);
+    }
+
+    public int GetEnergy(){
+        return energy;
     }
 }

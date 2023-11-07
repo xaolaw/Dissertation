@@ -144,7 +144,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             played = true;
             this.gameObject.SetActive(false);
             base_.TakeEnergy(energy);
-            cm.update_cards(this);
+            cm.update_cards(this, base_.GetEnergy());
         }
         return true;
     }
@@ -153,7 +153,8 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     {
         List<Tile> tileList = arena.GetTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
-
+        if (tile == null)
+            return false;
         return OnPlay(tile.id);
     }
     public void OnPointerDown (PointerEventData eventData){

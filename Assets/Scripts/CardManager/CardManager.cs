@@ -11,7 +11,8 @@ public class CardManager : MonoBehaviour
     
     public Card defaultCard;
     private List<Card> cards_in_hand = new List<Card>();
-    private int cards_number = 3;
+    // number of cards player start with
+    private int cards_number = 5;
     private Arena arena;
     private UnitSpawn unitSpawn;
     private GameObject canvas;
@@ -23,7 +24,7 @@ public class CardManager : MonoBehaviour
     private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 3, 3};
     private List<int> usedCards = new List<int>();
     private int card_index;
-    private int maxCardsInHand = 3;
+    private int maxCardsInHand = 5;
 
     //deck graphics handler
     public Image backOfDeck;
@@ -130,19 +131,24 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter (Collision collision){
-     //   print("clickerd123");
-    }
-
-    public void update_cards(Card updated_card){
+    public void update_cards(Card updated_card, int currentEnergy){
         cards_in_hand.Remove(updated_card);
         for(int i=0; i<cards_in_hand.Count; i++){
             cards_in_hand[i].transform.position = cardSlots[i].position;
+            if (cards_in_hand[i].GetEnergy() > currentEnergy){
+                cards_in_hand[i].GetComponent<Image>().color = Color.grey;
+            } 
         }
 
-        //DrawCard(cards_in_hand.Count);
-
         eventCollector.AddEvent(new GameEvent(updated_card.cardName, arena.playerTurn ? "Player" : "Opponent", "played"));
+    }
+
+    public void RestoreCardsColor(int currentEnergy){
+        foreach (Card c in cards_in_hand)
+        {
+            if (c.GetEnergy() <= currentEnergy)
+            c.GetComponent<Image>().color = Color.white;;
+        }
     }
 
     private void UpdateBackOfDeck()
@@ -189,11 +195,4 @@ public class CardManager : MonoBehaviour
         return CreateCard(cardID, only_for_online_call);
     }
 
-
-    void Update(){
-   //      if (Input.GetMouseButtonDown(0)){
-   //         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-   //         print(mousePos);
-   //     }
-    }
 }

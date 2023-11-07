@@ -368,11 +368,16 @@ public class Arena : MonoBehaviour
 
         // temporarily draw cards here, after multiplayer changes this will change
         cardManager.DrawCard(-1);
+        cardManager.RestoreCardsColor(playerBase.GetEnergy());
+        cardManager.RestoreCardsColor(opponentBase.GetEnergy());
+        
 
-        if (playerTurn)
+        if (playerTurn){
             playerBase.UpdateEnergy(energyFlow);
-        else
+            }
+        else {
             opponentBase.UpdateEnergy(energyFlow);
+            }
 
         playerTurn = !playerTurn;
         int begin, end, increment;
