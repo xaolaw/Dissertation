@@ -67,7 +67,7 @@ public class UnitSpawn : MonoBehaviour
 
             for(int i = 0; i < spawnDetails.speed && !new_unit.HasDied(); ++i)
             {
-                new_unit.Move(playerUnit ? Arena.Direction.UP : Arena.Direction.DOWN, Arena.MovingReason.SPAWN);
+                new_unit.Move(playerUnit ? Arena.Direction.UP : Arena.Direction.DOWN, Character.MovingReason.SPAWN);
             }
         }
         else
