@@ -18,25 +18,66 @@ public class CreateDeck : MonoBehaviour
     public GameObject ErrorAlert;
     public Transform DynamicDeckCreatorListObjectTransform;
     public GameObject DynamicDeckCreator;
+    //variable that stores deck name inside input
+    public TMP_InputField InputDeckName;
 
-    
+
     //List of all cards from a game
     private List<CardJson> cardsJson;
     private List<int> cardDeck = new();
     private int page = 0;
     private readonly int cardsPerPage = 8;
-    private readonly int deckSize = 20;
+    private readonly int deckSize = 10;
     private string deckName;
-    private readonly string JSON_PATH = "Assets/CardDataBase/Decks.json";
+    private readonly string JSON_DECK_PATH = "Assets/CardDataBase/Decks.json";
+    private readonly string JSON_COLLECTION_PATH = "Assets/CardDataBase/cardDB.json";
+    private bool wasJsonRead = false;
     //Dict to remember new create objects in dynamic deck view
     private Dictionary<int, GameObject> dynamicDeckCreatorDictObject = new();
+    //variable to Store all decks from a file
+    private DeckCollection decks;
 
     // Start is called before the first frame update
     void Start()
     {
-        ReadJson("Assets/CardDataBase/cardDB.json");
+        if (!wasJsonRead)
+            ReadJson(JSON_COLLECTION_PATH);
+        wasJsonRead = true;
+
         DisplayCards();
         pages[0].transform.SetAsLastSibling();
+        for (int i = 0; i < cardsPerPage * 2; i++)
+        {
+            int currentIndex = i;
+  
+            Button minusButton = cardsPlaceInUiList[i].transform.GetChild(1).transform.gameObject.transform.Find("Minus").GetComponent<Button>();
+            minusButton.onClick.AddListener(() => DeleteFromDeck(currentIndex));
+
+            Button plusbutton = cardsPlaceInUiList[i].transform.GetChild(1).transform.gameObject.transform.Find("Plus").GetComponent<Button>();
+            plusbutton.onClick.AddListener(() => AddToDeck(currentIndex));
+        }
+     
+    }
+    public void ResetView()
+    {
+        page = 0;
+        pages[0].transform.SetAsLastSibling();
+        ArrowLeft.SetActive(false);
+        ArrowRight.SetActive(true);
+        pages[0].transform.rotation = Quaternion.Euler(0, 0, 0);
+        pages[1].transform.rotation = Quaternion.Euler(0, 0, 0);
+        cardDeck = new();
+        deckName = null;
+        InputDeckName.text = "";
+
+        List<int> keysList = dynamicDeckCreatorDictObject.Keys.ToList();
+        foreach (int key in keysList)
+        {
+            DestroyCardInDynamicView(key);
+     
+        }
+        UpdateAllCounters();
+        DisplayCards();
     }
     //Display cards
     private void DisplayCards()
@@ -167,7 +208,9 @@ public class CreateDeck : MonoBehaviour
     //Add a card to deck
     public void AddToDeck(int index)
     {
+
         index += (page * cardsPerPage);
+
         if (CheckIfAbleToAdd(index))
         {
             if (cardDeck.FindAll(x => x == index).Count == 0)
@@ -175,14 +218,16 @@ public class CreateDeck : MonoBehaviour
                 IntalizeNewCardInDynamicView(index);
             }
             cardDeck.Add(index);
-            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index, true);
+            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
         }
     }
 
     //Remove card from deck
     public void DeleteFromDeck(int index)
     {
+ 
         index += (page * cardsPerPage);
+
         if (CheckIfAbleToRemove(index))
         {
             if (cardDeck.FindAll(x => x == index).Count == 1)
@@ -190,7 +235,7 @@ public class CreateDeck : MonoBehaviour
                 DestroyCardInDynamicView(index);
             }
             cardDeck.Remove(index);
-            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index, true);
+            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
         }
     }
     //Check if we can add a card to deck
@@ -261,13 +306,13 @@ public class CreateDeck : MonoBehaviour
     ///////////////////////////
 
     //Change number of cards in deck that are displayed
-    private void UpdateCounter(int value, int index, bool isDyamicUpdate)
+    private void UpdateCounter(int value, int index)
     {
         //Getting counter from list of objects
         List<GameObject> tempList = new();
         tempList.Add(cardsPlaceInUiList[index % (cardsPerPage * 2)].transform.GetChild(1).gameObject.transform.GetChild(1).gameObject);
 
-        if (isDyamicUpdate && dynamicDeckCreatorDictObject.ContainsKey(index))
+        if (dynamicDeckCreatorDictObject.ContainsKey(index))
         {
             tempList.Add(dynamicDeckCreatorDictObject[index].transform.GetChild(0).transform.Find("Counter").gameObject);
         }
@@ -282,7 +327,7 @@ public class CreateDeck : MonoBehaviour
     {
         for (int j=0 + page * cardsPerPage; j< cardsPerPage + page * cardsPerPage; j++)
         {
-            UpdateCounter(cardDeck.FindAll(x => x == j).Count, j, false);
+            UpdateCounter(cardDeck.FindAll(x => x == j).Count, j);
         }
     }
     //Display Error when creating deck
@@ -308,26 +353,19 @@ public class CreateDeck : MonoBehaviour
         }
         if (deckSize == cardDeck.Count)
         {
-            Deck newDeck = new()
-            {
-                Name = deckName,
-                CardList = cardDeck.ToArray()
-            };
-            using StreamReader reader = new(JSON_PATH);
+            using StreamReader reader = new(JSON_DECK_PATH);
             var jsonDeck = reader.ReadToEnd();
-            DeckCollection decks = JsonConvert.DeserializeObject<DeckCollection>(jsonDeck);
+            decks = JsonConvert.DeserializeObject<DeckCollection>(jsonDeck);
             reader.Close();
-
+        
             if (decks.Decks.Find(d => d.Name == deckName) == null)
             {
-                decks.Decks.Add(newDeck);
-                string updatedJson = JsonConvert.SerializeObject(decks);
-                File.WriteAllText(JSON_PATH, updatedJson);
-                DisplayErrorAlert("You have successfuly saved deck");
+                SaveDeckToFile();
             }
             else
             {
-                DisplayErrorAlert("Deck with this name already exists [To add i want to replace]");
+                DisplayErrorAlert("Deck with this name already exists");
+                ErrorAlert.transform.Find("ButtonGroup").gameObject.transform.Find("SaveAnywayButton").gameObject.SetActive(true);
                 Debug.LogError("Deck with this name already exists");
             }
         }
@@ -336,6 +374,55 @@ public class CreateDeck : MonoBehaviour
             DisplayErrorAlert("You have to put more cards, decksize: " + deckSize + " you have: " + cardDeck.Count);
             Debug.LogError("To less cards");
         }
+    }
+    //Saving deck to file
+    public void SaveDeckToFile()
+    {
+        cardDeck.Sort();
+        Deck newDeck = new()
+        {
+            Name = deckName.ToString(),
+            CardList = cardDeck.ToArray()
+        };
+
+        Deck deck = decks.Decks.Find(d => d.Name == deckName);
+        if (deck == null)
+        {
+            decks.Decks.Add(newDeck);
+        }
+        else
+        {
+            deck.CardList = cardDeck.ToArray();
+        }
+
+        string updatedJson = JsonConvert.SerializeObject(decks);
+        File.WriteAllText(JSON_DECK_PATH, updatedJson);
+        DisplayErrorAlert("You have successfuly saved deck");       
+    }
+
+    //////////////////
+    ///Editing Deck/// 
+    //////////////////
+    
+    //Get deck from editing view
+    public void InitalizeDeck(List<int> deck, string name)
+    {
+        cardDeck = deck;
+        deckName = name;
+
+        if (!wasJsonRead)
+            ReadJson(JSON_COLLECTION_PATH);
+        wasJsonRead = true;
+
+        InputDeckName.text = name;
+
+        List<int> temp = deck.Distinct().ToList();
+        for (int index = 0; index < temp.Count; index++) 
+        {
+            IntalizeNewCardInDynamicView(temp[index]);
+            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
+        }
+        UpdateAllCounters();
     }
 }
 
