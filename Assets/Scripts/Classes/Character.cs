@@ -46,8 +46,19 @@ public class Character
         battlecry = delegate (Tile tile, bool side) { };
     }
 
+    public void SetPosition(Vector3 position)
+    {
+        gameObject.transform.position = position;
+    }
+
+    public enum MovingReason
+    {
+        END_TURN = 0,
+        SPAWN
+    }
+
     // returns false if it died while moving, returns true if it survived
-    public bool Move(Arena.Direction direction)
+    public bool Move(Arena.Direction direction, MovingReason reason)
     {
         if (HasDied())
             return false;
@@ -61,10 +72,12 @@ public class Character
                 case Arena.OutOfBoarder.PLAYER_BASE:
                     arena.playerBase.TakeDamage(this.power);
                     Die();
+                    arena.CheckEndTurnTile();
                     return false;
                 case Arena.OutOfBoarder.OPPONENT_BASE:
                     arena.opponentBase.TakeDamage(this.power);
                     Die();
+                    arena.CheckEndTurnTile();
                     return false;
                 default:
                     return false;
@@ -77,6 +90,7 @@ public class Character
             // if died while attacking don't move
             if (HasDied())
             {
+                arena.CheckEndTurnTile();
                 return false;
             }
         }
@@ -86,7 +100,10 @@ public class Character
             tile.UnitMoved();
             tile = temp;
             temp.character = this;
-            gameObject.transform.position = tile.unitPosition;
+
+            arena.Moving(this, gameObject.transform.position, tile.unitPosition, reason);
+
+            //gameObject.transform.position = tile.unitPosition;
 
             arena.CheckFrontline(temp.id, playerUnit);
 

@@ -38,11 +38,25 @@ public class Arena : MonoBehaviour
     /////////////////////////////////////////////////
 
     private TurnButton turn_button;
-    private float TURN_TIME = 10.0f;
-    private float time_left = 10.0f;
+    private float TURN_TIME = 20.0f;
+    private float time_left = 20.0f;
     public bool timer_started = false;
     public TurnTimer turn_timer;
 
+    // variable of moving entity - only one can move at the same time
+    private Character movingCharacter = null;
+    private Vector3 movingStartPos;
+    private Vector3 movingEndPos;
+
+    // constant time it takes one unit to move one tile
+    private float TIME_OF_ONE_MOVE;
+
+    private int endTurnTileID;
+    private int endTurnTileIDEnd;
+    private int endTurnTileIDIncrement;
+    private Character.MovingReason movingReason;
+
+    private float moveTime = 0.4f;
 
     public bool playerTurn = true;
     private int energyFlow = 2;
@@ -199,6 +213,8 @@ public class Arena : MonoBehaviour
     private void Update()
     {
         UpdateTimer();
+        if (movingCharacter != null)
+            UpdateMovingCharacter();
     }
 
 
@@ -347,6 +363,52 @@ public class Arena : MonoBehaviour
         }
     }
 
+    private void UpdateMovingCharacter()
+    {
+        TIME_OF_ONE_MOVE += Time.deltaTime;
+        movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(TIME_OF_ONE_MOVE / moveTime, 1.0f)));
+        if (TIME_OF_ONE_MOVE >= moveTime)
+        {
+            movingCharacter = null;
+            switch (movingReason)
+            {
+                case Character.MovingReason.END_TURN:
+                    CheckEndTurnTile();
+                    break;
+                case Character.MovingReason.SPAWN:
+                    break;
+                default:
+                    Debug.LogError("Moved without reason");
+                    break;
+            }
+        }
+    }
+
+    public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason)
+    {
+        movingCharacter = unit;
+        movingStartPos = start;
+        movingEndPos = end;
+        TIME_OF_ONE_MOVE = 0.0f;
+        movingReason = reason;
+    }
+
+    public void CheckEndTurnTile()
+    {
+        if (endTurnTileID + endTurnTileIDIncrement == endTurnTileIDEnd)
+            return;
+
+        if (tileList[endTurnTileID].character == null || tileList[endTurnTileID].character.playerUnit != playerTurn)
+        {
+            endTurnTileID += endTurnTileIDIncrement;
+            CheckEndTurnTile();
+            return;
+        }
+
+        tileList[endTurnTileID].character.Move(playerTurn ? Direction.UP : Direction.DOWN, Character.MovingReason.END_TURN);
+        endTurnTileID += endTurnTileIDIncrement;
+    }
+
     public void EndTurn()
     {
         // signal other player
@@ -380,31 +442,34 @@ public class Arena : MonoBehaviour
             }
 
         playerTurn = !playerTurn;
-        int begin, end, increment;
+        //int begin, end, increment;
         if (playerTurn)
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
-            begin = 0;
-            end = tileList.Count;
-            increment = 1;
+            endTurnTileID = 0;
+            endTurnTileIDEnd = tileList.Count;
+            endTurnTileIDIncrement = 1;
 
         }
         else
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
-            begin = tileList.Count - 1;
-            end = -1;
-            increment = -1;
+            endTurnTileID = tileList.Count - 1;
+            endTurnTileIDEnd = -1;
+            endTurnTileIDIncrement = -1;
         }
 
-        for (int i = begin; i != end; i += increment)
+
+        CheckEndTurnTile();
+
+        /*for (int i = begin; i != end; i += increment)
         {
             Tile tile = tileList[i];
             if (tile.character != null && tile.character.playerUnit == playerTurn)
             {
                 tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
             }
-        }
+        }*/
 
         UpdateFrontline(!playerTurn);
 

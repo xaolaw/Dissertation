@@ -59,9 +59,15 @@ public class UnitSpawn : MonoBehaviour
 
             new_unit.ActivateBattlecry();
 
+            /*
+
+            FIX MOVING AND DYING WHILE MOVING MORE THAN 2 TILES
+
+            */
+
             for(int i = 0; i < spawnDetails.speed && !new_unit.HasDied(); ++i)
             {
-                new_unit.Move(playerUnit ? Arena.Direction.UP : Arena.Direction.DOWN);
+                new_unit.Move(playerUnit ? Arena.Direction.UP : Arena.Direction.DOWN, Arena.MovingReason.SPAWN);
             }
         }
         else
