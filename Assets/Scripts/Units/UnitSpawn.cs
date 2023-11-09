@@ -101,6 +101,10 @@ public class UnitSpawn : MonoBehaviour
                 return Arena.UnitTargetGroup.BEHIND;
             case "sideways":
                 return Arena.UnitTargetGroup.SIDEWAYS;
+            case "single_behind":
+                return Arena.UnitTargetGroup.SINGLE_BEHIND;
+            case "single_in_front":
+                return Arena.UnitTargetGroup.SINGLE_IN_FRONT;
             case "all":
             default:
                 return Arena.UnitTargetGroup.ALL;
@@ -135,21 +139,13 @@ public class UnitSpawn : MonoBehaviour
         if (spawnDetails.deathrattle != null)
         {
             // set deathrattle
-            System.Action<Tile, bool> newDeathrattle = delegate (Tile origintile, bool side)
-            {
-                origintile.Damage(PUTFromString(spawnDetails.deathrattle.target), UTGFromString(spawnDetails.deathrattle.area), side, spawnDetails.deathrattle.damage);
-            };
-            character.AddDeathrattle(newDeathrattle);
+            character.AddDeathrattle(spawnDetails.deathrattle.GenerateAction(arena));
         }
 
         if (spawnDetails.battlecry != null)
         {
             // set battlecry
-            System.Action<Tile, bool> newBattlecry = delegate (Tile origintile, bool side)
-            {
-                origintile.Damage(PUTFromString(spawnDetails.battlecry.target), UTGFromString(spawnDetails.battlecry.area), side, spawnDetails.battlecry.damage);
-            };
-            character.AddBattlecry(newBattlecry);
+            character.AddBattlecry(spawnDetails.battlecry.GenerateAction(arena));
         }
 
         return character;

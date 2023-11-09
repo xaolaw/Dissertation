@@ -21,7 +21,7 @@ public class CardManager : MonoBehaviour
     //a list of all cards with models path
     private List<CardJson> cardsJson;
 
-    private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 3, 3, 3};
+    private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5};
     private List<int> usedCards = new List<int>();
     private int card_index;
     private int maxCardsInHand = 5;
@@ -30,6 +30,10 @@ public class CardManager : MonoBehaviour
     public Image backOfDeck;
     public Sprite[] backOfDeckSprites = new Sprite[5];//1,2,3,6,9
     public Text backOfDeckText;
+
+    //variable for drawing cards by effects
+    private bool cardIsBeingPlayed = false;
+    private int triedToDraw = 0;
 
     //a way to get number of cards left to draw / to next deck shuffle
     public int GetCardsLeftInDeck()
@@ -74,10 +78,12 @@ public class CardManager : MonoBehaviour
         return card;
     }
 
-    public void DrawCard(int slot)
+    public void DrawCard(int slot = -1)
     {
         // can`t draw more cards than max limit
         if (cards_in_hand.Count >= maxCardsInHand){
+            if (cardIsBeingPlayed)
+                triedToDraw += 1;
             return;
         }
         // draw Card and add to the end of the hand
@@ -106,7 +112,23 @@ public class CardManager : MonoBehaviour
 
         UpdateBackOfDeck();
     }
-   
+
+    public void StartPlayingCard()
+    {
+        cardIsBeingPlayed = true;
+        triedToDraw = 0;
+    }
+
+    public void FinishPlayingCard()
+    {
+        cardIsBeingPlayed = false;
+        while (triedToDraw-- > 0)
+        {
+            DrawCard();
+        }
+    }
+
+
     private void AddCard(Card card){
         card.transform.SetParent(canvas.transform);
         card.gameObject.SetActive(true);
