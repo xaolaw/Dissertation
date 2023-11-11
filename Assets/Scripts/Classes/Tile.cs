@@ -15,7 +15,7 @@ public class Tile
     public Character character;
     public int id;
     public Vector3 unitPosition;
-    private Color redColor = new Color(255, 0, 0);
+    private Color redColor = new Color(255, 0, 0,0.05f);
     private Arena arena;
 
     public Tile(Color mainColor_, GameObject gameObject_, MeshRenderer mesh_, int _id)
