@@ -183,7 +183,6 @@ public class Character
         // if tile is empty
         if (temp.character == null)
         {
-            Debug.Log("from: " + tile.id + " to: " + temp.id);
 
             tile.UnitMoved();
             tile = temp;
