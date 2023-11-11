@@ -14,6 +14,11 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2, LoadSceneMode.Single);
     }
+    public void ReturnToMainMenu()
+    {
+        Debug.Log("WTF");
+        SceneManager.LoadScene("MainMenuScene");
+    }
     public void QuitGame()
     {
         //it does not work in unity so i put a debug msg
