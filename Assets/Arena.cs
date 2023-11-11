@@ -18,7 +18,7 @@ public class Arena : MonoBehaviour
     public GameObject tilePrefab; // assign the tile prefab in the Inspector
     //Currently clicked tile
     private List<Tile> tileList = new List<Tile>();
-
+    
     public float groundOffset = 0.1f;
     public const int rows = 5;
     public const int columns = 4;
