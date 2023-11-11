@@ -20,8 +20,8 @@ public class Arena : MonoBehaviour
     private List<Tile> tileList = new List<Tile>();
 
     public float groundOffset = 0.1f;
-    public int rows = 5;
-    public int columns = 4;
+    public const int rows = 5;
+    public const int columns = 4;
     public Vector3 ArenaCenterPoint()
     {
         return new Vector3(transform.position.x + (columns - 1) / 2f, transform.position.y, transform.position.z + (rows - 1) / 2f);
@@ -160,16 +160,18 @@ public class Arena : MonoBehaviour
 
         //setting details canvas
         Vector3 startPosition = transform.position; // starting position of the grid
-        for (int col = 0; col < columns; col++)
+
+        for (int row = 0; row < rows; row++)
         {
-            for (int row = 0; row < rows; row++)
+            for (int col = 0; col < columns; col++)
             {
                 // initialize tile position
-                Vector3 tilePosition = new Vector3(startPosition.x + col, startPosition.y, startPosition.z + row);
+                Vector3 tilePosition = new Vector3(startPosition.x + row, startPosition.y, startPosition.z + col);
                 GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, transform);
+                tile.name = "tile [" + (col + row * columns) + "]";
 
                 MeshRenderer renderer = tile.GetComponent<MeshRenderer>();
-                tileList.Add(new Tile(renderer.material.color, tile, renderer, row + col * rows));
+                tileList.Add(new Tile(renderer.material.color, tile, renderer, col + row * columns));
 
                 ClickEvent clickEvent = tile.AddComponent<ClickEvent>();
                 //clickEvent.OnClick += ChangeTileColor;
@@ -179,8 +181,8 @@ public class Arena : MonoBehaviour
             }
         }
 
-        neighbourId[(int)Direction.UP] = -rows;
-        neighbourId[(int)Direction.DOWN] = rows;
+        neighbourId[(int)Direction.UP] = -columns;
+        neighbourId[(int)Direction.DOWN] = columns;
         neighbourId[(int)Direction.LEFT] = -1;
         neighbourId[(int)Direction.RIGHT] = 1;
         neighbourId[(int)Direction.UL] = neighbourId[(int)Direction.UP] + neighbourId[(int)Direction.LEFT];
@@ -271,7 +273,7 @@ public class Arena : MonoBehaviour
     // returns true if is at or behind frontlines during arena.playerTurn 
     public bool IsBehindFrontline(Tile tile, bool player)
     {
-        int row = tileList.IndexOf(tile) / rows;
+        int row = tileList.IndexOf(tile) / columns;
 
         return player ? row >= playerFrontline : row <= enemyFrontline;
     }
@@ -289,9 +291,9 @@ public class Arena : MonoBehaviour
             if (tileList[i].character != null && tileList[i].character.playerUnit == player)
             {
                 if (player)
-                    playerFrontline = i / rows;
+                    playerFrontline = i / columns;
                 else
-                    enemyFrontline = i / rows;
+                    enemyFrontline = i / columns;
                 foundUnit = true;
                 break;
             }
@@ -315,7 +317,7 @@ public class Arena : MonoBehaviour
 
     public void CheckFrontline(int tileID, bool player)
     {
-        int row = tileID / rows;
+        int row = tileID / columns;
         if (player)
         {
             row = row == 0 ? 1 : row;
@@ -405,7 +407,13 @@ public class Arena : MonoBehaviour
             return;
         }
 
-        tileList[endTurnTileID].character.Move(playerTurn ? Direction.UP : Direction.DOWN, Character.MovingReason.END_TURN);
+        Character unit = tileList[endTurnTileID].character;
+
+        if (unit.HasStatus(Character.UnitStatus.EMPOWERED))
+        {
+            unit.GivePower(1);
+        }
+        unit.Move(Character.MovingReason.END_TURN);
         endTurnTileID += endTurnTileIDIncrement;
     }
 
@@ -462,15 +470,6 @@ public class Arena : MonoBehaviour
 
         CheckEndTurnTile();
 
-        /*for (int i = begin; i != end; i += increment)
-        {
-            Tile tile = tileList[i];
-            if (tile.character != null && tile.character.playerUnit == playerTurn)
-            {
-                tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
-            }
-        }*/
-
         UpdateFrontline(!playerTurn);
 
         timer_started = true;
@@ -480,10 +479,12 @@ public class Arena : MonoBehaviour
     //////////////////////////////
     /// Functions for damaging ///
     //////////////////////////////
+    
 
     // detects exacly where unit comes out after move in given direction (even on sides)
     public OutOfBoarder GetTargetInfo(int id, Direction direction)
     {
+
         // goes out of bounds (left or right)
         if ((id % columns == 0 && (direction == Direction.DL || direction == Direction.LEFT || direction == Direction.UL)) ||
            (id % columns == columns - 1 && (direction == Direction.DR || direction == Direction.RIGHT || direction == Direction.UR)))
