@@ -59,9 +59,10 @@ public class UnitSpawn : MonoBehaviour
 
             new_unit.ActivateBattlecry();
 
+
             for(int i = 0; i < spawnDetails.speed && !new_unit.HasDied(); ++i)
             {
-                new_unit.Move(playerUnit ? Arena.Direction.UP : Arena.Direction.DOWN);
+                new_unit.Move(Character.MovingReason.SPAWN);
             }
         }
         else
@@ -135,6 +136,9 @@ public class UnitSpawn : MonoBehaviour
         characterObject = Instantiate(GetPrefab(spawnDetails.cardModel, playerUnit), position, Quaternion.Euler(rotation), transform);
                 
         character = new Character(spawnDetails.cardModel, spawnDetails.cardPower, playerUnit, characterObject, tile, info, index);
+
+        if (spawnDetails.status != null)
+            character.ChangeStatus(Character.GetStatusFromString(spawnDetails.status));
 
         if (spawnDetails.deathrattle != null)
         {

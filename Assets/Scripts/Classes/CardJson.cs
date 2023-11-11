@@ -22,6 +22,7 @@ namespace Assets.Classes
         public string cardModel { get; set; }
         public int cardPower { get; set; }
         public int speed { get; set; }
+        public string status { get; set; }
         public Effect deathrattle { get; set; }
         public Effect battlecry { get; set; }
     }

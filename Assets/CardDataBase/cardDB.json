@@ -14,7 +14,8 @@
                 "target": "enemy",
                 "area": "bordering",
                 "damage": 3
-            }
+            },
+            "status": "aggressive"
         }
     },
     {
@@ -50,7 +51,8 @@
                 "target": "any",
                 "area": "surrounding",
                 "damage": 6
-            }
+            },
+            "status": "aggressive"
         }
     },
     {

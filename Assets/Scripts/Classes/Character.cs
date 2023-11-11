@@ -21,8 +21,54 @@ public class Character
     private int index;
     public bool hasDeathRattle;
 
+    private UnitStatus status;
+
+    public enum UnitStatus
+    {
+        NONE        = 0,
+        AGGRESSIVE  = (1 << 0),
+        VOLATILE    = (1 << 1),
+        EMPOWERED   = (1 << 2)
+    }
+
+    public enum MovingReason
+    {
+        END_TURN = 0,
+        SPAWN
+    }
+
     private System.Action<Tile, bool> deathrattle;
     private System.Action<Tile, bool> battlecry;
+
+    public static UnitStatus GetStatusFromString(string s)
+    {
+        char[] delimeter_characters = { ',', ' ', '|' };
+        string[] status_strings = s.Split(delimeter_characters);
+
+        UnitStatus status = UnitStatus.NONE, temp;
+
+        foreach (string status_string in status_strings)
+        {
+            switch (status_string)
+            {
+                case "aggressive":
+                    temp = UnitStatus.AGGRESSIVE;
+                    break;
+                case "volatile":
+                    temp = UnitStatus.VOLATILE;
+                    break;
+                case "empowered":
+                    temp = UnitStatus.EMPOWERED;
+                    break;
+                default:
+                    temp = UnitStatus.NONE;
+                    break;
+            }
+            status |= temp;
+        }
+
+        return status;
+    }
 
     public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_, int index_)
     {
@@ -39,6 +85,9 @@ public class Character
 
         arena = (Arena)GameObject.FindObjectOfType(typeof(Arena));
         eventCollector = GameObject.FindObjectOfType<EventCollector>();
+
+        status = UnitStatus.NONE;
+
         this.died = false;
         this.hasDeathRattle = false;
         // initialize functions
@@ -46,8 +95,53 @@ public class Character
         battlecry = delegate (Tile tile, bool side) { };
     }
 
+    public void SetPosition(Vector3 position)
+    {
+        gameObject.transform.position = position;
+    }
+
+    public bool Move(MovingReason reason)
+    {
+        bool turn = arena.playerTurn;
+        Arena.Direction moveDirection = moveDirection = turn ? Arena.Direction.UP : Arena.Direction.DOWN;
+        if (HasStatus(Character.UnitStatus.AGGRESSIVE))
+        {
+            bool found_unit = false;
+            Tile tile_to_check = arena.GetTile(tile.id, moveDirection);
+            Arena.OutOfBoarder oob = arena.GetTargetInfo(tile.id, moveDirection);
+            if (oob == (turn?Arena.OutOfBoarder.OPPONENT_BASE: Arena.OutOfBoarder.PLAYER_BASE)
+                || (oob == Arena.OutOfBoarder.INSIDE && tile_to_check.character != null && tile_to_check.character.playerUnit != arena.playerTurn))
+            {
+                found_unit = true;
+            }
+            if (!found_unit)
+            {
+                moveDirection = turn ? Arena.Direction.LEFT : Arena.Direction.RIGHT;
+                if (arena.GetTargetInfo(tile.id, moveDirection) == Arena.OutOfBoarder.INSIDE)
+                {
+                    tile_to_check = arena.GetTile(tile.id, moveDirection);
+                    found_unit = tile_to_check.character != null && tile_to_check.character.playerUnit != turn;
+                }
+            }
+            if (!found_unit)
+            {
+                moveDirection = turn ? Arena.Direction.RIGHT : Arena.Direction.LEFT;
+                if (arena.GetTargetInfo(tile.id, moveDirection) == Arena.OutOfBoarder.INSIDE)
+                {
+                    tile_to_check = arena.GetTile(tile.id, moveDirection);
+                    found_unit = tile_to_check.character != null && tile_to_check.character.playerUnit != turn;
+                }
+            }
+
+            if (!found_unit)
+                moveDirection = turn ? Arena.Direction.UP : Arena.Direction.DOWN;
+        }
+
+        return _Move(moveDirection, reason);
+    }
+
     // returns false if it died while moving, returns true if it survived
-    public bool Move(Arena.Direction direction)
+    public bool _Move(Arena.Direction direction, MovingReason reason)
     {
         if (HasDied())
             return false;
@@ -61,10 +155,14 @@ public class Character
                 case Arena.OutOfBoarder.PLAYER_BASE:
                     arena.playerBase.TakeDamage(this.power);
                     Die();
+                    if (reason == MovingReason.END_TURN)
+                        arena.CheckEndTurnTile();
                     return false;
                 case Arena.OutOfBoarder.OPPONENT_BASE:
                     arena.opponentBase.TakeDamage(this.power);
                     Die();
+                    if (reason == MovingReason.END_TURN)
+                        arena.CheckEndTurnTile();
                     return false;
                 default:
                     return false;
@@ -77,16 +175,22 @@ public class Character
             // if died while attacking don't move
             if (HasDied())
             {
+                if (reason == MovingReason.END_TURN)
+                    arena.CheckEndTurnTile();
                 return false;
             }
         }
         // if tile is empty
         if (temp.character == null)
         {
+
             tile.UnitMoved();
             tile = temp;
             temp.character = this;
-            gameObject.transform.position = tile.unitPosition;
+
+            arena.Moving(this, gameObject.transform.position, tile.unitPosition, reason);
+
+            //gameObject.transform.position = tile.unitPosition;
 
             arena.CheckFrontline(temp.id, playerUnit);
 
@@ -101,13 +205,18 @@ public class Character
     public bool TakeDamage(int dmg)
     {
         this.power -= dmg;
-        if (power <= 0 && !died)
+        if (HasStatus(UnitStatus.VOLATILE) || (power <= 0 && !died))
         {
             this.Die();
             return true;
         }
         powerInfo.text = "Power:" + power.ToString();
         return false;
+    }
+
+    public void GivePower(int power)
+    {
+        this.power += power;
     }
 
     // attacks character, returns true if kills
@@ -193,5 +302,15 @@ public class Character
     public int getIndexOfCard()
     {
         return index;
+    }
+
+    public bool HasStatus(UnitStatus s)
+    {
+        return (status & s) != 0;
+    }
+
+    public void ChangeStatus(UnitStatus s)
+    {
+        status ^= s;
     }
 }

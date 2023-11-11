@@ -20,8 +20,8 @@ public class Arena : MonoBehaviour
     private List<Tile> tileList = new List<Tile>();
 
     public float groundOffset = 0.1f;
-    public int rows = 5;
-    public int columns = 4;
+    public const int rows = 5;
+    public const int columns = 4;
     public Vector3 ArenaCenterPoint()
     {
         return new Vector3(transform.position.x + (columns - 1) / 2f, transform.position.y, transform.position.z + (rows - 1) / 2f);
@@ -38,11 +38,25 @@ public class Arena : MonoBehaviour
     /////////////////////////////////////////////////
 
     private TurnButton turn_button;
-    private float TURN_TIME = 10.0f;
-    private float time_left = 10.0f;
+    private float TURN_TIME = 20.0f;
+    private float time_left = 20.0f;
     public bool timer_started = false;
     public TurnTimer turn_timer;
 
+    // variable of moving entity - only one can move at the same time
+    private Character movingCharacter = null;
+    private Vector3 movingStartPos;
+    private Vector3 movingEndPos;
+
+    // constant time it takes one unit to move one tile
+    private float TIME_OF_ONE_MOVE;
+
+    private int endTurnTileID;
+    private int endTurnTileIDEnd;
+    private int endTurnTileIDIncrement;
+    private Character.MovingReason movingReason;
+
+    private float moveTime = 0.4f;
 
     public bool playerTurn = true;
     private int energyFlow = 2;
@@ -148,16 +162,18 @@ public class Arena : MonoBehaviour
 
         //setting details canvas
         Vector3 startPosition = transform.position; // starting position of the grid
-        for (int col = 0; col < columns; col++)
+
+        for (int row = 0; row < rows; row++)
         {
-            for (int row = 0; row < rows; row++)
+            for (int col = 0; col < columns; col++)
             {
                 // initialize tile position
-                Vector3 tilePosition = new Vector3(startPosition.x + col, startPosition.y, startPosition.z + row);
+                Vector3 tilePosition = new Vector3(startPosition.x + row, startPosition.y, startPosition.z + col);
                 GameObject tile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, transform);
+                tile.name = "tile [" + (col + row * columns) + "]";
 
                 MeshRenderer renderer = tile.GetComponent<MeshRenderer>();
-                tileList.Add(new Tile(renderer.material.color, tile, renderer, row + col * rows));
+                tileList.Add(new Tile(renderer.material.color, tile, renderer, col + row * columns));
 
                 ClickEvent clickEvent = tile.AddComponent<ClickEvent>();
                 //clickEvent.OnClick += ChangeTileColor;
@@ -167,8 +183,8 @@ public class Arena : MonoBehaviour
             }
         }
 
-        neighbourId[(int)Direction.UP] = -rows;
-        neighbourId[(int)Direction.DOWN] = rows;
+        neighbourId[(int)Direction.UP] = -columns;
+        neighbourId[(int)Direction.DOWN] = columns;
         neighbourId[(int)Direction.LEFT] = -1;
         neighbourId[(int)Direction.RIGHT] = 1;
         neighbourId[(int)Direction.UL] = neighbourId[(int)Direction.UP] + neighbourId[(int)Direction.LEFT];
@@ -201,6 +217,8 @@ public class Arena : MonoBehaviour
     private void Update()
     {
         UpdateTimer();
+        if (movingCharacter != null)
+            UpdateMovingCharacter();
     }
 
 
@@ -257,7 +275,7 @@ public class Arena : MonoBehaviour
     // returns true if is at or behind frontlines during arena.playerTurn 
     public bool IsBehindFrontline(Tile tile, bool player)
     {
-        int row = tileList.IndexOf(tile) / rows;
+        int row = tileList.IndexOf(tile) / columns;
 
         return player ? row >= playerFrontline : row <= enemyFrontline;
     }
@@ -275,9 +293,9 @@ public class Arena : MonoBehaviour
             if (tileList[i].character != null && tileList[i].character.playerUnit == player)
             {
                 if (player)
-                    playerFrontline = i / rows;
+                    playerFrontline = i / columns;
                 else
-                    enemyFrontline = i / rows;
+                    enemyFrontline = i / columns;
                 foundUnit = true;
                 break;
             }
@@ -301,7 +319,7 @@ public class Arena : MonoBehaviour
 
     public void CheckFrontline(int tileID, bool player)
     {
-        int row = tileID / rows;
+        int row = tileID / columns;
         if (player)
         {
             row = row == 0 ? 1 : row;
@@ -349,6 +367,58 @@ public class Arena : MonoBehaviour
         }
     }
 
+    private void UpdateMovingCharacter()
+    {
+        TIME_OF_ONE_MOVE += Time.deltaTime;
+        movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(TIME_OF_ONE_MOVE / moveTime, 1.0f)));
+        if (TIME_OF_ONE_MOVE >= moveTime)
+        {
+            movingCharacter = null;
+            switch (movingReason)
+            {
+                case Character.MovingReason.END_TURN:
+                    CheckEndTurnTile();
+                    break;
+                case Character.MovingReason.SPAWN:
+                    break;
+                default:
+                    Debug.LogError("Moved without reason");
+                    break;
+            }
+        }
+    }
+
+    public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason)
+    {
+        movingCharacter = unit;
+        movingStartPos = start;
+        movingEndPos = end;
+        TIME_OF_ONE_MOVE = 0.0f;
+        movingReason = reason;
+    }
+
+    public void CheckEndTurnTile()
+    {
+        if (endTurnTileID + endTurnTileIDIncrement == endTurnTileIDEnd)
+            return;
+
+        if (tileList[endTurnTileID].character == null || tileList[endTurnTileID].character.playerUnit != playerTurn)
+        {
+            endTurnTileID += endTurnTileIDIncrement;
+            CheckEndTurnTile();
+            return;
+        }
+
+        Character unit = tileList[endTurnTileID].character;
+
+        if (unit.HasStatus(Character.UnitStatus.EMPOWERED))
+        {
+            unit.GivePower(1);
+        }
+        unit.Move(Character.MovingReason.END_TURN);
+        endTurnTileID += endTurnTileIDIncrement;
+    }
+
     public void EndTurn()
     {
         // signal other player
@@ -384,31 +454,25 @@ public class Arena : MonoBehaviour
             }
 
         playerTurn = !playerTurn;
-        int begin, end, increment;
+        //int begin, end, increment;
         if (playerTurn)
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
-            begin = 0;
-            end = tileList.Count;
-            increment = 1;
+            endTurnTileID = 0;
+            endTurnTileIDEnd = tileList.Count;
+            endTurnTileIDIncrement = 1;
 
         }
         else
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
-            begin = tileList.Count - 1;
-            end = -1;
-            increment = -1;
+            endTurnTileID = tileList.Count - 1;
+            endTurnTileIDEnd = -1;
+            endTurnTileIDIncrement = -1;
         }
 
-        for (int i = begin; i != end; i += increment)
-        {
-            Tile tile = tileList[i];
-            if (tile.character != null && tile.character.playerUnit == playerTurn)
-            {
-                tile.character.Move(playerTurn ? Direction.UP : Direction.DOWN);
-            }
-        }
+
+        CheckEndTurnTile();
 
         UpdateFrontline(!playerTurn);
 
@@ -419,10 +483,12 @@ public class Arena : MonoBehaviour
     //////////////////////////////
     /// Functions for damaging ///
     //////////////////////////////
+    
 
     // detects exacly where unit comes out after move in given direction (even on sides)
     public OutOfBoarder GetTargetInfo(int id, Direction direction)
     {
+
         // goes out of bounds (left or right)
         if ((id % columns == 0 && (direction == Direction.DL || direction == Direction.LEFT || direction == Direction.UL)) ||
            (id % columns == columns - 1 && (direction == Direction.DR || direction == Direction.RIGHT || direction == Direction.UR)))
