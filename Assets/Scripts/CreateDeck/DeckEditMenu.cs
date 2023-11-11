@@ -23,6 +23,26 @@ public class DeckEditMenu : MonoBehaviour
     void Start()
     {
         ReadJson(JSON_PATH);
+        ShowDeckToEdit();
+    }
+    public void ResetView()
+    {
+        Debug.Log("Reset view");
+        displayedDeck = 0;
+        ReadJson(JSON_PATH);
+        ShowDeckToEdit();
+    }
+
+    private void ReadJson(string path)
+    {
+        using StreamReader reader = new(path);
+        var jsonDB = reader.ReadToEnd();
+        CardDecks = JsonConvert.DeserializeObject<DeckCollection>(jsonDB);
+        reader.Close();
+    }
+
+    private void ShowDeckToEdit()
+    {
         switch (CardDecks.Decks.Count)
         {
             case 0:
@@ -42,28 +62,9 @@ public class DeckEditMenu : MonoBehaviour
                 ArrowRight.SetActive(true);
                 break;
         }
-        ShowDeckToEdit();
-    }
-    public void ResetView()
-    {
-        displayedDeck = 0;
-        ReadJson(JSON_PATH);
-        ShowDeckToEdit();
-    }
 
-    private void ReadJson(string path)
-    {
-        using StreamReader reader = new(path);
-        var jsonDB = reader.ReadToEnd();
-        CardDecks = JsonConvert.DeserializeObject<DeckCollection>(jsonDB);
-        reader.Close();
-    }
-
-    private void ShowDeckToEdit()
-    {
         if (CardDecks.Decks.Count != 0)
             DeckName.text = CardDecks.Decks[displayedDeck].Name;
-        
     }
 
     public void ShowRight()
