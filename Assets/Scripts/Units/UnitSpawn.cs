@@ -157,6 +157,18 @@ public class UnitSpawn : MonoBehaviour
             // set on turn beggining effect
             character.AddOnEndturn(spawnDetails.onTurnEnd.GenerateAction(arena));
         }
+        
+        if (spawnDetails.onAttack != null)
+        {
+            // set on attack effect
+            character.AddOnAttack(spawnDetails.onAttack.GenerateAction(arena));
+        }
+        
+        if (spawnDetails.onDamage != null)
+        {
+            // set on damage effect
+            character.AddOnDamage(spawnDetails.onDamage.GenerateAction(arena));
+        }
 
         return character;
     }

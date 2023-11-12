@@ -26,6 +26,8 @@ namespace Assets.Classes
         public Effect deathrattle { get; set; }
         public Effect battlecry { get; set; }
         public Effect onTurnEnd { get; set; }
+        public Effect onAttack { get; set; }
+        public Effect onDamage { get; set; }
     }
 
     public class Effect

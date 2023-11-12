@@ -21,6 +21,8 @@ public class Character
     private int index;
     public bool hasDeathRattle;
     public bool hasOnEndTurn;
+    public bool hasOnAttack;
+    public bool hasOnDamage;
 
     private UnitStatus status;
 
@@ -41,6 +43,8 @@ public class Character
     private System.Action<Tile, bool> deathrattle;
     private System.Action<Tile, bool> battlecry;
     private System.Action<Tile, bool> onEndTurn;
+    private System.Action<Tile, bool> onAttack;
+    private System.Action<Tile, bool> onDamage;
 
     public static UnitStatus GetStatusFromString(string s)
     {
@@ -215,6 +219,14 @@ public class Character
             return true;
         }
         powerInfo.text = "Power:" + power.ToString();
+
+        // if survived damage try to activate on damage taken effect
+        if (!HasDied() && hasOnDamage)
+        {
+            ActivateOnDamage();
+            return HasDied();
+        }
+
         return false;
     }
 
@@ -227,6 +239,8 @@ public class Character
     public bool Attack(Character otherCharacter)
     {
         // Do something before attack
+        if (hasOnAttack)
+            ActivateOnAttack();
 
         int damage_to_take = otherCharacter.power;
         bool killed = otherCharacter.TakeDamage(this.power);
@@ -281,6 +295,16 @@ public class Character
     {
         onEndTurn(tile, playerUnit);
     }
+  
+    public void ActivateOnAttack()
+    {
+        onAttack(tile, playerUnit);
+    }
+  
+    public void ActivateOnDamage()
+    {
+        onDamage(tile, playerUnit);
+    }
 
     public string toString() {
         return "Name: " + name + "\nPower: " + power;
@@ -311,6 +335,17 @@ public class Character
     {
         this.hasOnEndTurn = true;
         this.onEndTurn = onEndTurn_;
+    }
+    public void AddOnAttack(Action<Tile, bool> onAttack_)
+    {
+        this.hasOnAttack = true;
+        this.onAttack = onAttack_;
+    }
+  
+    public void AddOnDamage(Action<Tile, bool> onDamage_)
+    {
+        this.hasOnDamage = true;
+        this.onDamage = onDamage_;
     }
 
     //return index to know what card to show in details info
