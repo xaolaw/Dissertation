@@ -20,6 +20,7 @@ public class Character
     private bool died;
     private int index;
     public bool hasDeathRattle;
+    public bool hasOnDamage;
 
     private UnitStatus status;
 
@@ -39,6 +40,7 @@ public class Character
 
     private System.Action<Tile, bool> deathrattle;
     private System.Action<Tile, bool> battlecry;
+    private System.Action<Tile, bool> onDamage;
 
     public static UnitStatus GetStatusFromString(string s)
     {
@@ -211,6 +213,14 @@ public class Character
             return true;
         }
         powerInfo.text = "Power:" + power.ToString();
+
+        // if survived damage try to activate on damage taken effect
+        if (!HasDied() && hasOnDamage)
+        {
+            ActivateOnDamage();
+            return HasDied();
+        }
+
         return false;
     }
 
@@ -273,6 +283,11 @@ public class Character
             arena.NextDying();
     }
 
+    public void ActivateOnDamage()
+    {
+        onDamage(tile, playerUnit);
+    }
+
     public string toString() {
         return "Name: " + name + "\nPower: " + power;
     }
@@ -296,6 +311,12 @@ public class Character
     public void AddBattlecry(Action<Tile, bool> battlecry_)
     {
         this.battlecry = battlecry_;
+    }
+
+    public void AddOnDamage(Action<Tile, bool> onDamage_)
+    {
+        this.hasOnDamage = true;
+        this.onDamage = onDamage_;
     }
 
     //return index to know what card to show in details info
