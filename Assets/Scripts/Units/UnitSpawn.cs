@@ -157,6 +157,12 @@ public class UnitSpawn : MonoBehaviour
             // set on attack effect
             character.AddOnAttack(spawnDetails.onAttack.GenerateAction(arena));
         }
+        
+        if (spawnDetails.onDamage != null)
+        {
+            // set on damage effect
+            character.AddOnDamage(spawnDetails.onDamage.GenerateAction(arena));
+        }
 
         return character;
     }
