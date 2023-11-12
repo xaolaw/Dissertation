@@ -471,6 +471,17 @@ public class Arena : MonoBehaviour
             endTurnTileIDIncrement = -1;
         }
 
+        for (int i = endTurnTileID; i != endTurnTileID; i += endTurnTileIDIncrement)
+        {
+            if (tileList[i].character != null && tileList[i].character.playerUnit != playerTurn)
+            {
+                Character unit = tileList[i].character;
+                if (unit.hasOnEndTurn)
+                {
+                    unit.ActivateOnEndTurn();
+                }
+            }
+        }
 
         CheckEndTurnTile();
 

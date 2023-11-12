@@ -152,6 +152,12 @@ public class UnitSpawn : MonoBehaviour
             character.AddBattlecry(spawnDetails.battlecry.GenerateAction(arena));
         }
 
+        if (spawnDetails.onTurnEnd != null)
+        {
+            // set on turn beggining effect
+            character.AddOnEndturn(spawnDetails.onTurnEnd.GenerateAction(arena));
+        }
+
         return character;
     }
 

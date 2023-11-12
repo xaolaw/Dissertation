@@ -20,6 +20,7 @@ public class Character
     private bool died;
     private int index;
     public bool hasDeathRattle;
+    public bool hasOnEndTurn;
 
     private UnitStatus status;
 
@@ -39,6 +40,7 @@ public class Character
 
     private System.Action<Tile, bool> deathrattle;
     private System.Action<Tile, bool> battlecry;
+    private System.Action<Tile, bool> onEndTurn;
 
     public static UnitStatus GetStatusFromString(string s)
     {
@@ -90,9 +92,11 @@ public class Character
 
         this.died = false;
         this.hasDeathRattle = false;
+        this.hasOnEndTurn = false;
         // initialize functions
         deathrattle = delegate (Tile tile, bool side) { };
         battlecry = delegate (Tile tile, bool side) { };
+        onEndTurn = delegate (Tile tlie, bool side) { };
     }
 
     public void SetPosition(Vector3 position)
@@ -273,6 +277,11 @@ public class Character
             arena.NextDying();
     }
 
+    public void ActivateOnEndTurn()
+    {
+        onEndTurn(tile, playerUnit);
+    }
+
     public string toString() {
         return "Name: " + name + "\nPower: " + power;
     }
@@ -296,6 +305,12 @@ public class Character
     public void AddBattlecry(Action<Tile, bool> battlecry_)
     {
         this.battlecry = battlecry_;
+    }
+
+    public void AddOnEndturn(Action<Tile, bool> onEndTurn_)
+    {
+        this.hasOnEndTurn = true;
+        this.onEndTurn = onEndTurn_;
     }
 
     //return index to know what card to show in details info
