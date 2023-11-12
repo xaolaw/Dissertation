@@ -20,6 +20,7 @@ public class Character
     private bool died;
     private int index;
     public bool hasDeathRattle;
+    public bool hasOnAttack;
     public bool hasOnDamage;
 
     private UnitStatus status;
@@ -40,6 +41,7 @@ public class Character
 
     private System.Action<Tile, bool> deathrattle;
     private System.Action<Tile, bool> battlecry;
+    private System.Action<Tile, bool> onAttack;
     private System.Action<Tile, bool> onDamage;
 
     public static UnitStatus GetStatusFromString(string s)
@@ -233,6 +235,8 @@ public class Character
     public bool Attack(Character otherCharacter)
     {
         // Do something before attack
+        if (hasOnAttack)
+            ActivateOnAttack();
 
         int damage_to_take = otherCharacter.power;
         bool killed = otherCharacter.TakeDamage(this.power);
@@ -283,6 +287,11 @@ public class Character
             arena.NextDying();
     }
 
+    public void ActivateOnAttack()
+    {
+        onAttack(tile, playerUnit);
+    }
+  
     public void ActivateOnDamage()
     {
         onDamage(tile, playerUnit);
@@ -313,6 +322,12 @@ public class Character
         this.battlecry = battlecry_;
     }
 
+    public void AddOnAttack(Action<Tile, bool> onAttack_)
+    {
+        this.hasOnAttack = true;
+        this.onAttack = onAttack_;
+    }
+  
     public void AddOnDamage(Action<Tile, bool> onDamage_)
     {
         this.hasOnDamage = true;
