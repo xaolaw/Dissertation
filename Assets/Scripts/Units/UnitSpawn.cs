@@ -91,6 +91,7 @@ public class UnitSpawn : MonoBehaviour
         switch (s)
         {
             case "single":
+            case "self":
                 return Arena.UnitTargetGroup.SINGLE;
             case "bordering":
                 return Arena.UnitTargetGroup.BORDERING;

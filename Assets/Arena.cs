@@ -103,7 +103,7 @@ public class Arena : MonoBehaviour
 
     public enum UnitTargetGroup     //  Legend for JSON                                             [meaning]
     {
-        SINGLE = 0,                 // single                                                       [on place of unit]
+        SINGLE = 0,                 // single or self                                               [on place of unit]
         BORDERING,                  // bordering                                                    [units orthogonally connected (no corners)]
         SURROUNDING,                // surrounding                                                  [units orthogonally and diagonally connected (bordering with corners)]
         IN_FRONT,                   // in_front                                                     [all units in front]
@@ -471,7 +471,7 @@ public class Arena : MonoBehaviour
             endTurnTileIDIncrement = -1;
         }
 
-        for (int i = endTurnTileID; i != endTurnTileID; i += endTurnTileIDIncrement)
+        for (int i = endTurnTileID; i != endTurnTileIDEnd; i += endTurnTileIDIncrement)
         {
             if (tileList[i].character != null && tileList[i].character.playerUnit != playerTurn)
             {
