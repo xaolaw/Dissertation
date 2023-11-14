@@ -20,6 +20,7 @@ public class Character
     private bool died;
     private int index;
     public bool hasDeathRattle;
+    public bool hasOnEndTurn;
     public bool hasOnAttack;
     public bool hasOnDamage;
 
@@ -41,6 +42,7 @@ public class Character
 
     private System.Action<Tile, bool> deathrattle;
     private System.Action<Tile, bool> battlecry;
+    private System.Action<Tile, bool> onEndTurn;
     private System.Action<Tile, bool> onAttack;
     private System.Action<Tile, bool> onDamage;
 
@@ -94,9 +96,11 @@ public class Character
 
         this.died = false;
         this.hasDeathRattle = false;
+        this.hasOnEndTurn = false;
         // initialize functions
         deathrattle = delegate (Tile tile, bool side) { };
         battlecry = delegate (Tile tile, bool side) { };
+        onEndTurn = delegate (Tile tlie, bool side) { };
     }
 
     public void SetPosition(Vector3 position)
@@ -287,6 +291,11 @@ public class Character
             arena.NextDying();
     }
 
+    public void ActivateOnEndTurn()
+    {
+        onEndTurn(tile, playerUnit);
+    }
+  
     public void ActivateOnAttack()
     {
         onAttack(tile, playerUnit);
@@ -322,6 +331,11 @@ public class Character
         this.battlecry = battlecry_;
     }
 
+    public void AddOnEndturn(Action<Tile, bool> onEndTurn_)
+    {
+        this.hasOnEndTurn = true;
+        this.onEndTurn = onEndTurn_;
+    }
     public void AddOnAttack(Action<Tile, bool> onAttack_)
     {
         this.hasOnAttack = true;

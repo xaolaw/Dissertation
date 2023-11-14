@@ -91,6 +91,7 @@ public class UnitSpawn : MonoBehaviour
         switch (s)
         {
             case "single":
+            case "self":
                 return Arena.UnitTargetGroup.SINGLE;
             case "bordering":
                 return Arena.UnitTargetGroup.BORDERING;
@@ -152,6 +153,12 @@ public class UnitSpawn : MonoBehaviour
             character.AddBattlecry(spawnDetails.battlecry.GenerateAction(arena));
         }
 
+        if (spawnDetails.onTurnEnd != null)
+        {
+            // set on turn beggining effect
+            character.AddOnEndturn(spawnDetails.onTurnEnd.GenerateAction(arena));
+        }
+        
         if (spawnDetails.onAttack != null)
         {
             // set on attack effect
