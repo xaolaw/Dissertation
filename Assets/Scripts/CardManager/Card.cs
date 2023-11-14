@@ -164,6 +164,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     {
         canvasGroup.alpha = .6f;
         canvasGroup.blocksRaycasts = false;
+        rectTransform.anchoredPosition += new Vector2(0,102);
     }
 
     public void OnEndDrag(PointerEventData eventData)
