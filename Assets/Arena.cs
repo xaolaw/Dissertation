@@ -149,6 +149,13 @@ public class Arena : MonoBehaviour
 
     public ArenaNetworkManager manager;
 
+    ////////////////////////////////////////
+    /// Variables for end script ///
+    ////////////////////////////////////////
+
+    public EndScript endScript;
+    public Canvas mainCanvas;
+
     //////////////////////
     /// Initialization ///
     //////////////////////
@@ -489,6 +496,15 @@ public class Arena : MonoBehaviour
 
         timer_started = true;
 
+        if (false) //TODO - is end game
+        {
+            bool youWin = false; //TODO - set winner
+
+            mainCanvas.enabled = false;
+            //TODO - sync and end connection between players
+
+            endScript.ShowEndCanvas(youWin);
+        }
     }
 
     //////////////////////////////
