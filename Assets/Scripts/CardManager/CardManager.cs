@@ -35,6 +35,9 @@ public class CardManager : MonoBehaviour
     private bool cardIsBeingPlayed = false;
     private int triedToDraw = 0;
 
+    //replace mode
+    bool isReplaceableStage = true;
+
     //a way to get number of cards left to draw / to next deck shuffle
     public int GetCardsLeftInDeck()
     {
@@ -67,10 +70,10 @@ public class CardManager : MonoBehaviour
         Shuffle<int>(ref deck);
     }
 
-    private Card CreateCard(int cardID, bool only_for_online_call = false)
+    private Card CreateCard(int cardID, bool only_for_online_call = false, bool isReplaceable = false)
     {
         Card card = Instantiate(defaultCard);
-        card.Initialize(cardsJson[cardID].cardName, cardsJson[cardID].cardEnergy, cardsJson[cardID].cardImage, cardsJson[cardID].spawnUnit, cardsJson[cardID].spellEffect, cardID);
+        card.Initialize(cardsJson[cardID].cardName, cardsJson[cardID].cardEnergy, cardsJson[cardID].cardImage, cardsJson[cardID].spawnUnit, cardsJson[cardID].spellEffect, cardID,isReplaceable);
         if (only_for_online_call)
         {
             card.SetStartFields(arena, unitSpawn);
@@ -105,12 +108,25 @@ public class CardManager : MonoBehaviour
             idx = playerDeck[card_index++];
         }
 
-        Card card = CreateCard(idx);
+        Card card = CreateCard(idx,isReplaceable:isReplaceableStage);
         AddCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);
 
         UpdateBackOfDeck();
+    }
+
+    public void EndReplaceableStage() {
+
+        isReplaceableStage = false;
+
+        for (int i = cards_number-1; i <=0; i--)
+        {
+            if (cards_in_hand[i].IsToReplace()) {
+                cards_in_hand.RemoveAt(i);
+                DrawCard(i);
+            }
+        }
     }
 
     public void StartPlayingCard()

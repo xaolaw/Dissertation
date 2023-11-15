@@ -28,6 +28,9 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private Base base_;
     public bool played = false;
 
+    private bool replaceableMode = false;
+    private bool _isToReplace = false;
+    public bool IsToReplace() { return _isToReplace; } 
 
     public void Start(){
         cm = FindObjectOfType<CardManager>();
@@ -46,7 +49,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     }
 
     //initialize card all manadatory fields
-    public void Initialize(string name_, int energy_, string image_, SpawnDetails spawnDetails_, Effect spellEffect_, int index_)
+    public void Initialize(string name_, int energy_, string image_, SpawnDetails spawnDetails_, Effect spellEffect_, int index_,bool replaceableMode = false)
     {
         cardName = name_;
         energy = energy_;
@@ -73,7 +76,20 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             Debug.LogError("Invalid! imageComponent is null");
         }
 
+        if (replaceableMode) SetReplaceableMode(true);
+
     }
+
+    public void SetReplaceableMode(bool val)
+    {
+        replaceableMode = val;
+        UpdateReplaceModeCard(val);
+    }
+
+    private void UpdateReplaceModeCard(bool val) {
+        GetComponent<SpriteRenderer>().color = val ? (_isToReplace? new Color(1, 0.4f, 0.4f, 1): new Color(0.4f, 1, 0.4f, 1) ) : Color.white;
+    }
+
 
     public bool OnPlay(int tileID, bool from_opponent = false)
     {
@@ -159,15 +175,20 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     }
     public void OnPointerDown (PointerEventData eventData){
         //HandleSpawning();
+        if (replaceableMode) { _isToReplace = !_isToReplace; UpdateReplaceModeCard(true); }
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (replaceableMode) return;
+
         canvasGroup.alpha = .6f;
         canvasGroup.blocksRaycasts = false;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (replaceableMode) return;
+
         canvasGroup.alpha = 1f;
         rectTransform.anchoredPosition = position;
         canvasGroup.blocksRaycasts = true;
@@ -180,6 +201,8 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (replaceableMode) return;
+
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
