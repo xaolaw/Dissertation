@@ -54,6 +54,7 @@ public class Arena : MonoBehaviour
     private int endTurnTileID;
     private int endTurnTileIDEnd;
     private int endTurnTileIDIncrement;
+    private int endTurnTileIDrecent;
     private Character.MovingReason movingReason;
 
     private float moveTime = 0.4f;
@@ -411,11 +412,21 @@ public class Arena : MonoBehaviour
 
         Character unit = tileList[endTurnTileID].character;
 
-        if (unit.HasStatus(Character.UnitStatus.EMPOWERED))
+        // if we don't check the same unit twice
+        if (endTurnTileID != endTurnTileIDrecent)
         {
-            unit.GivePower(1);
+
+            if (unit.HasStatus(Character.UnitStatus.EMPOWERED))
+            {
+                unit.GivePower(1);
+            }
+
+            // if survived moving
+            if (unit.Move(Character.MovingReason.END_TURN))
+            {
+                endTurnTileIDrecent = unit.GetTileID();
+            }
         }
-        unit.Move(Character.MovingReason.END_TURN);
         endTurnTileID += endTurnTileIDIncrement;
     }
 
@@ -431,12 +442,12 @@ public class Arena : MonoBehaviour
     // Can only be called to end turn for one player
     public void _EndTurn()
     {
-        Debug.Log("End Turn");
-
         timer_started = false;
         turn_timer.set_time(0, playerTurn);
         turn_timer.setBarActive(!playerTurn);
         time_left = TURN_TIME;
+
+        endTurnTileIDrecent = -1;
 
         if (!NetworkManager.Singleton.IsClient || playerTurn)
         {
