@@ -156,6 +156,8 @@ public class Arena : MonoBehaviour
     public EndScript endScript;
     public Canvas mainCanvas;
 
+    public bool hasEnded = false;
+
     //////////////////////
     /// Initialization ///
     //////////////////////
@@ -223,9 +225,12 @@ public class Arena : MonoBehaviour
 
     private void Update()
     {
-        UpdateTimer();
-        if (movingCharacter != null)
-            UpdateMovingCharacter();
+        if (!hasEnded) {
+            UpdateTimer();
+            if (movingCharacter != null)
+                UpdateMovingCharacter();
+        }
+       
     }
 
 
@@ -496,21 +501,28 @@ public class Arena : MonoBehaviour
 
         timer_started = true;
 
-        if (false) //TODO - is end game
-        {
-            bool youWin = false; //TODO - set winner
-
-            mainCanvas.enabled = false;
-            //TODO - sync and end connection between players
-
-            endScript.ShowEndCanvas(youWin);
-        }
+       
     }
+
+    public void End(bool youWin) {
+ 
+        mainCanvas.enabled = false;
+
+       
+
+        endScript.ShowEndCanvas(youWin);
+
+        hasEnded = true;
+
+        //TODO - sync and end connection between players
+
+    }
+
 
     //////////////////////////////
     /// Functions for damaging ///
     //////////////////////////////
-    
+
 
     // detects exacly where unit comes out after move in given direction (even on sides)
     public OutOfBoarder GetTargetInfo(int id, Direction direction)
