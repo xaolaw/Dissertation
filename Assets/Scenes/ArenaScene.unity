@@ -4694,8 +4694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42453b38083da854f8ced853b78c522f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  YouWonText: {fileID: 0}
-  OpponentWonText: {fileID: 0}
+  YouWonText: {fileID: 287554623}
+  OpponentWonText: {fileID: 416895658}
 --- !u!1 &1054579986
 GameObject:
   m_ObjectHideFlags: 0
@@ -5043,8 +5043,9 @@ MonoBehaviour:
   cardManager: {fileID: 864326750}
   unitSpawn: {fileID: 727531750}
   manager: {fileID: 9002895559665244879}
-  endScript: {fileID: 0}
-  mainCanvas: {fileID: 0}
+  endScript: {fileID: 1051508929}
+  mainCanvas: {fileID: 944234482}
+  hasEnded: 0
 --- !u!4 &1102960227
 Transform:
   m_ObjectHideFlags: 0

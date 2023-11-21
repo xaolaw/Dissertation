@@ -48,6 +48,8 @@ public class SlideCamera1 : MonoBehaviour
         main_canvas.enabled = false;
 
         transform.position = start_position;
+
+        arena.hasStarted = false;
     }
 
     void Update()
@@ -60,6 +62,8 @@ public class SlideCamera1 : MonoBehaviour
 
             start_canvas.enabled = false;
             main_canvas.enabled = true;
+
+            arena.hasStarted = true;
 
             Destroy(this.gameObject);
             return;

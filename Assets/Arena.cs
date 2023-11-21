@@ -158,6 +158,12 @@ public class Arena : MonoBehaviour
 
     public bool hasEnded = false;
 
+    ////////////////////////////////////////
+    /// Variables for start ///
+    ///////////////////////////////////////
+    
+    public bool hasStarted = false; //slideCamera changes it (started animation)
+
     //////////////////////
     /// Initialization ///
     //////////////////////

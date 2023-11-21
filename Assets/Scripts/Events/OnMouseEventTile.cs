@@ -18,7 +18,7 @@ public class OnMouseEventTile : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (!arena.areMenus)
+        if (!arena.areMenus && arena.hasStarted && !arena.hasEnded)
         {
             tile.Select();
         }
