@@ -363,4 +363,9 @@ public class Character
     {
         status ^= s;
     }
+
+    public int GetTileID()
+    {
+        return tile.id;
+    }
 }
