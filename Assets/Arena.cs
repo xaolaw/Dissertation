@@ -150,6 +150,21 @@ public class Arena : MonoBehaviour
 
     public ArenaNetworkManager manager;
 
+    ////////////////////////////////////////
+    /// Variables for end script ///
+    ////////////////////////////////////////
+
+    public EndScript endScript;
+    public Canvas mainCanvas;
+
+    public bool hasEnded = false;
+
+    ////////////////////////////////////////
+    /// Variables for start ///
+    ///////////////////////////////////////
+    
+    public bool hasStarted = false; //slideCamera changes it (started animation)
+
     //////////////////////
     /// Initialization ///
     //////////////////////
@@ -217,9 +232,12 @@ public class Arena : MonoBehaviour
 
     private void Update()
     {
-        UpdateTimer();
-        if (movingCharacter != null)
-            UpdateMovingCharacter();
+        if (!hasEnded) {
+            UpdateTimer();
+            if (movingCharacter != null)
+                UpdateMovingCharacter();
+        }
+       
     }
 
 
@@ -500,12 +518,28 @@ public class Arena : MonoBehaviour
 
         timer_started = true;
 
+       
     }
+
+    public void End(bool youWin) {
+ 
+        mainCanvas.enabled = false;
+
+       
+
+        endScript.ShowEndCanvas(youWin);
+
+        hasEnded = true;
+
+        //TODO - sync and end connection between players
+
+    }
+
 
     //////////////////////////////
     /// Functions for damaging ///
     //////////////////////////////
-    
+
 
     // detects exacly where unit comes out after move in given direction (even on sides)
     public OutOfBoarder GetTargetInfo(int id, Direction direction)

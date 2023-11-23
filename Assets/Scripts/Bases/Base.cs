@@ -21,6 +21,8 @@ public class Base : MonoBehaviour
     public EnergyBar energyBar;
     public Color baseColor;
 
+    private Arena arena;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +35,8 @@ public class Base : MonoBehaviour
 
         
         GameObject ob = Instantiate(basePrefab, basePosition, Quaternion.Euler(0, playerBase ? 90 : -90, 0));
-         
+
+        arena = GameObject.FindAnyObjectByType<Arena>();
     }
 
     // Update is called once per frame
@@ -46,6 +49,8 @@ public class Base : MonoBehaviour
     {
         hp -= damage;
         healthBar.SetHealth(hp);
+
+        if (hp <= 0) arena.End(!playerBase);
     }
 
     public bool TakeEnergy(int energy){
