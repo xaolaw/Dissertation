@@ -87,7 +87,7 @@ public class Character
         this.index = index_;
         canvasInfo.SetActive(false);
         powerInfo = canvasInfo.GetComponentInChildren<TMP_Text>();
-        powerInfo.text="Power:" + power.ToString();
+        powerInfo.text = power.ToString();
 
         arena = (Arena)GameObject.FindObjectOfType(typeof(Arena));
         eventCollector = GameObject.FindObjectOfType<EventCollector>();
