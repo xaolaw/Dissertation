@@ -24,7 +24,16 @@ public class Character
     public bool hasOnAttack;
     public bool hasOnDamage;
 
+    private UnitType type = UnitType.CREATURE;
+    private bool moving = true;
+
     private UnitStatus status;
+
+    public enum UnitType
+    {
+        CREATURE = 0,
+        BUILDING
+    }
 
     public enum UnitStatus
     {
@@ -362,6 +371,33 @@ public class Character
     public void ChangeStatus(UnitStatus s)
     {
         status ^= s;
+    }
+
+    public void SetUnitType(string type_s)
+    {
+        switch (type_s)
+        {
+            case "creature":
+                type = UnitType.CREATURE;
+                break;
+            case "building":
+                type = UnitType.BUILDING;
+                moving = false;
+                break;
+            default:
+                type = UnitType.CREATURE;
+                break;
+        }
+    }
+
+    public bool IsType(UnitType type)
+    {
+        return this.type == type;
+    }
+
+    public bool IsMovingType()
+    {
+        return moving;
     }
 
     public int GetTileID()
