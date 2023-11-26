@@ -213,12 +213,12 @@ public class Character
     public bool TakeDamage(int dmg)
     {
         this.power -= dmg;
-        if (HasStatus(UnitStatus.VOLATILE) || (power <= 0 && !died))
+        if ((HasStatus(UnitStatus.VOLATILE) || power <= 0) && !died)
         {
             this.Die();
             return true;
         }
-        powerInfo.text = "Power:" + power.ToString();
+        powerInfo.text = power.ToString();
 
         // if survived damage try to activate on damage taken effect
         if (!HasDied() && hasOnDamage)
@@ -238,9 +238,15 @@ public class Character
     // attacks character, returns true if kills
     public bool Attack(Character otherCharacter)
     {
+        // if was already dead we do nothing
+        if (otherCharacter.HasDied())
+            return false;
         // Do something before attack
         if (hasOnAttack)
             ActivateOnAttack();
+        // if out ability killed it we do not take negative damage, just report kill
+        if (otherCharacter.HasDied())
+            return true;
 
         int damage_to_take = otherCharacter.power;
         bool killed = otherCharacter.TakeDamage(this.power);
