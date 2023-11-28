@@ -138,6 +138,8 @@ public class UnitSpawn : MonoBehaviour
                 
         character = new Character(spawnDetails.cardModel, spawnDetails.cardPower, playerUnit, characterObject, tile, info, index);
 
+        character.SetUnitType(spawnDetails.cardType);
+
         if (spawnDetails.status != null)
             character.ChangeStatus(Character.GetStatusFromString(spawnDetails.status));
 

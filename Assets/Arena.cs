@@ -421,7 +421,7 @@ public class Arena : MonoBehaviour
         if (endTurnTileID + endTurnTileIDIncrement == endTurnTileIDEnd)
             return;
 
-        if (tileList[endTurnTileID].character == null || tileList[endTurnTileID].character.playerUnit != playerTurn)
+        if (tileList[endTurnTileID].character == null || tileList[endTurnTileID].character.playerUnit != playerTurn || !tileList[endTurnTileID].character.IsMovingType())
         {
             endTurnTileID += endTurnTileIDIncrement;
             CheckEndTurnTile();
