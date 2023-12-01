@@ -16,10 +16,10 @@ public class RelayCode : NetworkBehaviour
     public Button testRelayButton;
 
     public TMP_Text code_text;
-    public TMP_Text variable_text;
+    //public TMP_Text variable_text;
 
     // Start is called before the first frame update
-    async void Start()
+    public async void Start()
     {
         // Initialize services
         await UnityServices.InitializeAsync();
@@ -53,7 +53,7 @@ public class RelayCode : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("ArenaScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
     // On button press
-    async void CreateRelay()
+    public async void CreateRelay()
     {
         try
         {
@@ -63,7 +63,7 @@ public class RelayCode : NetworkBehaviour
 
             Debug.Log(joinCode);
 
-            code_text.text = "Host code: " + joinCode;
+            code_text.text = joinCode;
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
                 allocation.RelayServer.IpV4,

@@ -14,4 +14,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CreateDeckScene.unity
     guid: fa803d9ebbddaa541ac34dc550003612
+  - enabled: 1
+    path: Assets/Scenes/MultiplayerMenuScene.unity
+    guid: 3cc69e614fc733744a4b97b3dd2bc481
+  - enabled: 1
+    path: Assets/Scenes/EnterCodeScene.unity
+    guid: f2c127bef97502b47b781a92d91b76ac
+  - enabled: 1
+    path: Assets/Scenes/GenerateCodeScene.unity
+    guid: 74000737e55be6b47b082abb6329cdf4
   m_configObjects: {}
