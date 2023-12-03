@@ -674,11 +674,21 @@ public class Arena : MonoBehaviour
     {
         List<Character> characters = GetTargets(put, utg, originTile, playerSide);
 
-        foreach (Character character in characters)
+        if (damage <= 0)
         {
-            // if unit died - update frontline
-            if (character.TakeDamage(damage))
-                UpdateFrontline(character.playerUnit);
+            foreach (Character character in characters)
+            {
+                character.GivePower(-damage);
+            }
+        }
+        else
+        {
+            foreach (Character character in characters)
+            {
+                // if unit died - update frontline
+                if (character.TakeDamage(damage))
+                    UpdateFrontline(character.playerUnit);
+            }
         }
     }
 
