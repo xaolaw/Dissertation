@@ -19,24 +19,8 @@ public class RelayCode : NetworkBehaviour
     //public TMP_Text variable_text;
 
     // Start is called before the first frame update
-    public async void Start()
+    public void Start()
     {
-        // Initialize services
-        await UnityServices.InitializeAsync();
-
-        // If already signed in
-        if (AuthenticationService.Instance.SessionTokenExists)
-        {
-            // Sign out (temporary)
-            AuthenticationService.Instance.SignOut();
-        }
-
-        // Sign in anonymously
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         // Initializa Button
         testRelayButton.onClick.AddListener(CreateRelay);
