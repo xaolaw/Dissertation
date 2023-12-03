@@ -16,27 +16,11 @@ public class RelayCode : NetworkBehaviour
     public Button testRelayButton;
 
     public TMP_Text code_text;
-    public TMP_Text variable_text;
+    //public TMP_Text variable_text;
 
     // Start is called before the first frame update
-    async void Start()
+    public void Start()
     {
-        // Initialize services
-        await UnityServices.InitializeAsync();
-
-        // If already signed in
-        if (AuthenticationService.Instance.SessionTokenExists)
-        {
-            // Sign out (temporary)
-            AuthenticationService.Instance.SignOut();
-        }
-
-        // Sign in anonymously
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
         // Initializa Button
         testRelayButton.onClick.AddListener(CreateRelay);
@@ -53,7 +37,7 @@ public class RelayCode : NetworkBehaviour
         NetworkManager.SceneManager.LoadScene("ArenaScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
     // On button press
-    async void CreateRelay()
+    public async void CreateRelay()
     {
         try
         {
@@ -63,7 +47,7 @@ public class RelayCode : NetworkBehaviour
 
             Debug.Log(joinCode);
 
-            code_text.text = "Host code: " + joinCode;
+            code_text.text = joinCode;
 
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
                 allocation.RelayServer.IpV4,
