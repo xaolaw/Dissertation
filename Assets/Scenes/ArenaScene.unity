@@ -3042,7 +3042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infoPrefab: {fileID: 5811798260567612948, guid: 1f7a9fd9396ba5e4f8bec8e56ca74132, type: 3}
-  defaultPrefab: {fileID: 0}
+  defaultPrefab: {fileID: 1554611923663265524, guid: 0501ba2b535868947b53559311017846, type: 3}
   playerColor: {r: 0.2901961, g: 0.90588236, b: 0.25490198, a: 1}
   opponentColor: {r: 0.5012596, g: 0.1004361, b: 0.5754717, a: 0}
   prefabNames:
@@ -3064,6 +3064,15 @@ MonoBehaviour:
   - name: BallTank
     playerPrefab: {fileID: 919132149155446097, guid: 011c1fda4845bc74987121e50dae9ef8, type: 3}
     enemyPrefab: {fileID: 919132149155446097, guid: 011c1fda4845bc74987121e50dae9ef8, type: 3}
+  - name: Droid
+    playerPrefab: {fileID: 919132149155446097, guid: e8a98194fe6248647b228dbc0fede208, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: e8a98194fe6248647b228dbc0fede208, type: 3}
+  - name: Factory
+    playerPrefab: {fileID: 919132149155446097, guid: ce7434ace3411af43a2fe7a361bea2cd, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: bba06928f9f285b4290e429ff2674625, type: 3}
+  - name: Pirog
+    playerPrefab: {fileID: 919132149155446097, guid: 4a4ca3f948fe962448e445777e1508b8, type: 3}
+    enemyPrefab: {fileID: 919132149155446097, guid: 4a4ca3f948fe962448e445777e1508b8, type: 3}
 --- !u!1 &743875705
 GameObject:
   m_ObjectHideFlags: 0
@@ -5046,6 +5055,7 @@ MonoBehaviour:
   endScript: {fileID: 1051508929}
   mainCanvas: {fileID: 944234482}
   hasEnded: 0
+  hasStarted: 0
 --- !u!4 &1102960227
 Transform:
   m_ObjectHideFlags: 0
@@ -8766,7 +8776,7 @@ SpriteRenderer:
   m_Size: {x: 12.8, y: 12.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1923604361
