@@ -21,8 +21,8 @@ public class CardManager : MonoBehaviour
     //a list of all cards with models path
     private List<CardJson> cardsJson;
 
-    private List<int> playerDeck = new List<int>() { 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5};
-    private List<int> usedCards = new List<int>();
+    private List<int> playerDeck = new List<int>() { 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 5, 5};
+    private List<int> usedCards = new List<int>();  
     private int card_index;
     private int maxCardsInHand = 5;
 
