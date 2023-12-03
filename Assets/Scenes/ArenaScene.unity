@@ -3042,7 +3042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infoPrefab: {fileID: 5811798260567612948, guid: 1f7a9fd9396ba5e4f8bec8e56ca74132, type: 3}
-  defaultPrefab: {fileID: 0}
+  defaultPrefab: {fileID: 1554611923663265524, guid: 0501ba2b535868947b53559311017846, type: 3}
   playerColor: {r: 0.2901961, g: 0.90588236, b: 0.25490198, a: 1}
   opponentColor: {r: 0.5012596, g: 0.1004361, b: 0.5754717, a: 0}
   prefabNames:
