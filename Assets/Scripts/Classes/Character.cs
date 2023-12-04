@@ -417,7 +417,7 @@ public class Character
     {
         if (animator)
         {
-            animator.SetBool("IsWalking", true);
+            animator.SetBool("isWalking", true);
         }
     }
 
@@ -425,7 +425,7 @@ public class Character
     {
         if (animator)
         {
-            animator.SetBool("IsWalking", false);
+            animator.SetBool("isWalking", false);
         }
     }
 }
