@@ -57,7 +57,7 @@ public class Arena : MonoBehaviour
     private int endTurnTileIDrecent;
     private Character.MovingReason movingReason;
 
-    private float moveTime = 0.4f;
+    private float moveTime = 0.8f;
 
     public bool playerTurn = true;
     private int energyFlow = 2;
@@ -392,6 +392,7 @@ public class Arena : MonoBehaviour
         movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(TIME_OF_ONE_MOVE / moveTime, 1.0f)));
         if (TIME_OF_ONE_MOVE >= moveTime)
         {
+            movingCharacter.EndWalking();
             movingCharacter = null;
             switch (movingReason)
             {
@@ -442,6 +443,7 @@ public class Arena : MonoBehaviour
             // if survived moving
             if (unit.Move(Character.MovingReason.END_TURN))
             {
+                unit.StartWalking();
                 endTurnTileIDrecent = unit.GetTileID();
             }
         }

@@ -15,6 +15,7 @@ public class Character
     TMP_Text powerInfo;
     Tile tile;
 
+    private Animator animator;
     private Arena arena;
     private EventCollector eventCollector;
     private bool died;
@@ -91,6 +92,7 @@ public class Character
         this.name = name_;
         this.playerUnit = playerUnit_;
         this.gameObject = gameObject_;
+        animator = gameObject.GetComponent<Animator>();
         this.tile = tile_;
         this.canvasInfo = canvasInfo_;
         this.index = index_;
@@ -409,5 +411,21 @@ public class Character
     public int GetTileID()
     {
         return tile.id;
+    }
+
+    public void StartWalking()
+    {
+        if (animator)
+        {
+            animator.SetBool("IsWalking", true);
+        }
+    }
+
+    public void EndWalking()
+    {
+        if (animator)
+        {
+            animator.SetBool("IsWalking", false);
+        }
     }
 }
