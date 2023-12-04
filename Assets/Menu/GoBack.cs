@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class GoBack : MonoBehaviour
 {
 
-    public void PlayGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1, LoadSceneMode.Single);
-    }
-    public void ShowCollection()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2, LoadSceneMode.Single);
-    }
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");
     }
+
+    public void ReturnToMultiplayerMenu(){
+        SceneManager.LoadScene("MultiplayerMenuScene");
+    }
+
     public void QuitGame()
     {
         //it does not work in unity so i put a debug msg
