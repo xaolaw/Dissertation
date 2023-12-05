@@ -188,5 +188,28 @@
         "damage": -2
       }
     }
+  },
+  {
+    "cardName": "Slime",
+    "cardEnergy": 5,
+    "cardImage": "2DModels/slime_card",
+    "cardDescription": "Battlecry: Deal 3 damage to surrounding enemies\nOn the end of turn: Lose 1 power",
+    "cardInDeckLimitNumber": 3,
+    "spawnUnit": {
+      "cardType": "creature",
+      "cardModel": "Slime",
+      "cardPower": 6,
+      "speed": 1,
+      "battlecry": {
+        "area": "surrounding",
+        "target": "enemy",
+        "damage": 3
+      },
+      "onTurnEnd": {
+        "area": "self",
+        "target": "own",
+        "damage": 1
+      }
+    }
   }
 ]
