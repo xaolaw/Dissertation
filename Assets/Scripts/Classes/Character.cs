@@ -429,5 +429,4 @@ public class Character
             animator.SetBool("isWalking", false);
         }
     }
-
 }
