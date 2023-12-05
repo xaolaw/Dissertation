@@ -211,8 +211,6 @@ public class Arena : MonoBehaviour
         Base[] bases = FindObjectsOfType<Base>();
         playerBase = bases[0];
         opponentBase = bases[1];
-        Debug.Log(bases[0]);
-        Debug.Log(bases[1]);
         turn_button = FindObjectOfType<TurnButton>();
 
         turn_timer.setBarActive(playerTurn);
@@ -607,7 +605,7 @@ public class Arena : MonoBehaviour
                     directions = new Direction[2] { Direction.RIGHT, Direction.LEFT };
                     break;
                 default:
-                    Debug.Log("unknown UnitTargetGroup" + utg);
+                    Debug.LogError("unknown UnitTargetGroup" + utg);
                     break;
             }
             foreach (Direction direction in directions)
@@ -681,6 +679,7 @@ public class Arena : MonoBehaviour
             foreach (Character character in characters)
             {
                 character.GivePower(-damage);
+         
             }
         }
         else

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 namespace Assets.Classes
 {
     public class CardJson 
@@ -51,7 +52,7 @@ namespace Assets.Classes
             {
 
                 if (ChangesPower())
-                {
+                {  
                     origintile.Damage(UnitSpawn.PUTFromString(target), UnitSpawn.UTGFromString(area), side, damage.Value);
                 }
                 if (drawCard != null)

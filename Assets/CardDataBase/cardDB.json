@@ -170,5 +170,23 @@
         "damage": 6
       }
     }
+  },
+  {
+    "cardName": "Fricky Robot",
+    "cardEnergy": 4,
+    "cardImage": "2DModels/FrickyRobot",
+    "cardDescription": "Give bordering units 2 power",
+    "cardInDeckLimitNumber": 3,
+    "spawnUnit": {
+      "cardType": "creature",
+      "cardModel": "Fricky Robot",
+      "cardPower": 3,
+      "speed": 1,
+      "battlecry": {
+        "area": "bordering",
+        "target": "own",
+        "damage": -2
+      }
+    }
   }
 ]
