@@ -128,7 +128,7 @@ public class CreateDeck : MonoBehaviour
         var jsonDB = reader.ReadToEnd();
         cardsJson = JsonConvert.DeserializeObject<List<CardJson>>(jsonDB);
         reader.Close();
-        SortCardJsonList();
+        //SortCardJsonList();
 
     }
 
@@ -209,7 +209,6 @@ public class CreateDeck : MonoBehaviour
     public void AddToDeck(int index)
     {
 
-        index += (page * cardsPerPage);
 
         if (CheckIfAbleToAdd(index))
         {
@@ -226,7 +225,6 @@ public class CreateDeck : MonoBehaviour
     public void DeleteFromDeck(int index)
     {
  
-        index += (page * cardsPerPage);
 
         if (CheckIfAbleToRemove(index))
         {
