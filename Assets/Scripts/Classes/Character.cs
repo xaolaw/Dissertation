@@ -244,6 +244,7 @@ public class Character
     public void GivePower(int power)
     {
         this.power += power;
+        powerInfo.text = this.power.ToString();
     }
 
     // attacks character, returns true if kills
@@ -428,4 +429,5 @@ public class Character
             animator.SetBool("isWalking", false);
         }
     }
+
 }
