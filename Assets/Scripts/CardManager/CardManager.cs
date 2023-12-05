@@ -26,6 +26,7 @@ public class CardManager : MonoBehaviour
     private int selectedDeckIndex = 0;
     private readonly string SELECTED_DECK_PATH = "Assets/CardDataBase/selectedDeckIndex.txt";
     private readonly string JSON_PATH = "Assets/CardDataBase/Decks.json"; 
+
     private int card_index;
     private int maxCardsInHand = 5;
 

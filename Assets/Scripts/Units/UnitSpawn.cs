@@ -58,7 +58,10 @@ public class UnitSpawn : MonoBehaviour
             tile.addCharacter(new_unit);
 
             new_unit.ActivateBattlecry();
-
+            if(spawnDetails.speed > 0)
+            {
+                new_unit.StartWalking();
+            }
 
             for(int i = 0; i < spawnDetails.speed && !new_unit.HasDied(); ++i)
             {
