@@ -18,7 +18,9 @@ public class DeckEditMenu : MonoBehaviour
 
     private DeckCollection CardDecks = new();
     private readonly string JSON_PATH = "Assets/CardDataBase/Decks.json";
+    private readonly string SELECTED_DECK_PATH = "Assets/CardDataBase/selectedDeckIndex.txt";
     private int displayedDeck = 0;
+    private int selectedDeckIndex = 0;
 
     void Start()
     {
@@ -90,5 +92,17 @@ public class DeckEditMenu : MonoBehaviour
     public void EditDeck()
     {
         DeckCollection.InitalizeDeck(CardDecks.Decks[displayedDeck].CardList.ToList(),CardDecks.Decks[displayedDeck].Name);
+    }
+
+    public void SelectDeck(){
+        selectedDeckIndex = displayedDeck;
+        using (var stream = new FileStream(SELECTED_DECK_PATH, FileMode.Truncate))
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(selectedDeckIndex);
+            }
+        }
+
     }
 }
