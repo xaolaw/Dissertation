@@ -37,6 +37,19 @@
     }
   },
   {
+    "cardName": "Satelite Laser",
+    "cardEnergy": 3,
+    "cardImage": "2DModels/orbital_laser_card",
+    "cardInDeckLimitNumber": 3,
+    "cardDescription": "Blaaaast!!! one unit for 6 damage",
+    "spellEffect": {
+      "castTarget": "unit",
+      "target": "enemy",
+      "area": "single",
+      "damage": 6
+    }
+  },
+  {
     "cardName": "Starship",
     "cardEnergy": 2,
     "cardImage": "2DModels/starship",
@@ -53,63 +66,6 @@
         "damage": 6
       },
       "status": "aggressive"
-    }
-  },
-  {
-    "cardName": "Biden Blaaast",
-    "cardEnergy": 3,
-    "cardImage": "2DModels/blast",
-    "cardInDeckLimitNumber": 3,
-    "cardDescription": "Blaaaast!!! one unit for 10 damage",
-    "spellEffect": {
-      "castTarget": "unit",
-      "target": "enemy",
-      "area": "single",
-      "damage": 10
-    }
-  },
-  {
-    "cardName": "Supply delivery",
-    "cardEnergy": 5,
-    "cardImage": "2DModels/tank15_2",
-    "cardDescription": "supplies are here",
-    "cardInDeckLimitNumber": 3,
-    "spawnUnit": {
-      "cardType": "creature",
-      "cardModel": "Tank",
-      "cardPower": 3,
-      "speed": 0,
-      "battlecry": {
-        "drawCard": 1
-      }
-    }
-  },
-  {
-    "cardName": "Shielded Ball tank",
-    "cardEnergy": 5,
-    "cardImage": "2DModels/ballTank",
-    "cardDescription": "We got you!",
-    "cardInDeckLimitNumber": 3,
-    "spawnUnit": {
-      "cardType": "creature",
-      "cardModel": "BallTank",
-      "cardPower": 8,
-      "speed": 0,
-      "battlecry": {
-        "area": "single_in_front",
-        "target": "own",
-        "spawn": {
-          "cardType": "creature",
-          "cardModel": "Tank",
-          "cardPower": 3,
-          "speed": 0
-        }
-      },
-      "deathrattle": {
-        "target": "enemy",
-        "area": "surrounding",
-        "damage": 5
-      }
     }
   },
   {
