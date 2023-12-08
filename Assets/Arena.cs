@@ -497,34 +497,34 @@ public class Arena : MonoBehaviour
         cardManager.RestoreCardsColor(opponentBase.GetEnergy());
         
 
-        if (playerTurn){
-            playerBase.UpdateEnergy(energyFlow);
-            }
-        else {
-            opponentBase.UpdateEnergy(energyFlow);
-            }
-
-        playerTurn = !playerTurn;
-        //int begin, end, increment;
         if (playerTurn)
         {
-            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
-            endTurnTileID = 0;
-            endTurnTileIDEnd = tileList.Count;
-            endTurnTileIDIncrement = 1;
-
+            playerBase.UpdateEnergy(energyFlow);
         }
         else
+        {
+            opponentBase.UpdateEnergy(energyFlow);
+        }
+
+        //int begin, end, increment;
+        if (playerTurn)
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
             endTurnTileID = tileList.Count - 1;
             endTurnTileIDEnd = -1;
             endTurnTileIDIncrement = -1;
         }
+        else
+        {
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
+            endTurnTileID = 0;
+            endTurnTileIDEnd = tileList.Count;
+            endTurnTileIDIncrement = 1;
+        }
 
         for (int i = endTurnTileID; i != endTurnTileIDEnd; i += endTurnTileIDIncrement)
         {
-            if (tileList[i].character != null && tileList[i].character.playerUnit != playerTurn)
+            if (tileList[i].character != null && tileList[i].character.playerUnit == playerTurn)
             {
                 Character unit = tileList[i].character;
                 if (unit.hasOnEndTurn)
@@ -534,13 +534,13 @@ public class Arena : MonoBehaviour
             }
         }
 
+        UpdateFrontline(playerTurn);
+
+        playerTurn = !playerTurn;
+
         CheckEndTurnTile();
 
-        UpdateFrontline(!playerTurn);
-
         timer_started = true;
-
-       
     }
 
 
