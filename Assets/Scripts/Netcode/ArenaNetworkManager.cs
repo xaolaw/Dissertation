@@ -7,6 +7,7 @@ public class ArenaNetworkManager : NetworkBehaviour
 {
     public Arena arena;
     public CardManager cardManager;
+    private EventCollector eventCollector;
 
     /////////////////////////////////
     /// Variables for multiplayer ///
@@ -17,6 +18,15 @@ public class ArenaNetworkManager : NetworkBehaviour
         EndTurn = 0,
         PlayCard,
         SetStart
+    }
+
+    ////////////////////////////////////
+    /// Functions for initialization ///
+    ////////////////////////////////////
+
+    private void Start()
+    {
+        eventCollector = GameObject.FindObjectOfType<EventCollector>();
     }
 
     /////////////////////////////////
@@ -34,6 +44,7 @@ public class ArenaNetworkManager : NetworkBehaviour
             case GameSignal.PlayCard:
                 Card card = cardManager.GetCardByID(arg1, true);
                 card.OnPlay(arg2, true);
+                eventCollector.AddEvent(new GameEvent(card.cardName, (!arena.playerTurn) ? "Player" : "Opponent", "played"));
                 break;
 
             case GameSignal.SetStart:
