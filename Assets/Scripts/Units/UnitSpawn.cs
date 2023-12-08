@@ -61,11 +61,7 @@ public class UnitSpawn : MonoBehaviour
             if(spawnDetails.speed > 0)
             {
                 new_unit.StartWalking();
-            }
-
-            for(int i = 0; i < spawnDetails.speed && !new_unit.HasDied(); ++i)
-            {
-                new_unit.Move(Character.MovingReason.SPAWN);
+                new_unit.Move(Character.MovingReason.SPAWN, spawnDetails.speed);
             }
         }
         else

@@ -48,6 +48,8 @@ public class Arena : MonoBehaviour
     private Vector3 movingStartPos;
     private Vector3 movingEndPos;
 
+    private int movesToMake;
+
     // constant time it takes one unit to move one tile
     private float TIME_OF_ONE_MOVE;
 
@@ -391,13 +393,18 @@ public class Arena : MonoBehaviour
         if (TIME_OF_ONE_MOVE >= moveTime)
         {
             movingCharacter.EndWalking();
-            movingCharacter = null;
             switch (movingReason)
             {
                 case Character.MovingReason.END_TURN:
+                    movingCharacter = null;
                     CheckEndTurnTile();
                     break;
                 case Character.MovingReason.SPAWN:
+                    movesToMake--;
+                    Character temp = movingCharacter;
+                    movingCharacter = null;
+                    if (movesToMake > 0 && !temp.HasDied())
+                        temp.Move(Character.MovingReason.SPAWN, movesToMake);
                     break;
                 default:
                     Debug.LogError("Moved without reason");
@@ -406,13 +413,16 @@ public class Arena : MonoBehaviour
         }
     }
 
-    public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason)
+    public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason, int moves_to_make)
     {
         movingCharacter = unit;
         movingStartPos = start;
         movingEndPos = end;
         TIME_OF_ONE_MOVE = 0.0f;
         movingReason = reason;
+        movesToMake = moves_to_make;
+
+        movingCharacter.StartWalking();
     }
 
     public void CheckEndTurnTile()
@@ -441,7 +451,6 @@ public class Arena : MonoBehaviour
             // if survived moving
             if (unit.Move(Character.MovingReason.END_TURN))
             {
-                unit.StartWalking();
                 endTurnTileIDrecent = unit.GetTileID();
             }
         }

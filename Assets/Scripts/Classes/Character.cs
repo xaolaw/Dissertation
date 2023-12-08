@@ -119,7 +119,7 @@ public class Character
         gameObject.transform.position = position;
     }
 
-    public bool Move(MovingReason reason)
+    public bool Move(MovingReason reason, int moves_to_make = 1)
     {
         bool turn = arena.playerTurn;
         Arena.Direction moveDirection = moveDirection = turn ? Arena.Direction.UP : Arena.Direction.DOWN;
@@ -156,11 +156,11 @@ public class Character
                 moveDirection = turn ? Arena.Direction.UP : Arena.Direction.DOWN;
         }
 
-        return _Move(moveDirection, reason);
+        return _Move(moveDirection, reason, moves_to_make);
     }
 
     // returns false if it died while moving, returns true if it survived
-    public bool _Move(Arena.Direction direction, MovingReason reason)
+    public bool _Move(Arena.Direction direction, MovingReason reason, int moves_to_make)
     {
         if (HasDied())
             return false;
@@ -207,7 +207,7 @@ public class Character
             tile = temp;
             temp.character = this;
 
-            arena.Moving(this, gameObject.transform.position, tile.unitPosition, reason);
+            arena.Moving(this, gameObject.transform.position, tile.unitPosition, reason, moves_to_make);
 
             //gameObject.transform.position = tile.unitPosition;
 
