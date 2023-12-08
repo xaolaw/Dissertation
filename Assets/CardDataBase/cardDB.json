@@ -167,5 +167,18 @@
         "damage": 1
       }
     }
+  },
+  {
+    "cardName": "Bunker",
+    "cardEnergy": 3,
+    "cardImage": "2DModels/bunker_card",
+    "cardDescription": "",
+    "cardInDeckLimitNumber": 3,
+    "spawnUnit": {
+      "cardType": "building",
+      "cardModel": "Bunker",
+      "cardPower": 6,
+      "speed": 0
+    }
   }
 ]
