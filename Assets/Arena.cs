@@ -43,6 +43,9 @@ public class Arena : MonoBehaviour
     public bool timer_started = false;
     public TurnTimer turn_timer;
 
+    // variable for animations
+    private bool isAnimating = false;
+
     // variable of moving entity - only one can move at the same time
     private Character movingCharacter = null;
     private Vector3 movingStartPos;
@@ -234,6 +237,9 @@ public class Arena : MonoBehaviour
             UpdateTimer();
             if (movingCharacter != null)
                 UpdateMovingCharacter();
+
+
+            isAnimating = (movingCharacter != null);
         }
        
     }
@@ -374,7 +380,7 @@ public class Arena : MonoBehaviour
                 time_left = (time_left > Time.deltaTime) ? time_left - Time.deltaTime : 0;
                 turn_timer.set_time(time_left / TURN_TIME, playerTurn);
             }
-            else
+            else if (!isAnimating)
             {
                 timer_started = false;
                 // we trust other player's timer
@@ -448,6 +454,12 @@ public class Arena : MonoBehaviour
         endTurnTileID += endTurnTileIDIncrement;
     }
 
+    public void SafeEndTurn()
+    {
+        timer_started = true;
+        time_left = 0;
+    }
+
     public void EndTurn()
     {
         // signal other player
@@ -460,6 +472,7 @@ public class Arena : MonoBehaviour
     // Can only be called to end turn for one player
     public void _EndTurn()
     {
+        Debug.Log("Turn ended");
         timer_started = false;
         turn_timer.set_time(0, playerTurn);
         turn_timer.setBarActive(!playerTurn);
@@ -524,8 +537,6 @@ public class Arena : MonoBehaviour
     public void End(bool youWin) {
  
         mainCanvas.enabled = false;
-
-       
 
         endScript.ShowEndCanvas(youWin);
 
@@ -779,6 +790,11 @@ public class Arena : MonoBehaviour
     public void DisableMenu()
     {
         areMenus = false;
+    }
+
+    public bool IsAnimating()
+    {
+        return isAnimating;
     }
 
     ///////////////////////////

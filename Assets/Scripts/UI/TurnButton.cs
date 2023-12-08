@@ -20,6 +20,6 @@ public class TurnButton : MonoBehaviour
     {
         // you can only end your own turn
         if (arena.playerTurn || !NetworkManager.Singleton.IsClient)
-            arena.EndTurn();
+            arena.SafeEndTurn();
     }
 }

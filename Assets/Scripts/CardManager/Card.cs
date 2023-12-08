@@ -77,6 +77,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
     public bool OnPlay(int tileID, bool from_opponent = false)
     {
+        // if units are moving (to not interrupt animation)
+        if (arena.IsAnimating())
+            return false;
+
         // if it's not your turn and you try to play a card
         if (NetworkManager.Singleton.IsClient && !from_opponent && arena.playerTurn == false)
             return false;
