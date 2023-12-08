@@ -6219,8 +6219,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1102960226}
         m_TargetAssemblyTypeName: Arena, Assembly-CSharp
-        m_MethodName: End
-        m_Mode: 6
+        m_MethodName: Surrender
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

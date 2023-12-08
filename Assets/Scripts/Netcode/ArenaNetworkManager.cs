@@ -17,7 +17,8 @@ public class ArenaNetworkManager : NetworkBehaviour
     {
         EndTurn = 0,
         PlayCard,
-        SetStart
+        SetStart,
+        Surrender
     }
 
     ////////////////////////////////////
@@ -53,7 +54,9 @@ public class ArenaNetworkManager : NetworkBehaviour
                 arena.turn_timer.set_time(0, arena.playerTurn);
                 arena.UpdateTurnIndicator();
                 break;
-
+            case GameSignal.Surrender:
+                arena.End(true);
+                break;
             default:
                 Debug.LogError("unexpected signal with number: " + signal.ToString());
                 break;

@@ -543,6 +543,13 @@ public class Arena : MonoBehaviour
        
     }
 
+
+    public void Surrender()
+    {
+        manager.SendSignal(ArenaNetworkManager.GameSignal.Surrender);
+        End(false);
+    }
+
     public void End(bool youWin) {
  
         mainCanvas.enabled = false;
