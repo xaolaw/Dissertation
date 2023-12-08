@@ -65,12 +65,8 @@ namespace Assets.Classes
                 }
                 if (spawn != null)
                 {
-                    Debug.Log("spawning...");
-
                     foreach(Tile tile in arena.GetEmptyTargetTiles(UnitSpawn.UTGFromString(area), origintile, side))
                     {
-                        Debug.Log("On tile " + tile.id);
-
                         arena.unitSpawn.Spawn(tile, spawn, side, 0);
                         arena.CheckFrontline(tile.id, side);
                     }
