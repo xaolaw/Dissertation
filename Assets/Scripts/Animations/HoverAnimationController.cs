@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HoverAnimationController : MonoBehaviour
 {
@@ -26,5 +27,4 @@ public class HoverAnimationController : MonoBehaviour
         animator.SetBool("HoverBool", false);
         rectTransform.SetSiblingIndex(startingSortingOrder);
     }
-
 }

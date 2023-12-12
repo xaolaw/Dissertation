@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using Assets.Classes;
 using Unity.Netcode;
 
-public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
 {
     [SerializeField] private Canvas canvas;
     public string cardName;
@@ -26,7 +26,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private CanvasGroup canvasGroup;
     private Vector3 position;
     private Base base_;
+    Sprite image;
+
     public bool played = false;
+    public GameObject UnitDetailsPanel;
 
 
     public void Start(){
@@ -53,7 +56,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         spawnDetails = spawnDetails_;
         spellEffect = spellEffect_;
         index = index_;
-        Sprite image = Resources.Load<Sprite>(image_);
+        this.image = Resources.Load<Sprite>(image_);
 
         Image imageComponent = GetComponent<Image>();
 
@@ -186,6 +189,19 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     {
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ShowDetails();
+    }
+
+    public void ShowDetails()
+    {
+        //change canvas status to appear
+        UnitDetailsPanel.SetActive(true);
+        //changing image to appropiate
+        Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
+        image.sprite = this.image;
+    }
 
     public int GetJsonIndex()
     {
@@ -198,5 +214,4 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         Vector3 previousPosition = cm.GetCardPositionInHand(this);
         rectTransform.position = previousPosition;
     }
-
 }

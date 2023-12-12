@@ -75,6 +75,7 @@ public class CardManager : MonoBehaviour
     {
         Card card = Instantiate(defaultCard);
         card.Initialize(cardsJson[cardID].cardName, cardsJson[cardID].cardEnergy, cardsJson[cardID].cardImage, cardsJson[cardID].spawnUnit, cardsJson[cardID].spellEffect, cardID);
+
         if (only_for_online_call)
         {
             card.SetStartFields(arena, unitSpawn);
