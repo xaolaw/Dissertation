@@ -58,17 +58,24 @@ public class UnitSpawn : MonoBehaviour
             tile.addCharacter(new_unit);
 
             new_unit.ActivateBattlecry();
-            if(spawnDetails.speed > 0)
+            if (!new_unit.hasBattlecryAnimation)
             {
-                new_unit.StartWalking();
-                new_unit.Move(Character.MovingReason.SPAWN, spawnDetails.speed);
-            }
+               if (spawnDetails.speed > 0)
+                {
+                    ContinueSpawn(new_unit);
+                }
+            }  
         }
         else
         {
             return false;
         }
         return true;
+    }
+    public void ContinueSpawn(Character character)
+    {
+        character.StartWalking();
+        character.Move(Character.MovingReason.SPAWN, character.GetSpeed());
     }
 
     static public Arena.PlayerUnitTarget PUTFromString(string s)
@@ -135,7 +142,7 @@ public class UnitSpawn : MonoBehaviour
 
         characterObject = Instantiate(GetPrefab(spawnDetails.cardModel, playerUnit), position, Quaternion.Euler(rotation), transform);
                 
-        character = new Character(spawnDetails.cardModel, spawnDetails.cardPower, playerUnit, characterObject, tile, info, index);
+        character = new Character(spawnDetails.cardModel, spawnDetails.cardPower, playerUnit, characterObject, tile, info, index, spawnDetails.speed);
 
         character.SetUnitType(spawnDetails.cardType);
 
@@ -145,31 +152,31 @@ public class UnitSpawn : MonoBehaviour
         if (spawnDetails.deathrattle != null)
         {
             // set deathrattle
-            character.AddDeathrattle(spawnDetails.deathrattle.GenerateAction(arena));
+            character.AddDeathrattle(spawnDetails.deathrattle.GenerateAction(arena, Arena.EffectReason.DEATHRATTLE), spawnDetails.deathrattle.HasAnimation());
         }
 
         if (spawnDetails.battlecry != null)
         {
             // set battlecry
-            character.AddBattlecry(spawnDetails.battlecry.GenerateAction(arena));
+            character.AddBattlecry(spawnDetails.battlecry.GenerateAction(arena, Arena.EffectReason.BATTLECRY), spawnDetails.battlecry.HasAnimation());
         }
 
         if (spawnDetails.onTurnEnd != null)
         {
             // set on turn beggining effect
-            character.AddOnEndturn(spawnDetails.onTurnEnd.GenerateAction(arena));
+            character.AddOnEndturn(spawnDetails.onTurnEnd.GenerateAction(arena, Arena.EffectReason.ON_END_TURN), spawnDetails.onTurnEnd.HasAnimation());
         }
         
         if (spawnDetails.onAttack != null)
         {
             // set on attack effect
-            character.AddOnAttack(spawnDetails.onAttack.GenerateAction(arena));
+            character.AddOnAttack(spawnDetails.onAttack.GenerateAction(arena, Arena.EffectReason.ON_ATTACK), spawnDetails.onAttack.HasAnimation());
         }
         
         if (spawnDetails.onDamage != null)
         {
             // set on damage effect
-            character.AddOnDamage(spawnDetails.onDamage.GenerateAction(arena));
+            character.AddOnDamage(spawnDetails.onDamage.GenerateAction(arena, Arena.EffectReason.ON_DAMAGE), spawnDetails.onDamage.HasAnimation());
         }
 
         return character;

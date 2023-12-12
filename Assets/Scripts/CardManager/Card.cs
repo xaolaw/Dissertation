@@ -130,10 +130,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                             return false;
                         }
                     }
-                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage.Value);
+                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage.Value,Arena.EffectReason.SPELL);
                     break;
                 case "none":
-                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage.Value);
+                    arena.Damage(UnitSpawn.PUTFromString(spellEffect.target), UnitSpawn.UTGFromString(spellEffect.area), tile, arena.playerTurn, spellEffect.damage.Value,Arena.EffectReason.SPELL);
                     break;
                 default:
                     Debug.LogError("Spell has wrong cast target: " + spellEffect.castTarget);

@@ -70,9 +70,9 @@ public class Tile
         mesh.material.color = mainColor;
     }
 
-    public void Damage(Arena.PlayerUnitTarget put, Arena.UnitTargetGroup utg, bool side, int damage)
+    public void Damage(Arena.PlayerUnitTarget put, Arena.UnitTargetGroup utg, bool side, int damage, Arena.EffectReason reason)
     {
-        arena.Damage(put, utg, this, side, damage);
+        arena.Damage(put, utg, this, side, damage, reason);
     }
 }
 

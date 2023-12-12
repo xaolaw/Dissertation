@@ -46,14 +46,14 @@ namespace Assets.Classes
             return target != null && area != null && damage != null;
         }
 
-        public System.Action<Tile, bool> GenerateAction(Arena arena)
+        public System.Action<Tile, bool> GenerateAction(Arena arena, Arena.EffectReason reason)
         {
             System.Action<Tile, bool> newAction = delegate (Tile origintile, bool side)
             {
 
                 if (ChangesPower())
                 {  
-                    origintile.Damage(UnitSpawn.PUTFromString(target), UnitSpawn.UTGFromString(area), side, damage.Value);
+                    origintile.Damage(UnitSpawn.PUTFromString(target), UnitSpawn.UTGFromString(area), side, damage.Value, reason);
                 }
                 if (drawCard != null)
                 {
@@ -74,6 +74,19 @@ namespace Assets.Classes
             };
 
             return newAction;
+        }
+
+        public bool HasAnimation()
+        {
+            if (damage.HasValue && damage.Value > 0)
+            {
+                return true;
+            }
+            if (spawn != null && spawn.speed > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
