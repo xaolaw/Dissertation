@@ -38,7 +38,7 @@ public class Arena : MonoBehaviour
     /////////////////////////////////////////////////
 
     private TurnButton turn_button;
-    private float TURN_TIME = 20.0f;
+    private readonly float TURN_TIME = 20.0f;
     private float time_left = 20.0f;
     public bool timer_started = false;
     public TurnTimer turn_timer;
@@ -53,8 +53,18 @@ public class Arena : MonoBehaviour
 
     private int movesToMake;
 
-    // constant time it takes one unit to move one tile
-    private float TIME_OF_ONE_MOVE;
+    //Effect variables
+    public GameObject explosionAnimation;
+    private List<GameObject> effects;
+    private EffectReason effectReason;
+    private Character effectCharacter;
+    private readonly float EXPLOSION_TIME = 0.5f;
+    private float effectTime;
+    private List<Character> effectCharacters;
+    private int effectDamage;
+
+    //time it takes one unit to move one tile
+    private float timeOfOneMove;
 
     private int endTurnTileID;
     private int endTurnTileIDEnd;
@@ -118,6 +128,15 @@ public class Arena : MonoBehaviour
         ALL,                        // all (or anything that doesn't match the rest - it is default)[all units]
         SINGLE_BEHIND,              // single_behind                                                [one unit directly behind]
         SINGLE_IN_FRONT             // single_in_front                                              [one unit directly in front]
+    }
+    public enum EffectReason
+    {
+        BATTLECRY = 0,
+        DEATHRATTLE,
+        ON_ATTACK,
+        ON_DAMAGE,
+        ON_END_TURN,
+        SPELL
     }
 
     public int[] neighbourId = new int[8];
@@ -240,8 +259,11 @@ public class Arena : MonoBehaviour
             if (movingCharacter != null)
                 UpdateMovingCharacter();
 
+            if (effects!=null)
+                UpdateEffect();
 
-            isAnimating = (movingCharacter != null);
+
+            isAnimating = (movingCharacter != null) || (effects != null);
         }
        
     }
@@ -394,9 +416,9 @@ public class Arena : MonoBehaviour
 
     private void UpdateMovingCharacter()
     {
-        TIME_OF_ONE_MOVE += Time.deltaTime;
-        movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(TIME_OF_ONE_MOVE / moveTime, 1.0f)));
-        if (TIME_OF_ONE_MOVE >= moveTime)
+        timeOfOneMove += Time.deltaTime;
+        movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(timeOfOneMove / moveTime, 1.0f)));
+        if (timeOfOneMove >= moveTime)
         {
             movingCharacter.EndWalking();
             switch (movingReason)
@@ -418,17 +440,73 @@ public class Arena : MonoBehaviour
             }
         }
     }
+    private void UpdateEffect()
+    {
+        effectTime += Time.deltaTime;
+        if (effectTime >= EXPLOSION_TIME)
+        {
+            foreach (Character character in effectCharacters)
+            {
+                // if unit died - update frontline
+                if (character.TakeDamage(effectDamage))
+                {
+                    UpdateFrontline(character.playerUnit);
+                }
+
+            }
+            switch (effectReason)
+            {
+                case EffectReason.BATTLECRY:
+                    unitSpawn.ContinueSpawn(effectCharacter);
+                    break;
+                case EffectReason.DEATHRATTLE:
+                    effectCharacter.ContinueDeathratlle();
+                    break;
+                case EffectReason.ON_ATTACK:
+                    break;
+                case EffectReason.ON_DAMAGE:
+                    break;
+                case EffectReason.ON_END_TURN:
+                    break;
+                case EffectReason.SPELL:
+                    break;
+                default:
+                    Debug.LogError("Effect without reason");
+                    break;
+
+            }
+            foreach (GameObject gameObject in effects)
+            {
+                Destroy(gameObject);
+            }
+            
+            effects = null;
+        }
+    }
 
     public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason, int moves_to_make)
     {
         movingCharacter = unit;
         movingStartPos = start;
         movingEndPos = end;
-        TIME_OF_ONE_MOVE = 0.0f;
+        timeOfOneMove = 0.0f;
         movingReason = reason;
         movesToMake = moves_to_make;
 
         movingCharacter.StartWalking();
+    }
+    public void ExplosionEffect(List<Tile> tiles, EffectReason reason, Character character, List<Character> characters, int damage)
+    {
+        effectReason = reason;
+        effectTime = 0.0f;
+        effectCharacter = character;
+        effectCharacters = characters;
+        effectDamage = damage;
+        effects = new();
+        foreach (Tile tile in tiles)
+        {
+            effects.Add(Instantiate(explosionAnimation, tile.unitPosition, Quaternion.identity, transform));
+        }
     }
 
     public void CheckEndTurnTile()
@@ -697,7 +775,7 @@ public class Arena : MonoBehaviour
         return characters;
     }
 
-    public void Damage(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide, int damage)
+    public void Damage(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide, int damage, EffectReason effectReason)
     {
         List<Character> characters = GetTargets(put, utg, originTile, playerSide);
 
@@ -711,12 +789,15 @@ public class Arena : MonoBehaviour
         }
         else
         {
+            List<Tile> tiles = new();
             foreach (Character character in characters)
             {
-                // if unit died - update frontline
-                if (character.TakeDamage(damage))
-                    UpdateFrontline(character.playerUnit);
+                tiles.Add(tileList[character.GetTileID()]);
             }
+
+            ExplosionEffect(tiles,effectReason,originTile.character, characters, damage);
+
+           
         }
     }
 
@@ -793,7 +874,7 @@ public class Arena : MonoBehaviour
         //change canvas status to appear
         UnitDetailsPanel.SetActive(true);
         //changing image to appropiate
-        int index = tile.character.getIndexOfCard();
+        int index = tile.character.GetIndexOfCard();
         Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
         image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
     }
