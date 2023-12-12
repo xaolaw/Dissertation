@@ -2164,6 +2164,7 @@ MonoBehaviour:
   canvas: {fileID: 944234482}
   cardName: 
   played: 0
+  UnitDetailsPanel: {fileID: 219958450}
 --- !u!114 &527519819
 MonoBehaviour:
   m_ObjectHideFlags: 0
