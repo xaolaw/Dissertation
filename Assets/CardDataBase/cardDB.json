@@ -180,5 +180,29 @@
       "cardPower": 6,
       "speed": 0
     }
+  },
+  {
+    "cardName": "Artillery rain",
+    "cardEnergy": 5,
+    "cardImage": "2DModels/artillery_rain_card",
+    "cardInDeckLimitNumber": 2,
+    "cardDescription": "Deal 2 damage to all enemies",
+    "spellEffect": {
+      "castTarget": "none",
+      "target": "enemy",
+      "area": "all",
+      "damage": 2
+    }
+  },
+  {
+    "cardName": "Supply drop",
+    "cardEnergy": 2,
+    "cardImage": "2DModels/supply_drop_card",
+    "cardInDeckLimitNumber": 2,
+    "cardDescription": "Draw 2 cards",
+    "spellEffect": {
+      "castTarget": "none",
+      "drawCard": 2
+    }
   }
 ]
