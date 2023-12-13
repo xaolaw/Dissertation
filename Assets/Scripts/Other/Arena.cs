@@ -38,18 +38,33 @@ public class Arena : MonoBehaviour
     /////////////////////////////////////////////////
 
     private TurnButton turn_button;
-    private float TURN_TIME = 20.0f;
+    private readonly float TURN_TIME = 20.0f;
     private float time_left = 20.0f;
     public bool timer_started = false;
     public TurnTimer turn_timer;
+
+    // variable for animations
+    private bool isAnimating = false;
 
     // variable of moving entity - only one can move at the same time
     private Character movingCharacter = null;
     private Vector3 movingStartPos;
     private Vector3 movingEndPos;
 
-    // constant time it takes one unit to move one tile
-    private float TIME_OF_ONE_MOVE;
+    private int movesToMake;
+
+    //Effect variables
+    public GameObject explosionAnimation;
+    private List<GameObject> effects;
+    private EffectReason effectReason;
+    private Character effectCharacter;
+    private readonly float EXPLOSION_TIME = 0.5f;
+    private float effectTime;
+    private List<Character> effectCharacters;
+    private int effectDamage;
+
+    //time it takes one unit to move one tile
+    private float timeOfOneMove;
 
     private int endTurnTileID;
     private int endTurnTileIDEnd;
@@ -113,6 +128,15 @@ public class Arena : MonoBehaviour
         ALL,                        // all (or anything that doesn't match the rest - it is default)[all units]
         SINGLE_BEHIND,              // single_behind                                                [one unit directly behind]
         SINGLE_IN_FRONT             // single_in_front                                              [one unit directly in front]
+    }
+    public enum EffectReason
+    {
+        BATTLECRY = 0,
+        DEATHRATTLE,
+        ON_ATTACK,
+        ON_DAMAGE,
+        ON_END_TURN,
+        SPELL
     }
 
     public int[] neighbourId = new int[8];
@@ -234,6 +258,12 @@ public class Arena : MonoBehaviour
             UpdateTimer();
             if (movingCharacter != null)
                 UpdateMovingCharacter();
+
+            if (effects!=null)
+                UpdateEffect();
+
+
+            isAnimating = (movingCharacter != null) || (effects != null);
         }
        
     }
@@ -374,7 +404,7 @@ public class Arena : MonoBehaviour
                 time_left = (time_left > Time.deltaTime) ? time_left - Time.deltaTime : 0;
                 turn_timer.set_time(time_left / TURN_TIME, playerTurn);
             }
-            else
+            else if (!isAnimating)
             {
                 timer_started = false;
                 // we trust other player's timer
@@ -386,18 +416,23 @@ public class Arena : MonoBehaviour
 
     private void UpdateMovingCharacter()
     {
-        TIME_OF_ONE_MOVE += Time.deltaTime;
-        movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(TIME_OF_ONE_MOVE / moveTime, 1.0f)));
-        if (TIME_OF_ONE_MOVE >= moveTime)
+        timeOfOneMove += Time.deltaTime;
+        movingCharacter.SetPosition(Vector3.Lerp(movingStartPos, movingEndPos, Mathf.Min(timeOfOneMove / moveTime, 1.0f)));
+        if (timeOfOneMove >= moveTime)
         {
             movingCharacter.EndWalking();
-            movingCharacter = null;
             switch (movingReason)
             {
                 case Character.MovingReason.END_TURN:
+                    movingCharacter = null;
                     CheckEndTurnTile();
                     break;
                 case Character.MovingReason.SPAWN:
+                    movesToMake--;
+                    Character temp = movingCharacter;
+                    movingCharacter = null;
+                    if (movesToMake > 0 && !temp.HasDied())
+                        temp.Move(Character.MovingReason.SPAWN, movesToMake);
                     break;
                 default:
                     Debug.LogError("Moved without reason");
@@ -405,19 +440,78 @@ public class Arena : MonoBehaviour
             }
         }
     }
+    private void UpdateEffect()
+    {
+        effectTime += Time.deltaTime;
+        if (effectTime >= EXPLOSION_TIME)
+        {
+            foreach (Character character in effectCharacters)
+            {
+                // if unit died - update frontline
+                if (character.TakeDamage(effectDamage))
+                {
+                    UpdateFrontline(character.playerUnit);
+                }
 
-    public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason)
+            }
+            switch (effectReason)
+            {
+                case EffectReason.BATTLECRY:
+                    unitSpawn.ContinueSpawn(effectCharacter);
+                    break;
+                case EffectReason.DEATHRATTLE:
+                    effectCharacter.ContinueDeathratlle();
+                    break;
+                case EffectReason.ON_ATTACK:
+                    break;
+                case EffectReason.ON_DAMAGE:
+                    break;
+                case EffectReason.ON_END_TURN:
+                    break;
+                case EffectReason.SPELL:
+                    break;
+                default:
+                    Debug.LogError("Effect without reason");
+                    break;
+
+            }
+            foreach (GameObject gameObject in effects)
+            {
+                Destroy(gameObject);
+            }
+            
+            effects = null;
+        }
+    }
+
+    public void Moving(Character unit, Vector3 start, Vector3 end, Character.MovingReason reason, int moves_to_make)
     {
         movingCharacter = unit;
         movingStartPos = start;
         movingEndPos = end;
-        TIME_OF_ONE_MOVE = 0.0f;
+        timeOfOneMove = 0.0f;
         movingReason = reason;
+        movesToMake = moves_to_make;
+
+        movingCharacter.StartWalking();
+    }
+    public void ExplosionEffect(List<Tile> tiles, EffectReason reason, Character character, List<Character> characters, int damage)
+    {
+        effectReason = reason;
+        effectTime = 0.0f;
+        effectCharacter = character;
+        effectCharacters = characters;
+        effectDamage = damage;
+        effects = new();
+        foreach (Tile tile in tiles)
+        {
+            effects.Add(Instantiate(explosionAnimation, tile.unitPosition, Quaternion.identity, transform));
+        }
     }
 
     public void CheckEndTurnTile()
     {
-        if (endTurnTileID + endTurnTileIDIncrement == endTurnTileIDEnd)
+        if (endTurnTileID == endTurnTileIDEnd)
             return;
 
         if (tileList[endTurnTileID].character == null || tileList[endTurnTileID].character.playerUnit != playerTurn || !tileList[endTurnTileID].character.IsMovingType())
@@ -441,11 +535,16 @@ public class Arena : MonoBehaviour
             // if survived moving
             if (unit.Move(Character.MovingReason.END_TURN))
             {
-                unit.StartWalking();
                 endTurnTileIDrecent = unit.GetTileID();
             }
         }
         endTurnTileID += endTurnTileIDIncrement;
+    }
+
+    public void SafeEndTurn()
+    {
+        timer_started = true;
+        time_left = 0;
     }
 
     public void EndTurn()
@@ -460,6 +559,7 @@ public class Arena : MonoBehaviour
     // Can only be called to end turn for one player
     public void _EndTurn()
     {
+        Debug.Log("Turn ended");
         timer_started = false;
         turn_timer.set_time(0, playerTurn);
         turn_timer.setBarActive(!playerTurn);
@@ -475,34 +575,34 @@ public class Arena : MonoBehaviour
         cardManager.RestoreCardsColor(opponentBase.GetEnergy());
         
 
-        if (playerTurn){
-            playerBase.UpdateEnergy(energyFlow);
-            }
-        else {
-            opponentBase.UpdateEnergy(energyFlow);
-            }
-
-        playerTurn = !playerTurn;
-        //int begin, end, increment;
         if (playerTurn)
         {
-            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
-            endTurnTileID = 0;
-            endTurnTileIDEnd = tileList.Count;
-            endTurnTileIDIncrement = 1;
-
+            playerBase.UpdateEnergy(energyFlow);
         }
         else
+        {
+            opponentBase.UpdateEnergy(energyFlow);
+        }
+
+        //int begin, end, increment;
+        if (playerTurn)
         {
             playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(opponentColor) + ">Enemy Turn</color>";
             endTurnTileID = tileList.Count - 1;
             endTurnTileIDEnd = -1;
             endTurnTileIDIncrement = -1;
         }
+        else
+        {
+            playerIndicatorText.text = "<color=#" + ColorUtility.ToHtmlStringRGB(playerColor) + ">Your Turn</color>";
+            endTurnTileID = 0;
+            endTurnTileIDEnd = tileList.Count;
+            endTurnTileIDIncrement = 1;
+        }
 
         for (int i = endTurnTileID; i != endTurnTileIDEnd; i += endTurnTileIDIncrement)
         {
-            if (tileList[i].character != null && tileList[i].character.playerUnit != playerTurn)
+            if (tileList[i].character != null && tileList[i].character.playerUnit == playerTurn)
             {
                 Character unit = tileList[i].character;
                 if (unit.hasOnEndTurn)
@@ -512,20 +612,25 @@ public class Arena : MonoBehaviour
             }
         }
 
+        UpdateFrontline(playerTurn);
+
+        playerTurn = !playerTurn;
+
         CheckEndTurnTile();
 
-        UpdateFrontline(!playerTurn);
-
         timer_started = true;
+    }
 
-       
+
+    public void Surrender()
+    {
+        manager.SendSignal(ArenaNetworkManager.GameSignal.Surrender);
+        End(false);
     }
 
     public void End(bool youWin) {
  
         mainCanvas.enabled = false;
-
-       
 
         endScript.ShowEndCanvas(youWin);
 
@@ -670,7 +775,7 @@ public class Arena : MonoBehaviour
         return characters;
     }
 
-    public void Damage(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide, int damage)
+    public void Damage(PlayerUnitTarget put, UnitTargetGroup utg, Tile originTile, bool playerSide, int damage, EffectReason effectReason)
     {
         List<Character> characters = GetTargets(put, utg, originTile, playerSide);
 
@@ -684,12 +789,15 @@ public class Arena : MonoBehaviour
         }
         else
         {
+            List<Tile> tiles = new();
             foreach (Character character in characters)
             {
-                // if unit died - update frontline
-                if (character.TakeDamage(damage))
-                    UpdateFrontline(character.playerUnit);
+                tiles.Add(tileList[character.GetTileID()]);
             }
+
+            ExplosionEffect(tiles,effectReason,originTile.character, characters, damage);
+
+           
         }
     }
 
@@ -766,7 +874,7 @@ public class Arena : MonoBehaviour
         //change canvas status to appear
         UnitDetailsPanel.SetActive(true);
         //changing image to appropiate
-        int index = tile.character.getIndexOfCard();
+        int index = tile.character.GetIndexOfCard();
         Image image = UnitDetailsPanel.transform.Find("UnitDetailsContainer").transform.Find("UnitDetailsImage").GetComponent<Image>();
         image.sprite = Resources.Load<Sprite>(cardsJson[index].cardImage);
     }
@@ -779,6 +887,11 @@ public class Arena : MonoBehaviour
     public void DisableMenu()
     {
         areMenus = false;
+    }
+
+    public bool IsAnimating()
+    {
+        return isAnimating;
     }
 
     ///////////////////////////

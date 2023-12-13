@@ -20,10 +20,18 @@ public class Character
     private EventCollector eventCollector;
     private bool died;
     private int index;
+    private int speed;
     public bool hasDeathRattle;
     public bool hasOnEndTurn;
     public bool hasOnAttack;
     public bool hasOnDamage;
+
+    public bool hasBattlecryAnimation = false;
+    public bool hasDeathRattleAnimation = false;
+    public bool hasOnEndTurnAnimation= false;
+    public bool hasOnAttackAnimation= false;
+    public bool hasOnDamageAnimation= false;
+
 
     private UnitType type = UnitType.CREATURE;
     private bool moving = true;
@@ -86,7 +94,7 @@ public class Character
         return status;
     }
 
-    public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_, int index_)
+    public Character(string name_, int power_, bool playerUnit_, GameObject gameObject_, Tile tile_, GameObject canvasInfo_, int index_, int speed_)
     {
         this.power = power_;
         this.name = name_;
@@ -96,6 +104,7 @@ public class Character
         this.tile = tile_;
         this.canvasInfo = canvasInfo_;
         this.index = index_;
+        this.speed = speed_;
         canvasInfo.SetActive(false);
         powerInfo = canvasInfo.GetComponentInChildren<TMP_Text>();
         powerInfo.text = power.ToString();
@@ -119,7 +128,7 @@ public class Character
         gameObject.transform.position = position;
     }
 
-    public bool Move(MovingReason reason)
+    public bool Move(MovingReason reason, int moves_to_make = 1)
     {
         bool turn = arena.playerTurn;
         Arena.Direction moveDirection = moveDirection = turn ? Arena.Direction.UP : Arena.Direction.DOWN;
@@ -156,11 +165,11 @@ public class Character
                 moveDirection = turn ? Arena.Direction.UP : Arena.Direction.DOWN;
         }
 
-        return _Move(moveDirection, reason);
+        return _Move(moveDirection, reason, moves_to_make);
     }
 
     // returns false if it died while moving, returns true if it survived
-    public bool _Move(Arena.Direction direction, MovingReason reason)
+    public bool _Move(Arena.Direction direction, MovingReason reason, int moves_to_make)
     {
         if (HasDied())
             return false;
@@ -207,7 +216,7 @@ public class Character
             tile = temp;
             temp.character = this;
 
-            arena.Moving(this, gameObject.transform.position, tile.unitPosition, reason);
+            arena.Moving(this, gameObject.transform.position, tile.unitPosition, reason, moves_to_make);
 
             //gameObject.transform.position = tile.unitPosition;
 
@@ -224,12 +233,15 @@ public class Character
     public bool TakeDamage(int dmg)
     {
         this.power -= dmg;
+        powerInfo.text = power.ToString();
+
         if ((HasStatus(UnitStatus.VOLATILE) || power <= 0) && !died)
         {
+            powerInfo.text = "0";
             this.Die();
             return true;
         }
-        powerInfo.text = power.ToString();
+       
 
         // if survived damage try to activate on damage taken effect
         if (!HasDied() && hasOnDamage)
@@ -298,16 +310,24 @@ public class Character
         // Do possible Deathrattle
         deathrattle(tile, playerUnit);
 
+        if (!this.hasDeathRattleAnimation)
+        {
+            // Clean up arena board and add death to history
+            ContinueDeathratlle();
+        }
+    }
+    public void ContinueDeathratlle()
+    {
         // Clean up arena board and add death to history
         tile.UnitDied();
-        UnityEngine.GameObject.Destroy(gameObject);
-        UnityEngine.GameObject.Destroy(canvasInfo);
-        eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit ? "Opponent" : "Player", "killed"));
+            UnityEngine.GameObject.Destroy(gameObject);
+            UnityEngine.GameObject.Destroy(canvasInfo);
+            eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit? "Opponent" : "Player", "killed"));
 
-        // Activate possible next Deathrattles
-        if (hasDeathRattle)
-            arena.NextDying();
-    }
+            // Activate possible next Deathrattles
+            if (hasDeathRattle)
+                arena.NextDying();
+}
 
     public void ActivateOnEndTurn()
     {
@@ -338,38 +358,48 @@ public class Character
         canvasInfo.SetActive(false);
     }
 
-    public void AddDeathrattle(Action<Tile, bool> deathrattle_)
+    public void AddDeathrattle(Action<Tile, bool> deathrattle_, bool animation)
     {
         this.hasDeathRattle = true;
         this.deathrattle = deathrattle_;
+        this.hasDeathRattleAnimation = animation;
     }
 
-    public void AddBattlecry(Action<Tile, bool> battlecry_)
+    public void AddBattlecry(Action<Tile, bool> battlecry_, bool animation)
     {
         this.battlecry = battlecry_;
+        this.hasBattlecryAnimation = animation;
     }
 
-    public void AddOnEndturn(Action<Tile, bool> onEndTurn_)
+    public void AddOnEndturn(Action<Tile, bool> onEndTurn_, bool animation)
     {
         this.hasOnEndTurn = true;
         this.onEndTurn = onEndTurn_;
+        this.hasOnEndTurnAnimation = animation;
     }
-    public void AddOnAttack(Action<Tile, bool> onAttack_)
+    public void AddOnAttack(Action<Tile, bool> onAttack_, bool animation)
     {
         this.hasOnAttack = true;
         this.onAttack = onAttack_;
+        this.hasOnAttackAnimation = animation;
     }
   
-    public void AddOnDamage(Action<Tile, bool> onDamage_)
+    public void AddOnDamage(Action<Tile, bool> onDamage_, bool animation)
     {
         this.hasOnDamage = true;
         this.onDamage = onDamage_;
+        this.hasOnDamageAnimation = animation;
     }
 
     //return index to know what card to show in details info
-    public int getIndexOfCard()
+    public int GetIndexOfCard()
     {
         return index;
+    }
+
+    public int GetSpeed()
+    {
+        return speed;
     }
 
     public bool HasStatus(UnitStatus s)

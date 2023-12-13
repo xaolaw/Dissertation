@@ -7,6 +7,7 @@ public class ArenaNetworkManager : NetworkBehaviour
 {
     public Arena arena;
     public CardManager cardManager;
+    private EventCollector eventCollector;
 
     /////////////////////////////////
     /// Variables for multiplayer ///
@@ -16,7 +17,17 @@ public class ArenaNetworkManager : NetworkBehaviour
     {
         EndTurn = 0,
         PlayCard,
-        SetStart
+        SetStart,
+        Surrender
+    }
+
+    ////////////////////////////////////
+    /// Functions for initialization ///
+    ////////////////////////////////////
+
+    private void Start()
+    {
+        eventCollector = GameObject.FindObjectOfType<EventCollector>();
     }
 
     /////////////////////////////////
@@ -34,6 +45,7 @@ public class ArenaNetworkManager : NetworkBehaviour
             case GameSignal.PlayCard:
                 Card card = cardManager.GetCardByID(arg1, true);
                 card.OnPlay(arg2, true);
+                eventCollector.AddEvent(new GameEvent(card.cardName, (!arena.playerTurn) ? "Player" : "Opponent", "played"));
                 break;
 
             case GameSignal.SetStart:
@@ -42,7 +54,9 @@ public class ArenaNetworkManager : NetworkBehaviour
                 arena.turn_timer.set_time(0, arena.playerTurn);
                 arena.UpdateTurnIndicator();
                 break;
-
+            case GameSignal.Surrender:
+                arena.End(true);
+                break;
             default:
                 Debug.LogError("unexpected signal with number: " + signal.ToString());
                 break;
