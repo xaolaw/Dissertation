@@ -13908,7 +13908,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1193849656}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: GoBack, Assembly-CSharp
         m_MethodName: ReturnToMainMenu
         m_Mode: 1
         m_Arguments:
@@ -13966,7 +13966,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1193849651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cc827bd0f95d0046b0360b1506160ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c0999c3cb6d0874fa78e32955080cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1202064788
