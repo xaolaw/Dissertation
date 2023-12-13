@@ -2,27 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.TestTools;
+using UnityEngine.SceneManagement;
 
 public class MainMenuTest
 {
-    // A Test behaves as an ordinary method
-    [Test]
-    public void MainMenuTestSimplePasses()
-    {
-        // Use the Assert class to test conditions
+    [OneTimeSetUp]
+    public void LoadScene(){
+        SceneManager.LoadScene("MainMenuScene");
     }
-
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
     [UnityTest]
-    public IEnumerator MainMenuTestWithEnumeratorPasses()
+    public IEnumerator GoToDeckEditMenuWithEnumeratorPasses()
     {
-        var gameObject = new GameObject();
-        var button = gameObject.FindObjectOfType<>();
-        button.click();
-        // Use the Assert class to test conditions.
+        GameObject.Find("CollectionButton").GetComponent<Button>().onClick.Invoke();
         // Use yield to skip a frame.
         yield return null;
+        GameObject.Find("DeckCollectionButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        Scene scene = SceneManager.GetActiveScene();
+        // Use the Assert class to test conditions.
+        Assert.AreEqual("CreateDeckScene", scene.name);
     }
 }
