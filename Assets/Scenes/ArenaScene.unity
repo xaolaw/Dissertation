@@ -5124,11 +5124,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1051508924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42453b38083da854f8ced853b78c522f, type: 3}
+  m_Script: {fileID: 11500000, guid: 15f0b065e32f4b54b94574e141f73c41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  YouWonText: {fileID: 287554623}
-  OpponentWonText: {fileID: 416895658}
+  YouWonText: {fileID: 0}
+  OpponentWonText: {fileID: 0}
 --- !u!1 &1054579986
 GameObject:
   m_ObjectHideFlags: 0
@@ -5216,7 +5216,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1054579986}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c5bc546d7a9f84c892b943ecdf44c7, type: 3}
+  m_Script: {fileID: 11500000, guid: d4c1562b5de639b4f8e4d197e9a25c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1054579991
@@ -5452,14 +5452,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 310244641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f892f7fa583d044cb58a8ed513b3683, type: 3}
+  m_Script: {fileID: 11500000, guid: f369794399976d940b46791c2adf9246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 6577375014891292757, guid: d182fcd47cb5676458dfd08489b1bb71, type: 3}
   groundOffset: 0.1
   playerBase: {fileID: 0}
   opponentBase: {fileID: 0}
-  timer_started: 0
+  timer_started: 1
   turn_timer: {fileID: 1737033894}
   explosionAnimation: {fileID: 3924308721118124401}
   playerTurn: 1
