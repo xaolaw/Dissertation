@@ -48,30 +48,40 @@ namespace Assets.Classes
 
         public System.Action<Tile, bool> GenerateAction(Arena arena, Arena.EffectReason reason)
         {
-            System.Action<Tile, bool> newAction = delegate (Tile origintile, bool side)
-            {
+            System.Action<Tile, bool> newAction = delegate (Tile t, bool b) { };
 
-                if (ChangesPower())
-                {  
+            if (ChangesPower())
+            {
+                newAction = delegate (Tile origintile, bool side)
+                {
                     origintile.Damage(UnitSpawn.PUTFromString(target), UnitSpawn.UTGFromString(area), side, damage.Value, reason);
-                }
-                if (drawCard != null)
+                };
+            }
+            else if (drawCard.HasValue)
+            {
+                newAction = delegate (Tile origintile, bool side)
                 {
                     // if my turn my card manager draws card else opponent does this
                     if (arena.playerTurn == side)
                     {
-                        arena.cardManager.DrawCard();
+                        for (int i = 0; i < drawCard.Value; ++i)
+                        {
+                            arena.cardManager.DrawCard();
+                        }
                     }
-                }
-                if (spawn != null)
+                };
+            }
+            else if (spawn != null)
+            {
+                newAction = delegate (Tile origintile, bool side)
                 {
-                    foreach(Tile tile in arena.GetEmptyTargetTiles(UnitSpawn.UTGFromString(area), origintile, side))
+                    foreach (Tile tile in arena.GetEmptyTargetTiles(UnitSpawn.UTGFromString(area), origintile, side))
                     {
                         arena.unitSpawn.Spawn(tile, spawn, side, 0);
                         arena.CheckFrontline(tile.id, side);
                     }
-                }
-            };
+                };
+            }
 
             return newAction;
         }
