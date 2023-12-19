@@ -196,7 +196,7 @@ public class Arena : MonoBehaviour
     void Start()
     {
         //setting db Json
-        ReadJson("Assets/CardDataBase/cardDB.json");
+        ReadJson("CardDataBase/cardDB");
 
         SetPlanetPosition();
 
@@ -901,11 +901,10 @@ public class Arena : MonoBehaviour
     //read json db
     private void ReadJson(string path)
     {
-        using StreamReader reader = new(path);
-        var jsonDB = reader.ReadToEnd();
+        TextAsset targetFile = Resources.Load<TextAsset>(path);
+        var jsonDB = targetFile.text;
         cardsJson = JsonConvert.DeserializeObject<List<CardJson>>(jsonDB);
 
-        reader.Close();
         //initalize card
         cardManager.InitalizeHand();
 

@@ -24,8 +24,8 @@ public class CardManager : MonoBehaviour
     private List<int> playerDeck = new List<int>() { 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 5, 5};
     private List<int> usedCards = new List<int>();
     private int selectedDeckIndex = 0;
-    private readonly string SELECTED_DECK_PATH = "Assets/CardDataBase/selectedDeckIndex.txt";
-    private readonly string JSON_PATH = "Assets/CardDataBase/Decks.json"; 
+    private readonly string SELECTED_DECK_PATH = "CardDataBase/selectedDeckIndex";
+    private readonly string JSON_PATH = "CardDataBase/Decks";
 
     private int card_index;
     private int maxCardsInHand = 5;
@@ -145,16 +145,16 @@ public class CardManager : MonoBehaviour
         unitSpawn = FindObjectOfType<UnitSpawn>();
         canvas = GameObject.Find("SpawnObjects");
         // getting actual deck
-        using (var reader = new StreamReader(SELECTED_DECK_PATH)){
-            selectedDeckIndex = int.Parse(reader.ReadToEnd());
-        }
-        using (var reader = new StreamReader(JSON_PATH)){
-            var jsonDeck = reader.ReadToEnd();
-            DeckCollection decks = JsonConvert.DeserializeObject<DeckCollection>(jsonDeck);
-            playerDeck = new List<int> (decks.Decks[selectedDeckIndex].CardList);
-        }
 
-        
+        TextAsset index_file = Resources.Load<TextAsset>(SELECTED_DECK_PATH);
+        selectedDeckIndex = int.Parse(index_file.text);
+
+        TextAsset json_db_file = Resources.Load<TextAsset>(JSON_PATH);
+        var jsonDeck = json_db_file.text;
+        DeckCollection decks = JsonConvert.DeserializeObject<DeckCollection>(jsonDeck);
+        playerDeck = new List<int>(decks.Decks[selectedDeckIndex].CardList);
+
+
     }
 
     public void InitalizeHand()
