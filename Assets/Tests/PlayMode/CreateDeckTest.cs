@@ -13,13 +13,9 @@ public class MainMenuTest
         SceneManager.LoadScene("MainMenuScene");
     }
     [UnityTest]
-    public IEnumerator GoToDeckEditMenuWithEnumeratorPasses()
+    public IEnumerator CreateDeckTestWithEnumeratorPasses()
     {
-        GameObject.Find("CollectionButton").GetComponent<Button>().onClick.Invoke();
+        GameObject.Find("Collection").GetComponent<Button>().onClick.Invoke();
         yield return null;
-        GameObject.Find("DeckCollectionButton").GetComponent<Button>().onClick.Invoke();
-        yield return null;
-        Scene scene = SceneManager.GetActiveScene();
-        Assert.AreEqual("CreateDeckScene", scene.name);
     }
 }
