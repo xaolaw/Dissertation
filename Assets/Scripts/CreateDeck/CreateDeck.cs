@@ -29,8 +29,8 @@ public class CreateDeck : MonoBehaviour
     private readonly int cardsPerPage = 8;
     private readonly int deckSize = 10;
     private string deckName;
-    private readonly string JSON_DECK_PATH = "Assets/CardDataBase/Decks.json";
-    private readonly string JSON_COLLECTION_PATH = "Assets/CardDataBase/cardDB.json";
+    private readonly string JSON_DECK_PATH = "CardDataBase/Decks";
+    private readonly string JSON_COLLECTION_PATH = "CardDataBase/cardDB";
     private bool wasJsonRead = false;
     //Dict to remember new create objects in dynamic deck view
     private Dictionary<int, GameObject> dynamicDeckCreatorDictObject = new();
@@ -124,10 +124,9 @@ public class CreateDeck : MonoBehaviour
     //Read from jsonDb data and sort data
     private void ReadJson(string path)
     {
-        using StreamReader reader = new(path);
-        var jsonDB = reader.ReadToEnd();
+        TextAsset json_file = Resources.Load<TextAsset>(path);
+        var jsonDB = json_file.text;
         cardsJson = JsonConvert.DeserializeObject<List<CardJson>>(jsonDB);
-        reader.Close();
         //SortCardJsonList();
 
     }
