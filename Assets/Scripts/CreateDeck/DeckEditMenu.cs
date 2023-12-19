@@ -17,8 +17,8 @@ public class DeckEditMenu : MonoBehaviour
     public CreateDeck DeckCollection;
 
     private DeckCollection CardDecks = new();
-    private readonly string JSON_PATH = "Assets/CardDataBase/Decks.json";
-    private readonly string SELECTED_DECK_PATH = "Assets/CardDataBase/selectedDeckIndex.txt";
+    private readonly string JSON_PATH = "CardDataBase/Decks";
+    private readonly string SELECTED_DECK_PATH = "CardDataBase/selectedDeckIndex";
     private int displayedDeck = 0;
     private int selectedDeckIndex = 0;
 
@@ -37,10 +37,9 @@ public class DeckEditMenu : MonoBehaviour
 
     private void ReadJson(string path)
     {
-        using StreamReader reader = new(path);
-        var jsonDB = reader.ReadToEnd();
+        TextAsset json_file = Resources.Load<TextAsset>(path);
+        var jsonDB = json_file.text;
         CardDecks = JsonConvert.DeserializeObject<DeckCollection>(jsonDB);
-        reader.Close();
     }
 
     private void ShowDeckToEdit()
