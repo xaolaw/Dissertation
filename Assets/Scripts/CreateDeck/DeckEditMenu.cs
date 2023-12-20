@@ -95,7 +95,12 @@ public class DeckEditMenu : MonoBehaviour
 
     public void SelectDeck(){
         selectedDeckIndex = displayedDeck;
-        using (var stream = new FileStream(SELECTED_DECK_PATH, FileMode.Truncate))
+#if UNITY_STANDALONE_WIN
+        string path = Path.Combine("Assets","Resources",SELECTED_DECK_PATH + ".txt");
+#elif UNITY_ANDROID
+        string path = Path.Combine(Application.persistentDataPath, "Assets", "Resources", SELECTED_DECK_PATH + ".txt");
+#endif
+        using (var stream = new FileStream(path, FileMode.Truncate))
         {
             using (var writer = new StreamWriter(stream))
             {
