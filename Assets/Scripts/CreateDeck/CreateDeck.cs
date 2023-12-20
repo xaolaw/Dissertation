@@ -29,7 +29,8 @@ public class CreateDeck : MonoBehaviour
     private readonly int cardsPerPage = 8;
     private readonly int deckSize = 10;
     private string deckName;
-    private readonly string JSON_DECK_PATH = "CardDataBase/Decks";
+    // this path did not work, maybe fix is needed
+    private readonly string JSON_DECK_PATH = "Assets/Resources/CardDataBase/Decks.json";
     private readonly string JSON_COLLECTION_PATH = "CardDataBase/cardDB";
     private bool wasJsonRead = false;
     //Dict to remember new create objects in dynamic deck view
