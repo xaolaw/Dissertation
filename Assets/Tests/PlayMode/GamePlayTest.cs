@@ -32,24 +32,6 @@ public class GamePlayTest
         }
         return null;
     }
-    public List<Card> GetCurrentCards(){
-        var cards = GameObject.FindGameObjectsWithTag("card");
-        List<Card> cardsList = new List<Card>();
-        foreach (var card in cards){
-            cardsList.Add(card.GetComponent<Card>());
-        }
-        return cardsList;
-    }
-    public Tile GetTileToPlayOn(){
-        var arena = GameObject.Find("Arena").GetComponent<Arena>();
-        var tileList = arena.GetTileList();
-        foreach(var tile in tileList){
-            if(arena.IsBehindFrontline(tile, arena.playerTurn) && tile.character == null){
-                return tile;
-            }
-        }
-        return null;
-    }
     [UnityTest]
     public IEnumerator GamePlayTestWithEnumeratorPasses()
     {
@@ -58,10 +40,29 @@ public class GamePlayTest
         GameObject.Find("Play Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         var endTurnButton = GameObject.Find("EndTurnButton").GetComponent<Button>();
-        var endTurnButton = GameObject.Find("EndTurnButton").GetComponent<Button>();
 
         var arena = GameObject.Find("Arena").GetComponent<Arena>();
         var tileList = arena.GetTileList();
-
+        List<Card> cardsList = GetCurrentCards();
+        for (int i = 0; i < TURNS_NUMBER; i++){
+            cardsList = GetCurrentCards();
+            foreach (Card card in cardsList){
+                if (!card.isSpell()){
+                    Tile tile = GetTileToPlayOn();
+                    tile.Select();
+                    // if player has not got enough energy, no error should occur, card just should not have been played 
+                    card.HandleSpawning();
+                    tile.UnSelect();
+                    break;
+                }
+            }
+        bool who = arena.playerTurn;
+        arena.SafeEndTurn();
+        while(who==arena.playerTurn && !arena.hasEnded){
+            yield return null;
+        }
+        if(arena.hasEnded) break;
+        }
+        Assert.IsTrue(arena.hasEnded);
     }
 }
