@@ -215,6 +215,6 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         rectTransform.position = previousPosition;
     }
     public bool isSpell(){
-        return this.spellEffect == null;
+        return this.spellEffect != null;
     }
 }
