@@ -19,17 +19,27 @@ public class DeckEditMenu : MonoBehaviour
     private DeckCollection CardDecks = new();
     private readonly string JSON_RESOURCES_PATH = Path.Combine("CardDataBase","Decks");
 #if UNITY_STANDALONE_WIN
-    private readonly string JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
-    private readonly string SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
+    private string JSON_PATH;
+    private string SELECTED_DECK_PATH;
 #elif UNITY_ANDROID
-    private readonly string JSON_PATH = Path.Combine(Application.persistentDataPath,"CardDataBase", "Decks.json");
-    private readonly string SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath,"CardDataBase", "selectedDeckIndex.txt");
+    private string JSON_PATH;
+    private string SELECTED_DECK_PATH;
 #endif
     private int displayedDeck = 0;
     private int selectedDeckIndex = 0;
 
     void Start()
     {
+        // initialize path (can't use it during serialization)
+
+#if UNITY_STANDALONE_WIN
+        JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+        SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
+#elif UNITY_ANDROID
+        JSON_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+        SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "selectedDeckIndex.txt");
+#endif
+
         CardDecks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         ShowDeckToEdit();
     }
@@ -49,6 +59,11 @@ public class DeckEditMenu : MonoBehaviour
             TextAsset json_file = Resources.Load<TextAsset>(resource_path);
             var jsonDB = json_file.text;
             wyn = JsonConvert.DeserializeObject<T>(jsonDB);
+
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+            }
 
             File.WriteAllText(path, jsonDB);
         }

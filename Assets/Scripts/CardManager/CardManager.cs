@@ -24,8 +24,14 @@ public class CardManager : MonoBehaviour
     private List<int> playerDeck = new List<int>() { 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 5, 5};
     private List<int> usedCards = new List<int>();
     private int selectedDeckIndex = 0;
-    private readonly string SELECTED_DECK_PATH = "CardDataBase/selectedDeckIndex";
-    private readonly string JSON_PATH = "CardDataBase/Decks";
+    private readonly string JSON_RESOURCES_PATH = Path.Combine("CardDataBase", "Decks");
+#if UNITY_STANDALONE_WIN
+    private string JSON_PATH;
+    private string SELECTED_DECK_PATH;
+#elif UNITY_ANDROID
+    private string JSON_PATH;
+    private string SELECTED_DECK_PATH;
+#endif
 
     private int card_index;
     private int maxCardsInHand = 5;
@@ -139,19 +145,63 @@ public class CardManager : MonoBehaviour
         card.gameObject.SetActive(true);
     }
 
+    private T ReadJson<T>(string path, string resource_path)
+    {
+        T wyn;
+        if (!System.IO.File.Exists(path))
+        {
+            TextAsset json_file = Resources.Load<TextAsset>(resource_path);
+            var jsonDB = json_file.text;
+            wyn = JsonConvert.DeserializeObject<T>(jsonDB);
 
-    void Start(){
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+            }
+
+            File.WriteAllText(path, jsonDB);
+        }
+        else
+        {
+            using StreamReader reader = new(path);
+            var jsonDB = reader.ReadToEnd();
+            wyn = JsonConvert.DeserializeObject<T>(jsonDB);
+            reader.Close();
+        }
+
+        return wyn;
+    }
+
+    void Start()
+    {
+        // initialize path (can't use it during serialization)
+
+#if UNITY_STANDALONE_WIN
+        JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+        SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
+#elif UNITY_ANDROID
+        JSON_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+        SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "selectedDeckIndex.txt");
+#endif
+
         arena = FindObjectOfType<Arena>();
         unitSpawn = FindObjectOfType<UnitSpawn>();
         canvas = GameObject.Find("SpawnObjects");
         // getting actual deck
 
-        TextAsset index_file = Resources.Load<TextAsset>(SELECTED_DECK_PATH);
-        selectedDeckIndex = int.Parse(index_file.text);
+        if (!System.IO.File.Exists(SELECTED_DECK_PATH))
+        {
+            selectedDeckIndex = 0;
+        }
+        else
+        {
+            using (var reader = new StreamReader(SELECTED_DECK_PATH))
+            {
+                selectedDeckIndex = int.Parse(reader.ReadToEnd());
+            }
+        }
 
-        TextAsset json_db_file = Resources.Load<TextAsset>(JSON_PATH);
-        var jsonDeck = json_db_file.text;
-        DeckCollection decks = JsonConvert.DeserializeObject<DeckCollection>(jsonDeck);
+        DeckCollection decks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         playerDeck = new List<int>(decks.Decks[selectedDeckIndex].CardList);
 
 

@@ -32,11 +32,11 @@ public class CreateDeck : MonoBehaviour
     private readonly string JSON_DECK_RESOURCE_PATH = Path.Combine("CardDataBase","Decks");
     private readonly string JSON_COLLECTION_RESOURCE_PATH = Path.Combine("CardDataBase", "cardDB");
 #if UNITY_STANDALONE_WIN
-    private readonly string JSON_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
-    private readonly string JSON_COLLECTION_PATH = Path.Combine("Assets","Resources","CardDataBase", "cardDB.json");
+    private string JSON_DECK_PATH;
+    private string JSON_COLLECTION_PATH;
 #elif UNITY_ANDROID
-    private readonly string JSON_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
-    private readonly string JSON_COLLECTION_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "cardDB.json");
+    private string JSON_DECK_PATH;
+    private string JSON_COLLECTION_PATH;
 #endif
     private bool wasJsonRead = false;
     //Dict to remember new create objects in dynamic deck view
@@ -47,6 +47,17 @@ public class CreateDeck : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        // initialize path (can't use it during serialization)
+
+#if UNITY_STANDALONE_WIN
+        JSON_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+        JSON_COLLECTION_PATH = Path.Combine("Assets","Resources","CardDataBase", "cardDB.json");
+#elif UNITY_ANDROID
+        JSON_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+        JSON_COLLECTION_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "cardDB.json");
+#endif
+
         if (!wasJsonRead)
             cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
         wasJsonRead = true;
@@ -137,6 +148,11 @@ public class CreateDeck : MonoBehaviour
             TextAsset json_file = Resources.Load<TextAsset>(resource_path);
             var jsonDB = json_file.text;
             wyn = JsonConvert.DeserializeObject<T>(jsonDB);
+
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+            }
 
             File.WriteAllText(path, jsonDB);
         }
