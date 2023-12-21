@@ -29,8 +29,15 @@ public class CreateDeck : MonoBehaviour
     private readonly int cardsPerPage = 8;
     private readonly int deckSize = 10;
     private string deckName;
-    private readonly string JSON_DECK_PATH = Path.Combine("CardDataBase","Decks");
-    private readonly string JSON_COLLECTION_PATH = Path.Combine("CardDataBase", "cardDB");
+    private readonly string JSON_DECK_RESOURCE_PATH = Path.Combine("CardDataBase","Decks");
+    private readonly string JSON_COLLECTION_RESOURCE_PATH = Path.Combine("CardDataBase", "cardDB");
+#if UNITY_STANDALONE_WIN
+    private readonly string JSON_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+    private readonly string JSON_COLLECTION_PATH = Path.Combine("Assets","Resources","CardDataBase", "cardDB.json");
+#elif UNITY_ANDROID
+    private readonly string JSON_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+    private readonly string JSON_COLLECTION_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "cardDB.json");
+#endif
     private bool wasJsonRead = false;
     //Dict to remember new create objects in dynamic deck view
     private Dictionary<int, GameObject> dynamicDeckCreatorDictObject = new();
@@ -41,7 +48,7 @@ public class CreateDeck : MonoBehaviour
     void Start()
     {
         if (!wasJsonRead)
-            ReadJson(JSON_COLLECTION_PATH);
+            cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
         wasJsonRead = true;
 
         DisplayCards();
@@ -122,13 +129,27 @@ public class CreateDeck : MonoBehaviour
     ///////////////////////////////////////////
    
     //Read from jsonDb data and sort data
-    private void ReadJson(string path)
+    private T ReadJson<T>(string path, string resource_path)
     {
-        TextAsset json_file = Resources.Load<TextAsset>(path);
-        var jsonDB = json_file.text;
-        cardsJson = JsonConvert.DeserializeObject<List<CardJson>>(jsonDB);
-        //SortCardJsonList();
+        T wyn;
+        if (!System.IO.File.Exists(path))
+        {
+            TextAsset json_file = Resources.Load<TextAsset>(resource_path);
+            var jsonDB = json_file.text;
+            wyn = JsonConvert.DeserializeObject<T>(jsonDB);
 
+            File.WriteAllText(path, jsonDB);
+        }
+        else
+        {
+            using StreamReader reader = new(path);
+            var jsonDB = reader.ReadToEnd();
+            wyn = JsonConvert.DeserializeObject<T>(jsonDB);
+            reader.Close();
+        }
+
+        return wyn;
+        //SortCardJsonList();
     }
 
     private void SortCardJsonList()
@@ -207,8 +228,6 @@ public class CreateDeck : MonoBehaviour
     //Add a card to deck
     public void AddToDeck(int index)
     {
-
-
         if (CheckIfAbleToAdd(index))
         {
             if (cardDeck.FindAll(x => x == index).Count == 0)
@@ -223,8 +242,6 @@ public class CreateDeck : MonoBehaviour
     //Remove card from deck
     public void DeleteFromDeck(int index)
     {
- 
-
         if (CheckIfAbleToRemove(index))
         {
             if (cardDeck.FindAll(x => x == index).Count == 1)
@@ -350,9 +367,7 @@ public class CreateDeck : MonoBehaviour
         }
         if (deckSize == cardDeck.Count)
         {
-            TextAsset decks_file = Resources.Load<TextAsset>(JSON_DECK_PATH);
-            var jsonDeck = decks_file.text;
-            decks = JsonConvert.DeserializeObject<DeckCollection>(jsonDeck);
+            decks = ReadJson<DeckCollection>(JSON_DECK_PATH, JSON_DECK_RESOURCE_PATH);
         
             if (decks.Decks.Find(d => d.Name == deckName) == null)
             {
@@ -392,12 +407,7 @@ public class CreateDeck : MonoBehaviour
         }
 
         string updatedJson = JsonConvert.SerializeObject(decks);
-#if UNITY_STANDALONE_WIN
-        string path = Path.Combine("Assets","Resources",JSON_DECK_PATH + ".json");
-#elif UNITY_ANDROID
-        string path = Path.Combine(Application.persistentDataPath,"Assets", "Resources", JSON_DECK_PATH + ".json");
-#endif
-        File.WriteAllText(path, updatedJson);
+        File.WriteAllText(JSON_DECK_PATH, updatedJson);
         DisplayErrorAlert("You have successfuly saved deck");       
     }
 
@@ -412,7 +422,7 @@ public class CreateDeck : MonoBehaviour
         deckName = name;
 
         if (!wasJsonRead)
-            ReadJson(JSON_COLLECTION_PATH);
+            cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
         wasJsonRead = true;
 
         InputDeckName.text = name;

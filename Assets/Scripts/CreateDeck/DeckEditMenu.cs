@@ -17,29 +17,50 @@ public class DeckEditMenu : MonoBehaviour
     public CreateDeck DeckCollection;
 
     private DeckCollection CardDecks = new();
-    private readonly string JSON_PATH = "CardDataBase/Decks";
-    private readonly string SELECTED_DECK_PATH = "CardDataBase/selectedDeckIndex";
+    private readonly string JSON_RESOURCES_PATH = Path.Combine("CardDataBase","Decks");
+#if UNITY_STANDALONE_WIN
+    private readonly string JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+    private readonly string SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
+#elif UNITY_ANDROID
+    private readonly string JSON_PATH = Path.Combine(Application.persistentDataPath,"CardDataBase", "Decks.json");
+    private readonly string SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath,"CardDataBase", "selectedDeckIndex.txt");
+#endif
     private int displayedDeck = 0;
     private int selectedDeckIndex = 0;
 
     void Start()
     {
-        ReadJson(JSON_PATH);
+        CardDecks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         ShowDeckToEdit();
     }
     public void ResetView()
     {
         Debug.Log("Reset view");
         displayedDeck = 0;
-        ReadJson(JSON_PATH);
+        CardDecks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         ShowDeckToEdit();
     }
 
-    private void ReadJson(string path)
+    private T ReadJson<T>(string path, string resource_path)
     {
-        TextAsset json_file = Resources.Load<TextAsset>(path);
-        var jsonDB = json_file.text;
-        CardDecks = JsonConvert.DeserializeObject<DeckCollection>(jsonDB);
+        T wyn;
+        if (!System.IO.File.Exists(path))
+        {
+            TextAsset json_file = Resources.Load<TextAsset>(resource_path);
+            var jsonDB = json_file.text;
+            wyn = JsonConvert.DeserializeObject<T>(jsonDB);
+
+            File.WriteAllText(path, jsonDB);
+        }
+        else
+        {
+            using StreamReader reader = new(path);
+            var jsonDB = reader.ReadToEnd();
+            wyn = JsonConvert.DeserializeObject<T>(jsonDB);
+            reader.Close();
+        }
+
+        return wyn;
     }
 
     private void ShowDeckToEdit()
@@ -95,18 +116,12 @@ public class DeckEditMenu : MonoBehaviour
 
     public void SelectDeck(){
         selectedDeckIndex = displayedDeck;
-#if UNITY_STANDALONE_WIN
-        string path = Path.Combine("Assets","Resources",SELECTED_DECK_PATH + ".txt");
-#elif UNITY_ANDROID
-        string path = Path.Combine(Application.persistentDataPath, "Assets", "Resources", SELECTED_DECK_PATH + ".txt");
-#endif
-        using (var stream = new FileStream(path, FileMode.Truncate))
+        using (var stream = new FileStream(SELECTED_DECK_PATH, FileMode.Create))
         {
             using (var writer = new StreamWriter(stream))
             {
                 writer.Write(selectedDeckIndex);
             }
         }
-
     }
 }
