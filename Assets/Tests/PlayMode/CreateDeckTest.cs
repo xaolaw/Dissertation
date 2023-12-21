@@ -16,7 +16,10 @@ public class CreateDeckTest
     [UnityTest]
     public IEnumerator CreateDeckTestWithEnumeratorPasses()
     {
+        int MAX_DECK_NUMBER = 30;
         GameObject.Find("CollectionButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        GameObject.Find("NewDeckButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
         var inputField = GameObject.Find("InputDeckName").GetComponent<TMP_InputField>();
         for (int i=1; i<9; i++){
@@ -42,7 +45,24 @@ public class CreateDeckTest
         inputField.text = "test deck";
         GameObject.Find("SaveDeckButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
+        // overwrite deck, so first run of this test can fail
+        GameObject.Find("SaveAnywayButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        GameObject.Find("CloseButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
         GameObject.Find("ReturnButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
+
+        GameObject.Find("DeckCollectionButton").GetComponent<Button>().onClick.Invoke();
+        yield return null;
+        string last_deck_name = "not found";
+        for (int i = 0; i < MAX_DECK_NUMBER; i++){
+            GameObject.Find("ArrowRight").GetComponent<Button>().onClick.Invoke();
+            yield return null;
+            var deckName = GameObject.Find("DeckName").GetComponentInChildren<TMP_Text>();
+            last_deck_name = deckName.text;
+            if (deckName.text == "test deck") break;
+        }
+        Assert.AreEqual("test deck", last_deck_name);
     }
 }

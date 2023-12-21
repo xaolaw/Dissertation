@@ -36,7 +36,7 @@ public class GamePlayTest
     public IEnumerator GamePlayTestWithEnumeratorPasses()
     {
         // gameplay scenario without using spells and with random cards in hand
-        int TURNS_NUMBER = 20;
+        int TURNS_NUMBER = 200;
         GameObject.Find("Play Button").GetComponent<Button>().onClick.Invoke();
         yield return null;
         var endTurnButton = GameObject.Find("EndTurnButton").GetComponent<Button>();
@@ -50,13 +50,19 @@ public class GamePlayTest
                 if (!card.isSpell()){
                     Tile tile = GetTileToPlayOn();
                     tile.Select();
+                    // if player has not got enough energy, no error should occur, card just should not have been played 
                     card.HandleSpawning();
                     tile.UnSelect();
                     break;
                 }
             }
-        endTurnButton.onClick.Invoke();
-        yield return null;
+        bool who = arena.playerTurn;
+        arena.SafeEndTurn();
+        while(who==arena.playerTurn && !arena.hasEnded){
+            yield return null;
         }
+        if(arena.hasEnded) break;
+        }
+        Assert.IsTrue(arena.hasEnded);
     }
 }

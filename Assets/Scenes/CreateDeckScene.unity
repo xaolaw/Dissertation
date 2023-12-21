@@ -905,7 +905,7 @@ GameObject:
   - component: {fileID: 74012755}
   - component: {fileID: 74012754}
   m_Layer: 5
-  m_Name: SaveAnywayButton
+  m_Name: SaveAnyway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11549,7 +11549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &956609526
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11782,7 +11782,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 530, y: 0}
+  m_SizeDelta: {x: 530, y: 20}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1002346341
 CanvasRenderer:
@@ -13629,7 +13629,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1185617797}
         m_TargetAssemblyTypeName: GoBack, Assembly-CSharp
-        m_MethodName: ReturnToMainMenu
+        m_MethodName: ReturnToCreateDeckMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
