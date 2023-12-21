@@ -364,7 +364,7 @@ public class CreateDeck : MonoBehaviour
             {
                 DisplayErrorAlert("Deck with this name already exists");
                 ErrorAlert.transform.Find("ButtonGroup").gameObject.transform.Find("SaveAnywayButton").gameObject.SetActive(true);
-                Debug.LogError("Deck with this name already exists");
+                // Debug.LogError("Deck with this name already exists");
             }
         }
         else

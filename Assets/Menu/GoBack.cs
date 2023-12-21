@@ -14,6 +14,9 @@ public class GoBack : MonoBehaviour
     public void ReturnToMultiplayerMenu(){
         SceneManager.LoadScene("MultiplayerMenuScene");
     }
+    public void ReturnToCreateDeckMenu(){
+        SceneManager.LoadScene("CreateDeckScene");
+    }
 
     public void QuitGame()
     {
