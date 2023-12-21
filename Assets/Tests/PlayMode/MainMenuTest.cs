@@ -16,12 +16,10 @@ public class MainMenuTest
     public IEnumerator GoToDeckEditMenuWithEnumeratorPasses()
     {
         GameObject.Find("CollectionButton").GetComponent<Button>().onClick.Invoke();
-        // Use yield to skip a frame.
         yield return null;
         GameObject.Find("DeckCollectionButton").GetComponent<Button>().onClick.Invoke();
         yield return null;
         Scene scene = SceneManager.GetActiveScene();
-        // Use the Assert class to test conditions.
         Assert.AreEqual("CreateDeckScene", scene.name);
     }
 }

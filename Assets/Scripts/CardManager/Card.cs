@@ -156,7 +156,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         return true;
     }
 
-    private bool HandleSpawning()
+    public bool HandleSpawning()
     {
         List<Tile> tileList = arena.GetTileList();
         Tile tile = tileList.Find(obj => obj.isClicked);
@@ -213,5 +213,8 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     private void RestorePreviousPosition(){
         Vector3 previousPosition = cm.GetCardPositionInHand(this);
         rectTransform.position = previousPosition;
+    }
+    public bool isSpell(){
+        return this.spellEffect == null;
     }
 }

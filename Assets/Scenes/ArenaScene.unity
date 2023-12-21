@@ -7818,7 +7818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b2997dbe59f55418a43941fb91c6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoBeginningAnimation: 1
+  DoBeginningAnimation: 0
   arena: {fileID: 1102960226}
   main_camera: {fileID: 963194227}
   black_out_image: {fileID: 2016564742}
@@ -7836,7 +7836,7 @@ GameObject:
   - component: {fileID: 1632375135}
   - component: {fileID: 1632375134}
   m_Layer: 5
-  m_Name: HisoryPanel
+  m_Name: HistoryPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
