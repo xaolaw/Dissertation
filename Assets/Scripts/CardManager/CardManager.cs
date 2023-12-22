@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class CardManager : MonoBehaviour
 {
-    
     public Card defaultCard;
     private List<Card> cards_in_hand = new List<Card>();
     // number of cards player start with
@@ -24,14 +23,10 @@ public class CardManager : MonoBehaviour
     private List<int> playerDeck = new List<int>() { 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 5, 5};
     private List<int> usedCards = new List<int>();
     private int selectedDeckIndex = 0;
+    private bool PathsInitialized = false;
     private readonly string JSON_RESOURCES_PATH = Path.Combine("CardDataBase", "Decks");
-#if UNITY_STANDALONE_WIN
     private string JSON_PATH;
     private string SELECTED_DECK_PATH;
-#elif UNITY_ANDROID
-    private string JSON_PATH;
-    private string SELECTED_DECK_PATH;
-#endif
 
     private int card_index;
     private int maxCardsInHand = 5;
@@ -154,7 +149,7 @@ public class CardManager : MonoBehaviour
             var jsonDB = json_file.text;
             wyn = JsonConvert.DeserializeObject<T>(jsonDB);
 
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            if (Path.GetDirectoryName(path) != null && !Directory.Exists(Path.GetDirectoryName(path)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
@@ -175,14 +170,8 @@ public class CardManager : MonoBehaviour
     void Start()
     {
         // initialize path (can't use it during serialization)
+        InitializePaths();
 
-#if UNITY_STANDALONE_WIN
-        JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
-        SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
-#elif UNITY_ANDROID
-        JSON_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
-        SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "selectedDeckIndex.txt");
-#endif
 
         arena = FindObjectOfType<Arena>();
         unitSpawn = FindObjectOfType<UnitSpawn>();
@@ -201,10 +190,26 @@ public class CardManager : MonoBehaviour
             }
         }
 
+        InitializePaths();
         DeckCollection decks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         playerDeck = new List<int>(decks.Decks[selectedDeckIndex].CardList);
 
 
+    }
+
+    private void InitializePaths()
+    {
+        if (!PathsInitialized)
+        {
+            PathsInitialized = true;
+#if UNITY_STANDALONE_WIN
+            JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+            SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
+#elif UNITY_ANDROID
+            JSON_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+            SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "selectedDeckIndex.txt");
+#endif
+        }
     }
 
     public void InitalizeHand()
