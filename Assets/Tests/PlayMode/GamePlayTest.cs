@@ -49,6 +49,8 @@ public class GamePlayTest
             foreach (Card card in cardsList){
                 if (!card.isSpell()){
                     Tile tile = GetTileToPlayOn();
+                    // if there is no tile to play card on
+                    if (tile == null) break;
                     tile.Select();
                     // if player has not got enough energy, no error should occur, card just should not have been played 
                     card.HandleSpawning();
