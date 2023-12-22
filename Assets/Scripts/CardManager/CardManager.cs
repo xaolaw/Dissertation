@@ -142,7 +142,6 @@ public class CardManager : MonoBehaviour
 
     private T ReadJson<T>(string path, string resource_path)
     {
-        InitializePaths();
         T wyn;
         if (!System.IO.File.Exists(path))
         {
@@ -150,7 +149,7 @@ public class CardManager : MonoBehaviour
             var jsonDB = json_file.text;
             wyn = JsonConvert.DeserializeObject<T>(jsonDB);
 
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            if (Path.GetDirectoryName(path) != null && !Directory.Exists(Path.GetDirectoryName(path)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
@@ -191,6 +190,7 @@ public class CardManager : MonoBehaviour
             }
         }
 
+        InitializePaths();
         DeckCollection decks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         playerDeck = new List<int>(decks.Decks[selectedDeckIndex].CardList);
 

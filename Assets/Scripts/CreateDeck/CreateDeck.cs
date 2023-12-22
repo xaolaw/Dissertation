@@ -147,7 +147,6 @@ public class CreateDeck : MonoBehaviour
     //Read from jsonDb data and sort data
     private T ReadJson<T>(string path, string resource_path)
     {
-        InitializePaths();
         T wyn;
         if (!System.IO.File.Exists(path))
         {
@@ -155,7 +154,7 @@ public class CreateDeck : MonoBehaviour
             var jsonDB = json_file.text;
             wyn = JsonConvert.DeserializeObject<T>(jsonDB);
 
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            if (Path.GetDirectoryName(path) != null && !Directory.Exists(Path.GetDirectoryName(path)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
@@ -389,6 +388,7 @@ public class CreateDeck : MonoBehaviour
         }
         if (deckSize == cardDeck.Count)
         {
+            InitializePaths();
             decks = ReadJson<DeckCollection>(JSON_DECK_PATH, JSON_DECK_RESOURCE_PATH);
         
             if (decks.Decks.Find(d => d.Name == deckName) == null)
@@ -444,7 +444,10 @@ public class CreateDeck : MonoBehaviour
         deckName = name;
 
         if (!wasJsonRead)
+        {
+            InitializePaths();
             cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
+        }
         wasJsonRead = true;
 
         InputDeckName.text = name;

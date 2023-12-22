@@ -52,13 +52,13 @@ public class DeckEditMenu : MonoBehaviour
     {
         Debug.Log("Reset view");
         displayedDeck = 0;
+        InitializePaths();
         CardDecks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         ShowDeckToEdit();
     }
 
     private T ReadJson<T>(string path, string resource_path)
     {
-        InitializePaths();
         T wyn;
         if (!System.IO.File.Exists(path))
         {
@@ -66,7 +66,7 @@ public class DeckEditMenu : MonoBehaviour
             var jsonDB = json_file.text;
             wyn = JsonConvert.DeserializeObject<T>(jsonDB);
 
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            if (Path.GetDirectoryName(path) != null && !Directory.Exists(Path.GetDirectoryName(path)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
