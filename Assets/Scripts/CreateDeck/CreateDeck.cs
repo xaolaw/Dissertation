@@ -29,15 +29,11 @@ public class CreateDeck : MonoBehaviour
     private readonly int cardsPerPage = 8;
     private readonly int deckSize = 10;
     private string deckName;
+    private bool PathsInitialized = false;
     private readonly string JSON_DECK_RESOURCE_PATH = Path.Combine("CardDataBase","Decks");
     private readonly string JSON_COLLECTION_RESOURCE_PATH = Path.Combine("CardDataBase", "cardDB");
-#if UNITY_STANDALONE_WIN
     private string JSON_DECK_PATH;
     private string JSON_COLLECTION_PATH;
-#elif UNITY_ANDROID
-    private string JSON_DECK_PATH;
-    private string JSON_COLLECTION_PATH;
-#endif
     private bool wasJsonRead = false;
     //Dict to remember new create objects in dynamic deck view
     private Dictionary<int, GameObject> dynamicDeckCreatorDictObject = new();
@@ -49,14 +45,7 @@ public class CreateDeck : MonoBehaviour
     {
 
         // initialize path (can't use it during serialization)
-
-#if UNITY_STANDALONE_WIN
-        JSON_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
-        JSON_COLLECTION_PATH = Path.Combine("Assets","Resources","CardDataBase", "cardDB.json");
-#elif UNITY_ANDROID
-        JSON_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
-        JSON_COLLECTION_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "cardDB.json");
-#endif
+        InitializePaths();
 
         if (!wasJsonRead)
             cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
@@ -76,6 +65,22 @@ public class CreateDeck : MonoBehaviour
         }
      
     }
+
+    private void InitializePaths()
+    {
+        if (!PathsInitialized)
+        {
+            PathsInitialized = true;
+#if UNITY_STANDALONE_WIN
+        JSON_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+        JSON_COLLECTION_PATH = Path.Combine("Assets","Resources","CardDataBase", "cardDB.json");
+#elif UNITY_ANDROID
+            JSON_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+            JSON_COLLECTION_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "cardDB.json");
+#endif
+        }
+    }
+
     public void ResetView()
     {
         page = 0;
@@ -142,6 +147,7 @@ public class CreateDeck : MonoBehaviour
     //Read from jsonDb data and sort data
     private T ReadJson<T>(string path, string resource_path)
     {
+        InitializePaths();
         T wyn;
         if (!System.IO.File.Exists(path))
         {

@@ -17,32 +17,37 @@ public class DeckEditMenu : MonoBehaviour
     public CreateDeck DeckCollection;
 
     private DeckCollection CardDecks = new();
+    private bool PathsInitialized = false;
     private readonly string JSON_RESOURCES_PATH = Path.Combine("CardDataBase","Decks");
-#if UNITY_STANDALONE_WIN
     private string JSON_PATH;
     private string SELECTED_DECK_PATH;
-#elif UNITY_ANDROID
-    private string JSON_PATH;
-    private string SELECTED_DECK_PATH;
-#endif
     private int displayedDeck = 0;
     private int selectedDeckIndex = 0;
 
     void Start()
     {
         // initialize path (can't use it during serialization)
-
-#if UNITY_STANDALONE_WIN
-        JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
-        SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
-#elif UNITY_ANDROID
-        JSON_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
-        SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "selectedDeckIndex.txt");
-#endif
+        InitializePaths();
 
         CardDecks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
         ShowDeckToEdit();
     }
+
+    private void InitializePaths()
+    {
+        if (!PathsInitialized)
+        {
+            PathsInitialized = true;
+#if UNITY_STANDALONE_WIN
+        JSON_PATH = Path.Combine("Assets","Resources","CardDataBase","Decks.json");
+        SELECTED_DECK_PATH = Path.Combine("Assets","Resources","CardDataBase","selectedDeckIndex.txt");
+#elif UNITY_ANDROID
+            JSON_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "Decks.json");
+            SELECTED_DECK_PATH = Path.Combine(Application.persistentDataPath, "CardDataBase", "selectedDeckIndex.txt");
+#endif
+        }
+    }
+
     public void ResetView()
     {
         Debug.Log("Reset view");
@@ -53,6 +58,7 @@ public class DeckEditMenu : MonoBehaviour
 
     private T ReadJson<T>(string path, string resource_path)
     {
+        InitializePaths();
         T wyn;
         if (!System.IO.File.Exists(path))
         {
