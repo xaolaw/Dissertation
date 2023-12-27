@@ -15,6 +15,10 @@ namespace Assets.Classes
         public SpawnDetails spawnUnit { get; set; }
         public Effect spellEffect { get; set; }
         public int cardInDeckLimitNumber { get; set; }
+        public bool IsTokenUnit()
+        {
+            return spawnUnit != null && spawnUnit.tokenUnit.HasValue && spawnUnit.tokenUnit.Value;
+        }
     }
 
     public class SpawnDetails
@@ -29,6 +33,8 @@ namespace Assets.Classes
         public Effect onTurnEnd { get; set; }
         public Effect onAttack { get; set; }
         public Effect onDamage { get; set; }
+        public bool? tokenUnit { get; set; }
+        public int? tokenCardId { get; set; }
     }
 
     public class Effect
@@ -77,7 +83,8 @@ namespace Assets.Classes
                 {
                     foreach (Tile tile in arena.GetEmptyTargetTiles(UnitSpawn.UTGFromString(area), origintile, side))
                     {
-                        arena.unitSpawn.Spawn(tile, spawn, side, 0);
+                        Debug.Log("spawning... " + (spawn.tokenCardId.HasValue ? spawn.tokenCardId.Value : 0) + " and it " + spawn.tokenCardId.HasValue);
+                        arena.unitSpawn.Spawn(tile, spawn, side, spawn.tokenCardId.HasValue?spawn.tokenCardId.Value:0);
                         arena.CheckFrontline(tile.id, side);
                     }
                 };

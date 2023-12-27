@@ -48,7 +48,7 @@ public class CreateDeck : MonoBehaviour
         InitializePaths();
 
         if (!wasJsonRead)
-            cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
+            cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH).FindAll(card => !card.IsTokenUnit());
         wasJsonRead = true;
 
         DisplayCards();
@@ -446,7 +446,7 @@ public class CreateDeck : MonoBehaviour
         if (!wasJsonRead)
         {
             InitializePaths();
-            cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH);
+            cardsJson = ReadJson<List<CardJson>>(JSON_COLLECTION_PATH, JSON_COLLECTION_RESOURCE_PATH).FindAll(card => !card.IsTokenUnit());
         }
         wasJsonRead = true;
 

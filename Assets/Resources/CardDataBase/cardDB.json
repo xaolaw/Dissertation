@@ -101,6 +101,7 @@
           "area": "single_in_front",
           "target": "own",
           "spawn": {
+            "tokenCardId": 12,
             "cardType": "creature",
             "cardModel": "Tank",
             "cardPower": 2,
@@ -203,6 +204,20 @@
       "spellEffect": {
         "castTarget": "none",
         "drawCard": 2
+      }
+    },
+    {
+      "cardName": "Tank",
+      "cardEnergy": 0,
+      "cardImage": "2DModels/token_tank_card",
+      "cardDescription": "a spawned unit",
+      "cardInDeckLimitNumber": 0,
+      "spawnUnit": {
+        "tokenUnit": true,
+        "cardType": "creature",
+        "cardModel": "Tank",
+        "cardPower": 0,
+        "speed": 0
       }
     }
   ]
