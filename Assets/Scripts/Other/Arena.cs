@@ -454,6 +454,13 @@ public class Arena : MonoBehaviour
                 }
 
             }
+            foreach (GameObject gameObject in effects)
+            {
+                Destroy(gameObject);
+            }
+            
+            effects = null;
+
             switch (effectReason)
             {
                 case EffectReason.BATTLECRY:
@@ -475,12 +482,6 @@ public class Arena : MonoBehaviour
                     break;
 
             }
-            foreach (GameObject gameObject in effects)
-            {
-                Destroy(gameObject);
-            }
-            
-            effects = null;
         }
     }
 

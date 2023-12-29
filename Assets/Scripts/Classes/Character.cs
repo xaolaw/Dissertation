@@ -320,13 +320,13 @@ public class Character
     {
         // Clean up arena board and add death to history
         tile.UnitDied();
-            UnityEngine.GameObject.Destroy(gameObject);
-            UnityEngine.GameObject.Destroy(canvasInfo);
-            eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit? "Opponent" : "Player", "killed"));
+        UnityEngine.GameObject.Destroy(gameObject);
+        UnityEngine.GameObject.Destroy(canvasInfo);
+        eventCollector.AddEvent(new GameEvent(this.name, this.playerUnit? "Opponent" : "Player", "killed"));
 
-            // Activate possible next Deathrattles
-            if (hasDeathRattle)
-                arena.NextDying();
+        // Activate possible next Deathrattles
+        if (hasDeathRattle)
+            arena.NextDying();
 }
 
     public void ActivateOnEndTurn()
