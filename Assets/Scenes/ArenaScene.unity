@@ -7162,12 +7162,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: aefa62ee04789e745b9c2b7d23a21e67, type: 2}
   - {fileID: 2100000, guid: 621a6429119a1554e8384aa7b111e775, type: 2}
   - {fileID: 2100000, guid: 065a3f32f15eafa4c8ade8c33a885e9d, type: 2}
-  - {fileID: 2100000, guid: 5316922ceb4b0e049a0264d9d31c6a43, type: 2}
-  - {fileID: 2100000, guid: 0fe09d884d05833478278bfad09bb050, type: 2}
-  - {fileID: 2100000, guid: 983e0992e19cd6b488952f5565ef1372, type: 2}
-  - {fileID: 2100000, guid: 3656d0aa017075d48939785eefd39dc1, type: 2}
-  - {fileID: 2100000, guid: 5932f2760d420ff4da6d82bd54fe830d, type: 2}
-  - {fileID: 2100000, guid: 82f5feab8d85b3d4bb877287d1f8fb27, type: 2}
 --- !u!135 &1517779628
 SphereCollider:
   m_ObjectHideFlags: 0
