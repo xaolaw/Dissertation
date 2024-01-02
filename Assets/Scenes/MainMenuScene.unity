@@ -6563,7 +6563,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 4. Click Button
+  m_Text: 4. End Your Turn
 --- !u!222 &2040163276
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6898,7 +6898,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 3. Create Tank
+  m_Text: '3. Spawn Unit
+
+'
 --- !u!222 &2101913006
 CanvasRenderer:
   m_ObjectHideFlags: 0
