@@ -116,37 +116,43 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         // if the card is a spell
         else if (spellEffect != null)
         {
-            switch (spellEffect.castTarget)
+            if (from_opponent)
             {
-                case "unit":
-                    if (!from_opponent)
-                    {
-                        if (tile.character == null)
+                spellEffect.GenerateAction(arena, Arena.EffectReason.SPELL)(arena.GetSingleTile(tile.id), arena.playerTurn);
+            }
+            else
+            {
+                switch (spellEffect.castTarget)
+                {
+                    case "unit":
+                        if (!from_opponent)
                         {
-                            Debug.LogError("this spell can be only casted on units");
-                            return false;
+                            if (tile.character == null)
+                            {
+                                Debug.LogError("this spell can be only casted on units");
+                                return false;
+                            }
+                            if ((tile.character.playerUnit == arena.playerTurn && spellEffect.target == "enemy") || (tile.character.playerUnit != arena.playerTurn && spellEffect.target == "own"))
+                            {
+                                Debug.LogError("this spell can be only casted on units of other player");
+                                return false;
+                            }
                         }
-                        if ((tile.character.playerUnit == arena.playerTurn && spellEffect.target == "enemy") || (tile.character.playerUnit != arena.playerTurn && spellEffect.target == "own"))
-                        {
-                            Debug.LogError("this spell can be only casted on units of other player");
-                            return false;
-                        }
-                    }
-                    spellEffect.GenerateAction(arena, Arena.EffectReason.SPELL)(arena.GetSingleTile(tileID), arena.playerTurn);
-                    break;
-                case "none":
-                    spellEffect.GenerateAction(arena, Arena.EffectReason.SPELL)(arena.GetSingleTile(tileID), arena.playerTurn);
-                    break;
-                default:
-                    Debug.LogError("Spell has wrong cast target: " + spellEffect.castTarget);
-                    return false;
+                        spellEffect.GenerateAction(arena, Arena.EffectReason.SPELL)(arena.GetSingleTile(tile.id), arena.playerTurn);
+                        break;
+                    case "none":
+                        spellEffect.GenerateAction(arena, Arena.EffectReason.SPELL)(arena.GetSingleTile(tile.id), arena.playerTurn);
+                        break;
+                    default:
+                        Debug.LogError("Spell has wrong cast target: " + spellEffect.castTarget);
+                        return false;
+                }
             }
         }
 
         if (!from_opponent)
         {
             arena.PlayCard(index, tile.id);
-
             played = true;
             this.gameObject.SetActive(false);
             base_.TakeEnergy(energy);
