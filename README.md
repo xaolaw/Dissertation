@@ -1,6 +1,8 @@
-# Generating an executable file
+# Getting all assets
 
-First you need to download textures and models from https://drive.google.com/drive/folders/1kCsZu0TfSNmvxzYq-5BjYgyNHyVL6BXy?usp=sharing and move the Resources folder to the Assets folder, so that the contents of Resources folder from git and the downloaded one end up togeather.
+You need to download textures and models from https://drive.google.com/drive/folders/1kCsZu0TfSNmvxzYq-5BjYgyNHyVL6BXy?usp=sharing and move the Resources folder to the Assets folder, so that the contents of Resources folder from git and the downloaded one end up togeather.
+
+# Generating an executable file
 
 In order to generate an executable file it is required to have 2022.3.11f1 version of Unity Editor. You also need to have an adequate plug-in installed, depending on what platform the game has to run on.
 
