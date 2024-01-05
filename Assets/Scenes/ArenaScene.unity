@@ -7160,7 +7160,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   materialsList:
   - {fileID: 2100000, guid: aefa62ee04789e745b9c2b7d23a21e67, type: 2}
-  - {fileID: 2100000, guid: 621a6429119a1554e8384aa7b111e775, type: 2}
   - {fileID: 2100000, guid: 065a3f32f15eafa4c8ade8c33a885e9d, type: 2}
 --- !u!135 &1517779628
 SphereCollider:
