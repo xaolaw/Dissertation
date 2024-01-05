@@ -1,0 +1,223 @@
+[
+    {
+      "cardName": "Merkava",
+      "cardEnergy": 3,
+      "cardImage": "2DModels/tank15_2",
+      "cardDescription": "czolg co jedzie",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "Merkava",
+        "cardPower": 15,
+        "speed": 1,
+        "battlecry": {
+          "target": "enemy",
+          "area": "bordering",
+          "damage": 3
+        },
+        "status": "aggressive"
+      }
+    },
+    {
+      "cardName": "BallTank",
+      "cardEnergy": 3,
+      "cardImage": "2DModels/ballTank",
+      "cardDescription": "czolg co jedzie i wybucha jak ginie",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "BallTank",
+        "cardPower": 8,
+        "speed": 1,
+        "deathrattle": {
+          "target": "enemy",
+          "area": "surrounding",
+          "damage": 5
+        }
+      }
+    },
+    {
+      "cardName": "Satelite Laser",
+      "cardEnergy": 3,
+      "cardImage": "2DModels/orbital_laser_card",
+      "cardInDeckLimitNumber": 3,
+      "cardDescription": "Blaaaast!!! one unit for 6 damage",
+      "spellEffect": {
+        "castTarget": "unit",
+        "target": "enemy",
+        "area": "single",
+        "damage": 6
+      }
+    },
+    {
+      "cardName": "Starship",
+      "cardEnergy": 2,
+      "cardImage": "2DModels/starship",
+      "cardDescription": "leci teraz",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "Starship1",
+        "cardPower": 10,
+        "speed": 2,
+        "deathrattle": {
+          "target": "any",
+          "area": "surrounding",
+          "damage": 6
+        },
+        "status": "aggressive"
+      }
+    },
+    {
+      "cardName": "Unstoppable droid",
+      "cardEnergy": 7,
+      "cardImage": "2DModels/walker_card",
+      "cardDescription": "When damaged: Gain 2 power",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "Droid",
+        "cardPower": 6,
+        "speed": 0,
+        "onDamage": {
+          "target": "own",
+          "area": "self",
+          "damage": -2
+        }
+      }
+    },
+    {
+      "cardName": "Factory",
+      "cardEnergy": 6,
+      "cardImage": "2DModels/factory_card",
+      "cardDescription": "On the end of turn: Create a 2 power tank in front of it",
+      "cardInDeckLimitNumber": 1,
+      "spawnUnit": {
+        "cardType": "building",
+        "cardModel": "Factory",
+        "cardPower": 4,
+        "speed": 0,
+        "onTurnEnd": {
+          "area": "single_in_front",
+          "target": "own",
+          "spawn": {
+            "tokenCardId": 12,
+            "cardType": "creature",
+            "cardModel": "Tank",
+            "cardPower": 2,
+            "speed": 0
+          }
+        }
+      }
+    },
+    {
+      "cardName": "Pi-rog",
+      "cardEnergy": 6,
+      "cardImage": "2DModels/pirog_card",
+      "cardDescription": "Before attacking: Deal 6 damage to unit in front.",
+      "cardInDeckLimitNumber": 1,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "Pirog",
+        "cardPower": 6,
+        "speed": 2,
+        "onAttack": {
+          "area": "single_in_front",
+          "target": "enemy",
+          "damage": 6
+        }
+      }
+    },
+    {
+      "cardName": "Fricky Robot",
+      "cardEnergy": 4,
+      "cardImage": "2DModels/FrickyRobot",
+      "cardDescription": "Give bordering units 2 power",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "Fricky Robot",
+        "cardPower": 3,
+        "speed": 1,
+        "battlecry": {
+          "area": "bordering",
+          "target": "own",
+          "damage": -2
+        }
+      }
+    },
+    {
+      "cardName": "Slime",
+      "cardEnergy": 5,
+      "cardImage": "2DModels/slime_card",
+      "cardDescription": "Battlecry: Deal 3 damage to surrounding enemies\nOn the end of turn: Lose 1 power",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "creature",
+        "cardModel": "Slime",
+        "cardPower": 6,
+        "speed": 1,
+        "battlecry": {
+          "area": "surrounding",
+          "target": "enemy",
+          "damage": 3
+        },
+        "onTurnEnd": {
+          "area": "self",
+          "target": "own",
+          "damage": 1
+        }
+      }
+    },
+    {
+      "cardName": "Bunker",
+      "cardEnergy": 3,
+      "cardImage": "2DModels/bunker_card",
+      "cardDescription": "",
+      "cardInDeckLimitNumber": 3,
+      "spawnUnit": {
+        "cardType": "building",
+        "cardModel": "Bunker",
+        "cardPower": 6,
+        "speed": 0
+      }
+    },
+    {
+      "cardName": "Artillery rain",
+      "cardEnergy": 5,
+      "cardImage": "2DModels/artillery_rain_card",
+      "cardInDeckLimitNumber": 2,
+      "cardDescription": "Deal 2 damage to all enemies",
+      "spellEffect": {
+        "castTarget": "none",
+        "target": "enemy",
+        "area": "all",
+        "damage": 2
+      }
+    },
+    {
+      "cardName": "Supply drop",
+      "cardEnergy": 2,
+      "cardImage": "2DModels/supply_drop_card",
+      "cardInDeckLimitNumber": 2,
+      "cardDescription": "Draw 2 cards",
+      "spellEffect": {
+        "castTarget": "none",
+        "drawCard": 2
+      }
+    },
+    {
+      "cardName": "Tank",
+      "cardEnergy": 0,
+      "cardImage": "2DModels/token_tank_card",
+      "cardDescription": "a spawned unit",
+      "cardInDeckLimitNumber": 0,
+      "spawnUnit": {
+        "tokenUnit": true,
+        "cardType": "creature",
+        "cardModel": "Tank",
+        "cardPower": 0,
+        "speed": 0
+      }
+    }
+  ]
