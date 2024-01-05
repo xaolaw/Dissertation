@@ -3357,8 +3357,8 @@ MonoBehaviour:
     playerPrefab: {fileID: 9164127555322734107, guid: fda787395ea38ac45a71e508e6ed2a3c, type: 3}
     enemyPrefab: {fileID: 4487717912004558543, guid: dcca059ebc6f36e4ca8b3d41ab235094, type: 3}
   - name: Slime
-    playerPrefab: {fileID: 59571886679862847, guid: e67ec2ec755cce8459408fd44f4f6fe1, type: 3}
-    enemyPrefab: {fileID: 9025313517775976037, guid: 8e1fe5a8d640bff4f8a5f958e015fd90, type: 3}
+    playerPrefab: {fileID: 3227496286839867802, guid: 219940f1397414c4ab3b0cb8379d88dc, type: 3}
+    enemyPrefab: {fileID: 5596796683180958675, guid: 503d4aac584161a419eecbda77d4db9c, type: 3}
   - name: Bunker
     playerPrefab: {fileID: 919132149155446097, guid: 635d04eea1802f84491db11656005df6, type: 3}
     enemyPrefab: {fileID: 919132149155446097, guid: b6dffeb6ab5de0344867b74b2c518a7a, type: 3}
@@ -7160,7 +7160,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   materialsList:
   - {fileID: 2100000, guid: aefa62ee04789e745b9c2b7d23a21e67, type: 2}
-  - {fileID: 2100000, guid: 621a6429119a1554e8384aa7b111e775, type: 2}
   - {fileID: 2100000, guid: 065a3f32f15eafa4c8ade8c33a885e9d, type: 2}
 --- !u!135 &1517779628
 SphereCollider:
@@ -7204,7 +7203,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: aefa62ee04789e745b9c2b7d23a21e67, type: 2}
-  - {fileID: 2100000, guid: 621a6429119a1554e8384aa7b111e775, type: 2}
   - {fileID: 2100000, guid: 065a3f32f15eafa4c8ade8c33a885e9d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0

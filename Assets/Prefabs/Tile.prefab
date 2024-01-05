@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3599685120066544192}
   - component: {fileID: 771336973721430736}
   - component: {fileID: 332798789732590861}
-  - component: {fileID: 2449518024886723314}
+  - component: {fileID: 4111222938707841991}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -106,7 +106,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2449518024886723314
+--- !u!114 &4111222938707841991
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,9 +115,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6577375014891292757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c30d2a85cbbe7f245a7e69dc317cd87b, type: 3}
+  m_Script: {fileID: 11500000, guid: 780e1b655531a484abee195098151cac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultMaterial: {fileID: 2100000, guid: 47125b8a9a1177848bee61ffbc8be8ca, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: 4ea1c5f5e6fd1f34fa0844e353261bed, type: 2}
   bloomMaterial: {fileID: 2100000, guid: 30e4d0a1dec306940b605000a08ee98b, type: 2}
-  redMaterial: {fileID: 2100000, guid: 3c077b8dbc1995f45822c31688167455, type: 2}
+  redMaterial: {fileID: 2100000, guid: a59fce18aacbf3e4786bfc095e259ab0, type: 2}
