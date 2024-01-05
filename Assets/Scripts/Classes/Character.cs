@@ -52,6 +52,12 @@ public class Character
         EMPOWERED   = (1 << 2)
     }
 
+    public enum AttackReason
+    {
+        MOVING = 0,
+        SPAWN
+    }
+
     public enum MovingReason
     {
         END_TURN = 0,
@@ -63,6 +69,13 @@ public class Character
     private System.Action<Tile, bool> onEndTurn;
     private System.Action<Tile, bool> onAttack;
     private System.Action<Tile, bool> onDamage;
+
+    private Character targetCharacter;
+    private AttackReason attackReason;
+
+    private Arena.Direction moveDirection;
+    private MovingReason movingReason;
+    private int movesToMake;
 
     public static UnitStatus GetStatusFromString(string s)
     {
@@ -171,6 +184,10 @@ public class Character
     // returns false if it died while moving, returns true if it survived
     public bool _Move(Arena.Direction direction, MovingReason reason, int moves_to_make)
     {
+        Debug.Log("try moving");
+        movingReason = reason;
+        movesToMake = moves_to_make;
+        moveDirection = direction;
         if (HasDied())
             return false;
         Tile temp = tile.GetTile(direction);
@@ -199,7 +216,7 @@ public class Character
         // if tile has enemy on it
         else if (temp.character != null && temp.character.playerUnit != this.playerUnit)
         {
-            Attack(temp.character);
+            Attack(temp.character, AttackReason.MOVING);
             // if died while attacking don't move
             if (HasDied())
             {
@@ -211,7 +228,7 @@ public class Character
         // if tile is empty
         if (temp.character == null)
         {
-
+            Debug.Log("moves");
             tile.UnitMoved();
             tile = temp;
             temp.character = this;
@@ -259,23 +276,51 @@ public class Character
         powerInfo.text = this.power.ToString();
     }
 
-    // attacks character, returns true if kills
-    public bool Attack(Character otherCharacter)
+    // attacks character
+    public void Attack(Character otherCharacter, AttackReason reason)
     {
         // if was already dead we do nothing
         if (otherCharacter.HasDied())
-            return false;
+            return;
+
+        targetCharacter = otherCharacter;
+        attackReason = reason;
+
         // Do something before attack
         if (hasOnAttack)
+        {
             ActivateOnAttack();
-        // if out ability killed it we do not take negative damage, just report kill
-        if (otherCharacter.HasDied())
-            return true;
+            return;
+        }
 
-        int damage_to_take = otherCharacter.power;
-        bool killed = otherCharacter.TakeDamage(this.power);
-        TakeDamage(damage_to_take);
-        return killed;
+        ContinueAttack();
+    }
+
+    public void ContinueAttack()
+    {
+        // if out ability killed it we do not take negative damage
+        if (!targetCharacter.HasDied())
+        {
+
+            Debug.Log("attacks");
+
+            int damage_to_take = targetCharacter.power;
+            bool killed = targetCharacter.TakeDamage(this.power);
+            TakeDamage(damage_to_take);
+        }
+
+        switch (attackReason)
+        {
+            case AttackReason.MOVING:
+                _Move(moveDirection, movingReason, movesToMake);
+                break;
+            case AttackReason.SPAWN:
+                arena.unitSpawn.ContinueSpawn(this);
+                break;
+            default:
+                Debug.LogError("no attack reason");
+                break;
+        }
     }
 
     public void Die()
