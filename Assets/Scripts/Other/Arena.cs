@@ -470,6 +470,7 @@ public class Arena : MonoBehaviour
                     effectCharacter.ContinueDeathratlle();
                     break;
                 case EffectReason.ON_ATTACK:
+                    effectCharacter.ContinueAttack();
                     break;
                 case EffectReason.ON_DAMAGE:
                     break;
