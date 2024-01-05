@@ -456,7 +456,8 @@ public class CreateDeck : MonoBehaviour
         for (int index = 0; index < temp.Count; index++) 
         {
             IntalizeNewCardInDynamicView(temp[index]);
-            UpdateCounter(cardDeck.FindAll(x => x == index).Count, index);
+            if (temp[index] > 7)
+                UpdateCounter(cardDeck.FindAll(x => x == temp[index]).Count, temp[index]);
         }
         UpdateAllCounters();
     }
