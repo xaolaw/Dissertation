@@ -115,6 +115,8 @@ public class CardManager : MonoBehaviour
         AddCard(card);
         card.transform.position = cardSlots[slot].position;
         cards_in_hand.Add(card);
+        if (arena.playerBase && arena.opponentBase)
+            RestoreCardsColor(arena.playerTurn ? arena.playerBase.GetEnergy() : arena.opponentBase.GetEnergy());
 
         UpdateBackOfDeck();
     }
@@ -248,7 +250,10 @@ public class CardManager : MonoBehaviour
         foreach (Card c in cards_in_hand)
         {
             if (c.GetEnergy() <= currentEnergy)
-            c.GetComponent<Image>().color = Color.white;;
+                c.GetComponent<Image>().color = Color.white;
+            else
+                c.GetComponent<Image>().color = Color.gray;
+
         }
     }
 

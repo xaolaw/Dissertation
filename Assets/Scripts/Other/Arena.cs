@@ -572,17 +572,17 @@ public class Arena : MonoBehaviour
         {
             cardManager.DrawCard();
         }
-        cardManager.RestoreCardsColor(playerBase.GetEnergy());
-        cardManager.RestoreCardsColor(opponentBase.GetEnergy());
         
 
         if (playerTurn)
         {
             playerBase.UpdateEnergy(energyFlow);
+            cardManager.RestoreCardsColor(playerBase.GetEnergy());
         }
         else
         {
             opponentBase.UpdateEnergy(energyFlow);
+            cardManager.RestoreCardsColor(opponentBase.GetEnergy());
         }
 
         //int begin, end, increment;
