@@ -19,7 +19,6 @@ public class ShowUnitAttackButton : MonoBehaviour
 
         button = GetComponent<Button>();
         textPro = GetComponentInChildren<TMP_Text>();
-        Debug.Log(button);
         button.onClick.AddListener(ShowInfo);
         isShowing = false;
 

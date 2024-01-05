@@ -184,7 +184,6 @@ public class Character
     // returns false if it died while moving, returns true if it survived
     public bool _Move(Arena.Direction direction, MovingReason reason, int moves_to_make)
     {
-        Debug.Log("try moving");
         movingReason = reason;
         movesToMake = moves_to_make;
         moveDirection = direction;
@@ -228,7 +227,6 @@ public class Character
         // if tile is empty
         if (temp.character == null)
         {
-            Debug.Log("moves");
             tile.UnitMoved();
             tile = temp;
             temp.character = this;
@@ -301,9 +299,6 @@ public class Character
         // if out ability killed it we do not take negative damage
         if (!targetCharacter.HasDied())
         {
-
-            Debug.Log("attacks");
-
             int damage_to_take = targetCharacter.power;
             bool killed = targetCharacter.TakeDamage(this.power);
             TakeDamage(damage_to_take);

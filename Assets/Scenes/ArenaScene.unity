@@ -5455,7 +5455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f369794399976d940b46791c2adf9246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 6577375014891292757, guid: d182fcd47cb5676458dfd08489b1bb71, type: 3}
+  tilePrefab: {fileID: 6577375014891292757, guid: 087fd8616028d094bb5d57bf50f0236e, type: 3}
   groundOffset: 0.1
   playerBase: {fileID: 0}
   opponentBase: {fileID: 0}

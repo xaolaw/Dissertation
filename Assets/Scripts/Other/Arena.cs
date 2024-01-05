@@ -75,7 +75,7 @@ public class Arena : MonoBehaviour
     private float moveTime = 0.8f;
 
     public bool playerTurn = true;
-    private int energyFlow = 2;
+    private int energyFlow = 1;
 
     //Dying units
     private Queue dyingUnits = new Queue();
@@ -561,7 +561,6 @@ public class Arena : MonoBehaviour
     // Can only be called to end turn for one player
     public void _EndTurn()
     {
-        Debug.Log("Turn ended");
         timer_started = false;
         turn_timer.set_time(0, playerTurn);
         turn_timer.setBarActive(!playerTurn);

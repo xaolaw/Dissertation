@@ -221,6 +221,15 @@ public class CardManager : MonoBehaviour
         {
             DrawCard(i);
         }
+        for (int i = 0; i < cards_in_hand.Count; i++)
+        {
+            cards_in_hand[i].transform.position = cardSlots[i].position;
+
+            if (cards_in_hand[i].GetEnergy() > 5)
+            {
+                cards_in_hand[i].GetComponent<Image>().color = Color.grey;
+            }
+        }
     }
 
     public void update_cards(Card updated_card, int currentEnergy){

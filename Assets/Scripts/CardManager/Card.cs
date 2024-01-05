@@ -100,7 +100,6 @@ public class Card : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         // if the card spawns unit (spell card can be cast on enemy units outside of your range / frontline)
         if (spawnDetails != null)
         {
-            Debug.Log("spawning " + spawnDetails.cardModel);
             if (!from_opponent && !arena.IsBehindFrontline(tile, arena.playerTurn))
             {
                 Debug.LogError("Spawning outside frontline");

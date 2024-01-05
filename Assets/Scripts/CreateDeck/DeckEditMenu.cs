@@ -50,7 +50,6 @@ public class DeckEditMenu : MonoBehaviour
 
     public void ResetView()
     {
-        Debug.Log("Reset view");
         displayedDeck = 0;
         InitializePaths();
         CardDecks = ReadJson<DeckCollection>(JSON_PATH, JSON_RESOURCES_PATH);
