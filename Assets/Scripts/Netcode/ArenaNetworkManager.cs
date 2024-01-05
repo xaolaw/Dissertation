@@ -45,7 +45,7 @@ public class ArenaNetworkManager : NetworkBehaviour
             case GameSignal.PlayCard:
                 Card card = cardManager.GetCardByID(arg1, true);
                 card.OnPlay(arg2, true);
-                eventCollector.AddEvent(new GameEvent(card.cardName, (!arena.playerTurn) ? "Player" : "Opponent", "played"));
+                eventCollector.AddEvent(new GameEvent(card.cardName, "Opponent", "played"));
                 break;
 
             case GameSignal.SetStart:
