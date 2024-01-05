@@ -1,6 +1,6 @@
 # Getting all assets
 
-You need to download textures and models from https://drive.google.com/drive/folders/1kCsZu0TfSNmvxzYq-5BjYgyNHyVL6BXy?usp=sharing and move the Resources folder to the Assets folder, so that the contents of Resources folder from git and the downloaded one end up togeather.
+You need to download textures and models from the branc "main-resources". It contains all code and graphics.
 
 # Generating an executable file
 
